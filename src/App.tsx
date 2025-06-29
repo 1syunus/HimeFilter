@@ -254,4 +254,17 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   </div>
 )
 
+const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+  setActiveFilters(prev => ({...prev, year: e.target.value}))
+}
+
+const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  setSearchQuery(e.target.value)
+}
+
+const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  setActiveFilters(prev => ({...prev, year: e.target.value}))
+}
+
+}
 export default App
