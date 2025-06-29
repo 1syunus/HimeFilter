@@ -8,7 +8,7 @@ interface AnimeData {
   description: string
   type: "Series" | "Movie" | "OVA"
   audioLanguages: string[]
-  subtitleLanguags: string[]
+  subtitleLanguages: string[]
   status: "Ongoing" | "Completed" | "New This Week"
   year: number
   episodes: number
@@ -34,7 +34,7 @@ interface ActiveFilters {
   subtitleLanguages: string[]
   status: string[]
   year: string
-  genre: string[]
+  genres: string[]
 }
 
 interface FilterSectionProps {
@@ -54,7 +54,7 @@ const HimeFilterUI: React.FC = () => {
     subtitleLanguages: [],
     status: [],
     year: "",
-    genre: []
+    genres: []
   })
 
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
