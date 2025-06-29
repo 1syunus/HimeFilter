@@ -164,3 +164,72 @@ const mockAnime: AnimeData[] = [
     duration: "24m"
   }
 ]
+
+const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
+  setActiveFilters(prev => {
+    const currentValues = prev[category]
+    if (Array.isArray(currentValues)) {
+      return {
+        ...prev,
+        [category]: currentValues.includes(value)
+        ? currentValues.filter(item => item !== value)
+        : [...currentValues, value]
+      }
+    } else {
+      return {
+        ...prev,
+        [category]: value
+      }
+    }
+  })
+}
+
+const clearAllFilters = (): void => {
+  setActiveFilters({
+    contentType: [],
+    audioLanguage: [],
+    subtitleLanguage: [],
+    status: [],
+    year: "",
+    genres: []
+  })
+  setSearchQuery("")
+}
+
+const FilterSection: React.FC<FilterSectionProps> = ({
+  title, options, categories, activeFilters, onFilterChange
+}) => (
+  <div className="mb-6">
+    <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{title}</h3>
+    <div className="space-y-2">
+      {options.map((option: string) => {
+        const isActive = Array.isArray(activeFilters[category])
+        ? (activeFilters[category] as string[]).includes(option)
+        : activeFilters[category] === option
+
+        return (
+          <label key={option} className="flex items-center cursor-pointer group">
+            <input
+            type="checkbox"
+            checked={isActive}
+            onChange={() => onFilterChange(category, option)}
+            className="sr-only"
+            />
+            <div className={`w-4 h-4 rounded border-2 mr-3 flex items-center justify-center transition-all
+            ${isActive
+              ? "bg-orange-500 border-orange-500"
+              : "border-gray-400 group-hover:border-orange-400"
+            }`}>
+              {isActive && (
+                <div className="w-2 h-2 bg-white rounded-sm"></div>
+              )}
+            </div>
+            <span className="text-gray-300 text-sm group-hover:text-white transition colors">
+              {option}
+            </span>
+          </label>
+        )
+      })}
+    </div>
+  </div>
+)
