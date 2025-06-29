@@ -76,6 +76,14 @@ const App: React.FC = () => {
     statusOptions: ["Ongoing", "Completed", "New This Week"]
   }
 
+  const filterOptions = {
+    contentType: mockApiData.contentTypes,
+    audioLanguage: mockApiData.availableAudioLanguages,
+    subtitleLanguage: mockApiData.availableSubtitleLanguages,
+    status: mockApiData.statusOptions,
+    genres: mockApiData.availableGenres
+  }
+
 
 // mock data as placeholder
 const featuredAnime: AnimeData = {
