@@ -47,7 +47,7 @@ interface FilterSectionProps {
 
 type SortOption = "newest" | "episodes" | "popular" | "alphabetical"
 
-const HimeFilterUI: React.FC = () => {
+const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     contentType: [],
     audioLanguages: [],
@@ -128,7 +128,7 @@ const mockAnime: AnimeData[] = [
     episodes: 16,
     rating: 4.9,
     genres: ["Action", "Drama", "Shonen"],
-    image: "dummyimage.com/480x720/cc3300/ffffff?text=AOT",\
+    image: "dummyimage.com/480x720/cc3300/ffffff?text=AOT",
     duration: "24m"
   },
 
@@ -233,3 +233,5 @@ const FilterSection: React.FC<FilterSectionProps> = ({
     </div>
   </div>
 )
+
+export default App
