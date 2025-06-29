@@ -266,5 +266,15 @@ const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
   setActiveFilters(prev => ({...prev, year: e.target.value}))
 }
 
+const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void => {
+  if (value) {
+    handleFilterChange(category, value)
+  } else {
+    setActiveFilters(prev => ({...prev, [category]: ""}))
+  }
+}
+
+// mobile menu close functionality
+
 }
 export default App
