@@ -63,7 +63,19 @@ const App: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>("newest")
   const [heroMuted, setHeroMuted] = useState<boolean>(true)
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
-}
+
+  // mock api data
+  const mockApiData: ApiData = {
+    availableAudioLanguages: ["Japanese", "English", "Spanish", "Portuguese", "French", "German", "Uranian"],
+    availableSubtitleLanguages: ["English", "Spanish", "Portuguese", "French", "German", "Uranian", "Italian", "Russian", "Arabic"],
+    availableGenres: [
+      "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Music", "Romance", "Sci-Fi", "Seinen", "Shojo", "Shonen", "Slice of Life", "Sports",
+      "Supernatural", "Thriller"
+    ],
+    contentTypes: ["Series", "Movie", "OVA"],
+    statusOptions: ["Ongoing", "Completed", "New This Week"]
+  }
+
 
 // mock data as placeholder
 const featuredAnime: AnimeData = {
