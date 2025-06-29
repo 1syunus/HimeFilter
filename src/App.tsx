@@ -217,7 +217,7 @@ const clearAllFilters = (): void => {
 }
 
 const FilterSection: React.FC<FilterSectionProps> = ({
-  title, options, categories, activeFilters, onFilterChange
+  title, options, category, activeFilters, onFilterChange
 }) => (
   <div className="mb-6">
     <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{title}</h3>
