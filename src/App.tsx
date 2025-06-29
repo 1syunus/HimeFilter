@@ -281,6 +281,15 @@ const hasActiveFilter = (): boolean => {
 }
 
 // mobile menu close functionality
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isMobileMenuOpen && !(event.target as Element).closest(".mobile-menu")) {
+      setIsMobileMenuOpen(false)
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside)
+})
 
 }
 export default App
