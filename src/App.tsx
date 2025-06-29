@@ -274,6 +274,12 @@ const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void
   }
 }
 
+const hasActiveFilter = (): boolean => {
+  return Object.values(activeFilters).some(arr =>
+    Array.isArray(arr) ? arr.length > 0 : arr !== ""
+  ) || searchQuery !== ""
+}
+
 // mobile menu close functionality
 
 }
