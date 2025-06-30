@@ -359,6 +359,28 @@ return (
         </div>
       </div>
     </div>
+
+    {/* desktop header */}
+    <header className="hidden
+      lg:block
+      bg-black bg-opacity-90 backdrop-blur-md
+      border-b border-gray-800
+      px-6 py-4
+      sticky top-0 z-50
+      ">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-6">
+            <h1 className="text-2xl font-bold text-orange-500">Hime<span className="
+              text-white">Filter</span>
+            </h1>
+              <nav className="flex space-x-6">
+                <a href="#" className="text-white hover:text-orange-400 transition-colors">Browse</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">My List</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">New & Popular</a>
+              </nav>
+          </div>
+        </div>
+      </header>
   </div>
 )
 
