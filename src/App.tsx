@@ -447,6 +447,108 @@ return (
           </div>
         </div>
       </header>
+
+      {/* Netflix-style hero */}
+      <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
+        {/* placeholder image -- add video functionality later */}
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: `url(${featuredAnime.heroImage})`,
+                backgroundPosition: "center 20%"
+              }}
+        >
+          {/* gradient overlays !! important */}
+          <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent"></div>
+        </div>
+
+        <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-12">
+          <div className="max-w-2xl space-y-4 sm:space-y-6">
+            <div className="flex items-center space-x-2 text-sm text-gray-300">
+              <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                {featuredAnime.status}
+              </span>
+              <span>{featuredAnime.year}</span>
+              <span>•</span>
+              <span>{featuredAnime.episodes}</span>
+              <span>•</span>
+              <div className="flex items-center">
+                <Star className="w-3 h-3 mr-1 fil-current text-yellow-400" />
+                {featuredAnime.rating}
+              </div>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight">
+              {featuredAnime.title}
+            </h1>
+
+            <p className="text-sm sm:text-base lg:text-lg text-gray-300 leading-relaxed max-w-xl">
+              {featuredAnime.description}
+            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {featuredAnime.genres.slice(0, 3).map((genre: string) => (
+                <span key={genre} className="text-xs bg-gray-800/80 text-gray-300 px-3 py-1 rounded-full">
+                  {genre}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button className="
+              flex items-center justify-center space-x-2
+              bg-white text-black
+              px-6 py-3
+              rounded-lg
+              font-semibold
+              hover:bg-gray-200 transition colors
+              ">
+                <Play className="w-5 h-5 fill-current" />
+                <span>Watch Now</span>
+              </button>
+
+              <button className="
+                  flex items-center justify-center 
+                  space-x-2
+                  bg-gray-600/80
+                  text-white
+                  px-6 py-3
+                  rounded-lg font-semibold
+                  hover:bg-gray-600 transition-colors
+                  ">
+                    <Info className="w-5 h-5" />
+                    <span>More Info</span>
+                  </button>
+
+                  <button className="flex items-center justify-center
+                    space-x-2
+                    bg-gray-800/80
+                    text-white
+                    px-4 py-3
+                    rounded-lg
+                    hover:bg-gray-700 transition-colors
+                    ">
+                      <Plus className="w-5 h-5" />
+                  </button>
+            </div>
+          </div>
+        </div>
+
+        {/* audio controls */}
+        <button
+        onClick={() => setHeroMuted(!heroMuted)}
+        className="
+          absolute
+          bottom-4 right-4
+          bg-gray-800/80 hover:bg-gray-700
+          text-white
+          p-3
+          rounded-full 
+          transition-colors
+          ">
+            {heroMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+          </button>
+      </section>
   </div>
 )
 
