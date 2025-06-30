@@ -403,6 +403,47 @@ return (
                 "
               />
             </div>
+
+            {/* desktop sort */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="
+                bg-gray-800
+                border border-gray-700 rounded-lg
+                px-4 py-2
+                text-white
+                focus:outline-none focus:border-orange-500 appearance-none
+                pr-8
+                ">
+                  <option value="newest">New This Week</option>
+                  <option value="episodes">Latest Episodes</option>
+                  <option value="popular">Most Popular</option>
+                  <option value="alphabetical">A-Z</option>
+                </select>
+                <ChevronDown className="
+                absolute
+                right-2 top-1/2
+                transform -translate-y-1/2
+                text-gray-400
+                w-4 h-4
+                pointer-events-none" />
+            </div>
+
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="
+              flex items-center
+              space-x-2
+              bg-gray-800 hover:bg-gray-700
+              px-4 py-2
+              rounded-lg
+              transition-colors
+              ">
+                <Filter className="w-4 h-4" />
+                <span>Filters</span>
+              </button>
           </div>
         </div>
       </header>
