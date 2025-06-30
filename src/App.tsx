@@ -292,6 +292,33 @@ useEffect(() => {
   return () => document.removeEventListener("mousedown", handleClickOutside)
 }, [isMobileMenuOpen])
 
+return (
+  <div className="min-h-screen bg-black text-white">
+    {/* mobile header */}
+    <div className="
+    lg:hidden
+    bg-black bg-opacity-90 backdrop-blur-md
+    border-b border-gray-800
+    px-4 py-3
+    sticky top-0 z-50
+    ">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 text-white hover:text-orange-400 transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+          <h1 className="text-lg font-bold text-orange-500">Hime<span className="
+          text-white">Filter</span>
+          </h1>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+)
 
 }
 export default App
