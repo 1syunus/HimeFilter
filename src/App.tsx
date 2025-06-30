@@ -314,8 +314,50 @@ return (
           text-white">Filter</span>
           </h1>
         </div>
+
+        <div className="flex items-center space-x-2">
+          {/* mobile search toggle */}
+          {!isSearchExpanded ? (
+            <button
+            onClick={() => setIsSearchExpanded(true)}
+            className="p-2 text-white hover:text-orange-400 transition-colors"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="search..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="
+                  w-48
+                  pl-3 pr-8 py-2
+                  bg-gray-800
+                  border border-gray-700 rounded-lg
+                  text-white placeholder-gray-400
+                  focus:outline-none focus:border-orange-500 text-sm
+                  "
+                  autoFocus
+                  />
+                  <button
+                  onClick={() => {
+                    setIsSearchExpanded(false)
+                    setSearchQuery("")
+                  }}
+                  className="absolute right-2 top-1/2
+                  transform -translate-y-1/2
+                  text-gray-400 hover:text-white"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-      
     </div>
   </div>
 )
