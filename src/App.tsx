@@ -866,6 +866,52 @@ return (
             Load More Anime
           </button>
         </div>
+
+        {/* continue watching */}
+        <div className="mt-12 sm:mt-16">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {mockAnime.slice(0, 3).map((anime: AnimeData) => (
+              <div key={`continue-${anime.id}`} className="group cursor-pointer">
+                <div className="relative overflow-hidden rounded-lg bg-gray-800">
+                  <div className="w-full aspect-video bg-gray-700">
+                    <img
+                      src={anime.image}
+                      alt={anime.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
+                    <Play className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+
+                  {/* progress bar */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600">
+                    <div className="h-full bg-orange-500 w-3/4"></div>
+                  </div>
+
+                  {/* episode info */}
+                  <div className="absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-70 px-2 py-1 rounded">
+                    S1 E{Math.floor(Math.random() * 12) + 1}
+                  </div>
+                </div>
+
+                <div className="mt-3 space-y-1">
+                  <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-1">
+                    {anime.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 line-clamp-2">
+                    {anime.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* trending now */}
+        
       </div>
       </div>
   </div>
