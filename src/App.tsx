@@ -748,6 +748,47 @@ return (
             </div>
         )}
       </div>
+
+      {/* main content */}
+      <div className="flex-1 p-4 sm:p-6">
+        {/* active filters display */}
+        {hasActiveFilters() && (
+          <div className="mb-6 flex flex-wrap gap-2">
+            {searchQuery && (
+              <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                Search: "{searchQuery}"
+                <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setSearchQuery("")} />
+              </div>
+            )}
+            {Object.entries(activeFilters).map(([category, values]) => 
+              Array.isArray(values) ? values.map((value: string) => (
+                <div key={`${category}-${value}`} className="
+                  bg-gray-700
+                  text-white
+                  px-3 py-1 
+                  rounded-full 
+                  text-sm
+                  flex items-center
+                  ">
+                  {value}
+                  <X
+                    className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
+                    onClick={() => removeActiveFilter(category as keyof ActiveFilters, value)}
+                  />
+                </div>
+              )) : values && (
+                <div key={category} className="bg-gray-700 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                  {category} : {values}
+                  <X
+                    className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
+                    onClick={() => removeActiveFilter(category as keyof ActiveFilters)}
+                  />
+                </div>
+              )
+            )}
+          </div>
+        )}
+      </div>
       </div>
   </div>
 )
