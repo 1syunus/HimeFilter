@@ -664,6 +664,27 @@ return (
         </div>
       
       )}
+
+      {/* desktop filter sidebar */}
+      <div className={`hidden lg:block bg-gray-900 border-r border-gray-800 transition-all duration-300 ${
+        isFilterOpen ? "w-80" : "w-0 overflow-hidden"
+      }`}>
+        {isFilterOpen && (
+          <div className="p-6 h-full overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-2">
+                <Filter className="w-5 h-5 text-orange-500" />
+                <h2 className="text-lg font-semibold text-white">Filters</h2>
+              </div>
+              <button
+                onClick={clearAllFilters}
+                className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
+        )}
+      </div>
       </div>
   </div>
 )
