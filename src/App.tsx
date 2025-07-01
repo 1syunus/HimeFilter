@@ -752,7 +752,7 @@ return (
       {/* main content */}
       <div className="flex-1 p-4 sm:p-6">
         {/* active filters display */}
-        {hasActiveFilters() && (
+        {hasActiveFilter() && (
           <div className="mb-6 flex flex-wrap gap-2">
             {searchQuery && (
               <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
