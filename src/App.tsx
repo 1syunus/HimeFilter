@@ -911,9 +911,73 @@ return (
         </div>
 
         {/* trending now */}
-        
+        <div className="mt-12 sm:mt-16">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Trending Now</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+            {mockAnime.slice().reverse().map((anime: AnimeData, index: number) => (
+              <div key={`trending-${anime.id}`} className="group-cursor-pointer">
+                <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
+                  <div className="w-full aspect-[2/3] bg-gray-700">
+                    <img
+                      src={anime.image}
+                      alt={anime.title}
+                      className="w-full h-full object-cover"
+                      
+                    />
+                  </div>
+                  <div className="
+                    absolute
+                    inset-0
+                    bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all
+                    flex items-center justify-center
+                    ">
+                      <Play className="
+                        w-8 h-8 sm:w-12 sm:h-12
+                        text-white
+                        opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+
+                  {/* trending number */}
+                  <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                    #{index +1}
+                  </div>
+
+                  {/* rating */}
+                  <div className="
+                    absolute
+                    top-2 right-2
+                    bg-black bg-opacity-70
+                    text-white text-xs
+                    px-2 py-1
+                    rounded
+                    flex items-center
+                    ">
+                      <Star className="w-3 h-3 mr-1 fill-current text-yellow-400" />
+                      {anime.rating}
+                  </div>
+                </div>
+
+                <div className="mt-2 sm:mt-3 space-y-1">
+                  <h3 className="
+                    font-semibold text-white group-hover:text-orange-400 transition-colors
+                    line-clamp-2
+                    text-sm sm:text-base
+                    leading tight
+                    ">
+                      {anime.title}
+                    </h3>
+                    <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
+                      <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
+                      <span>•</span>
+                      <span>{anime.year}</span>
+                    </div>
+                  </div>
+                </div>
+            ))}
+          </div>
+        </div>
       </div>
-      </div>
+    </div>
   </div>
 )
 
