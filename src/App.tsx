@@ -854,7 +854,17 @@ return (
                     {genre}
                   </span>
                 ))}
+              </div>
+            </div>
+          </div>
           ))}
+        </div>
+
+        {/* load more btn */}
+        <div className="mt-8 sm:mt-12 text-center">
+          <button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
+            Load More Anime
+          </button>
         </div>
       </div>
       </div>
