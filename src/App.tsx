@@ -684,6 +684,68 @@ return (
                 Clear All
               </button>
             </div>
+
+            <div className="space-y-6">
+              <FilterSection
+                title="Content Type"
+                options={filterOptions.contentType}
+                category="contentType"
+                activeFilters={activeFilters}
+                onFilterChange={handleFilterChange}
+              />
+
+              <div className="border-t border-gray-700 pt-6">
+                <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Language Options</h3>
+                <FilterSection
+                  title="Audio Language"
+                  options={filterOptions.audioLanguage}
+                  category="audioLanguages"
+                  activeFilters={activeFilters}
+                  onFilterChange={handleFilterChange}
+                />
+                <FilterSection
+                  title="Subtitle Language"
+                  options={filterOptions.subtitleLanguage}
+                  category="subtitleLanguages"
+                  activeFilters={activeFilters}
+                  onFilterChange={handleFilterChange}
+                />
+              </div>
+
+              <FilterSection
+                  title="Status"
+                  options={filterOptions.status}
+                  category="status"
+                  activeFilters={activeFilters}
+                  onFilterChange={handleFilterChange}
+              />
+              <FilterSection
+                  title="Genres"
+                  options={filterOptions.genres}
+                  category="genres"
+                  activeFilters={activeFilters}
+                  onFilterChange={handleFilterChange}
+               />
+
+               <div>
+                <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Release Year</h3>
+                  <input
+                    type="number"
+                    placeholder="e.g., 2024"
+                    value={activeFilters.year}
+                    onChange={handleYearChange}
+                    className="
+                      w-full
+                      px-3 py-2
+                      bg-gray-800
+                      border border-gray-700 rounded-lg
+                      text-white placeholder-gray-400
+                      focus:outline-none focus:border-orange-500
+                      "
+                    />
+                </div>
+              </div>
+            </div>
         )}
       </div>
       </div>
