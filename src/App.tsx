@@ -333,12 +333,12 @@ return (
                   value={searchQuery}
                   onChange={handleSearchChange}
                   className="
-                  w-48
-                  pl-3 pr-8 py-2
-                  bg-gray-800
-                  border border-gray-700 rounded-lg
-                  text-white placeholder-gray-400
-                  focus:outline-none focus:border-orange-500 text-sm
+                    w-48
+                    pl-3 pr-8 py-2
+                    bg-gray-800
+                    border border-gray-700 rounded-lg
+                    text-white placeholder-gray-400
+                    focus:outline-none focus:border-orange-500 text-sm
                   "
                   autoFocus
                   />
@@ -361,12 +361,13 @@ return (
     </div>
 
     {/* desktop header */}
-    <header className="hidden
-      lg:block
-      bg-black bg-opacity-90 backdrop-blur-md
-      border-b border-gray-800
-      px-6 py-4
-      sticky top-0 z-50
+    <header className="
+        hidden
+        lg:block
+        bg-black bg-opacity-90 backdrop-blur-md
+        border-b border-gray-800
+        px-6 py-4
+        sticky top-0 z-50
       ">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center space-x-6">
@@ -394,12 +395,12 @@ return (
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="
-                w-80
-                pl-10 pr-4 py-2
-                bg-gray-800
-                border border-gray-700 rounded-lg
-                text-white placeholder-gray-400
-                focus:outline-none focus:border-orange-500 transition-colors
+                  w-80
+                  pl-10 pr-4 py-2
+                  bg-gray-800
+                  border border-gray-700 rounded-lg
+                  text-white placeholder-gray-400
+                  focus:outline-none focus:border-orange-500 transition-colors
                 "
               />
             </div>
@@ -556,7 +557,7 @@ return (
           <div className="lg:hidden fixed inset-0 z-50 mobile-menu">
             <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
             </div>
-          <div className="absolute left-0 top-0 h-full w-80 bg-gray-900 transform transition-transform duration-300 overflow-y-auto">
+            <div className="absolute left-0 top-0 h-full w-80 bg-gray-900 transform transition-transform duration-300 overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <Filter className="w-5 h-5 text-orange-500" />
