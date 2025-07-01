@@ -639,7 +639,31 @@ return (
                   />
                </div>
             </div>
-        )}
+
+            {/* mobile sort */}
+            <div className="mt-8 border-t border-gray-700 pt-6">
+              <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Sort By</h3>
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="
+                  w-full
+                  bg-gray-800
+                  border border-gray-700 rounded-lg
+                  px-3 py-2
+                  text-white
+                  focus:outline-none focus:border-orange-500"
+              >
+                <option value="newest">New This Week</option>
+                <option value="episodes">Latest Episodes</option>
+                <option value="popular">Most Popular</option>
+                <option value="alphabetical">A-Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      
+      )}
       </div>
   </div>
 )
