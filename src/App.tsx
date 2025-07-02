@@ -287,7 +287,11 @@ const hasActiveFilter = (): boolean => {
 useEffect(() => {
   const handleClickOutside = (event: MouseEvent) => {
     if (isMobileMenuOpen && !(event.target as Element).closest(".mobile-menu")) {
-      setIsMobileMenuOpen(false)
+      const clickX = event.clientX
+      const windowWidth = window.innerWidth
+      if (clickX < windowWidth - 20) {
+        setIsMobileMenuOpen(false)
+      }
     }
   }
 
@@ -560,19 +564,19 @@ return (
           <div className="lg:hidden fixed inset-0 z-50 mobile-menu">
             <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
             </div>
-            <div className="absolute left-0 top-0 h-full w-80 bg-gray-900 transform transition-transform duration-300 overflow-y-auto">
+            <div className="absolute left-0 top-0 h-full w-70 bg-gray-900 transform transition-transform duration-300 overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-gray-400 hover:text-white transition-colors"
+                  >
+                  <X className="w-5 h-5" />
+                </button>
+                <h2 className="text-lg font-semibold text-white pl-10">Filters</h2>
                 <Filter className="w-5 h-5 text-orange-500" />
-                <h2 className="text-lg font-semibold text-white">Filters</h2>
               </div>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 text-gray-400 hover:text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            
 
             <button
               onClick={clearAllFilters}
@@ -639,6 +643,9 @@ return (
                       border border-gray-700 rounded-lg
                       text-white placeholder-gray-400
                       focus:outline-none focus:border-orange-500
+                      appearance-none
+                      [&::-webkit-inner-spin-button]:appearance-none
+                      [&::-webkit-outer-spin-button]:appearance-none
                       "
                   />
                </div>
@@ -666,6 +673,7 @@ return (
             </div>
           </div>
         </div>
+      </div>
       
       )}
 
