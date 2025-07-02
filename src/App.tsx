@@ -63,6 +63,8 @@ const App: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>("newest")
   const [heroMuted, setHeroMuted] = useState<boolean>(true)
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
+  const [videoError, setVideoError] = useState<boolean>(false)
+  const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
 
   // mock api data
   const mockApiData: ApiData = {
@@ -100,6 +102,7 @@ const featuredAnime: AnimeData = {
   genres: ["Action", "Supernatural", "Shonen"],
   image: "https://dummyimage.com/480x720/ff6600/ffffff?text=JJK",
   heroImage: "https://dummyimage.com/1920x1080/1a1a1a/ff6600?text=JUJUTSU+KAISEN+HERO",
+  trailerUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
   duration: "23m"
 }
 
@@ -280,6 +283,23 @@ const hasActiveFilter = (): boolean => {
   ) || searchQuery !== ""
 }
 
+// video control handler
+const handleVideoError = () => {
+  setVideoError(true)
+}
+
+const handleVideoLoad = () => {
+  setVideoLoaded(true)
+}
+
+const toggleHeroAudio = () => {
+  const video = document.getElementById("hero-video") as HTMLVideoElement
+  if (video) {
+    video.muted = !video.muted
+    setHeroMuted(video.muted)
+  }
+}
+
 // mobile menu close functionality
 useEffect(() => {
   const handleClickOutside = (event: MouseEvent) => {
@@ -455,17 +475,37 @@ return (
 
       {/* Netflix-style hero */}
       <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
-        {/* placeholder image -- add video functionality later */}
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: `url(${featuredAnime.heroImage})`,
-                backgroundPosition: "center 20%"
-              }}
-        >
+        {/* video bg */}
+        {!videoError && featuredAnime.trailerUrl ? (
+          <video
+            id="hero-video"
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted={heroMuted}
+            loop
+            playsInline
+            onError={handleVideoError}
+            onLoadedData={handleVideoLoad}
+            poster={featuredAnime.heroImage}
+          >
+            <source src={featuredAnime.trailerUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+         ) : (
+          // fallack image
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${featuredAnime.heroImage})`,
+              backgroundPosition: 'center 20%'
+            }}
+          />
+        )}
+        
           {/* gradient overlays !! important */}
           <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent"></div>
-        </div>
+        
 
         <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-12">
           <div className="max-w-2xl space-y-4 sm:space-y-6">
@@ -474,9 +514,9 @@ return (
                 {featuredAnime.status}
               </span>
               <span>{featuredAnime.year}</span>
-              <span>ΓÇó</span>
+              <span>•</span>
               <span>{featuredAnime.episodes}</span>
-              <span>ΓÇó</span>
+              <span>•</span>
               <div className="flex items-center">
                 <Star className="w-3 h-3 mr-1 fil-current text-yellow-400" />
                 {featuredAnime.rating}
@@ -540,7 +580,8 @@ return (
         </div>
 
         {/* audio controls */}
-        <button
+        {!videoError && featuredAnime.trailerUrl && (
+          <button
         onClick={() => setHeroMuted(!heroMuted)}
         className="
           absolute
@@ -553,6 +594,14 @@ return (
           ">
             {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
+        )}
+
+        {/* video loading icon */}
+        {!videoLoaded && !videoError && featuredAnime.trailerUrl && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+          </div>
+        )}       
       </section>
 
       <div className="flex relative">
