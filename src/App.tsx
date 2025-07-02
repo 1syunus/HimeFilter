@@ -678,7 +678,7 @@ return (
       )}
 
       {/* desktop filter sidebar */}
-      <div className={`hidden lg:block bg-gray-900 border-r border-gray-800 transition-all duration-300 ${
+      <div className={`hidden lg:block bg-gray-900 border-l border-gray-800 transition-all duration-300 order-2 ${
         isFilterOpen ? "w-80" : "w-0 overflow-hidden"
       }`}>
         {isFilterOpen && (
@@ -761,7 +761,7 @@ return (
       </div>
 
       {/* main content */}
-      <div className="flex-1 p-4 sm:p-6">
+      <div className="flex-1 p-4 sm:p-6 order-1">
         {/* active filters display */}
         {hasActiveFilter() && (
           <div className="mb-6 flex flex-wrap gap-2">
