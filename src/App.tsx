@@ -543,14 +543,14 @@ return (
         onClick={() => setHeroMuted(!heroMuted)}
         className="
           absolute
-          bottom-4 right-4
+          top-4 sm:top-auto sm:bottom-4 right-4
           bg-gray-800/80 hover:bg-gray-700
           text-white
-          p-3
+          p-2 sm:p-3
           rounded-full 
           transition-colors
           ">
-            {heroMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
       </section>
 
