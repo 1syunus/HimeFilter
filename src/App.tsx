@@ -1,9 +1,6 @@
 import React, {useState, useEffect} from "react"
 import {Search, Filter, X, ChevronDown, Calendar, Star, Globe, Play, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 
-// to-do mobile: mute button placement, main page scrolling when sidebar open, sidebar whitespace at bottom
-// to-do nonmobile: switch filter menu to right side
-
 // type defs
 interface AnimeData {
   id: number
@@ -210,8 +207,8 @@ const handleFilterChange = (category: keyof ActiveFilters, value: string): void 
 const clearAllFilters = (): void => {
   setActiveFilters({
     contentType: [],
-    audioLanguage: [],
-    subtitleLanguage: [],
+    audioLanguages: [],
+    subtitleLanguages: [],
     status: [],
     year: "",
     genres: []
