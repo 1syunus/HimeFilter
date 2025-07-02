@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from "react"
 import {Search, Filter, X, ChevronDown, Calendar, Star, Globe, Play, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 
+// to-do mobile: mute button placement, main page scrolling when sidebar open, sidebar whitespace at bottom
+// to-do nonmobile: switch filter menu to right side
+
 // type defs
 interface AnimeData {
   id: number
@@ -148,7 +151,7 @@ const mockAnime: AnimeData[] = [
     episodes: 16,
     rating: 4.9,
     genres: ["Action", "Drama", "Shonen"],
-    image: "dummyimage.com/480x720/cc3300/ffffff?text=AOT",
+    image: "https://dummyimage.com/480x720/cc3300/ffffff?text=AOT",
     duration: "24m"
   },
 
