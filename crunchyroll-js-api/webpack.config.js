@@ -1,5 +1,6 @@
 import path from 'path'
 import TerserPlugin from 'terser-webpack-plugin'
+// update to webpack: import + import.meta.url
 import { fileURLToPath } from 'url'
 
 
