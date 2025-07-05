@@ -1,9 +1,0 @@
-{
-    "access_token": "xxxxxxxxxxxxxxxxxx",
-    "refresh_token": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-    "expires_in": 300,
-    "token_type": "Bearer",
-    "scope": "account content offline_access reviews talkbox",
-    "country": "CL",
-    "account_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-}
