@@ -290,7 +290,7 @@ const handleVideoError = () => {
 }
 
 const handleVideoLoad = () => {
-  setVideoLoaded(true)
+    setVideoLoaded(true)
 }
 
 const toggleHeroAudio = () => {
@@ -316,6 +316,7 @@ useEffect(() => {
   document.addEventListener("mousedown", handleClickOutside)
   return () => document.removeEventListener("mousedown", handleClickOutside)
 }, [isMobileMenuOpen])
+
 
 return (
   <div className="min-h-screen bg-black text-white">
