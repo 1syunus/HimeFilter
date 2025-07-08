@@ -1,15 +1,18 @@
-import "./globals.css"
+import "../globals.css"
+import {Metadata} from "next"
 
-export default function RootLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
-    </html>
+    <section className="antialiased">
+    </section>
   );
+}
+
+export const metadata: Metadata = {
+  title: "HimeFilter",
+  description: "Crunchyroll browse enhancement"
 }
