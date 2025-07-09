@@ -8,6 +8,7 @@ export default function MainLayout({
 }>) {
   return (
     <section className="antialiased">
+      {children}
     </section>
   );
 }
