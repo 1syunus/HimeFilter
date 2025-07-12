@@ -1,16 +1,16 @@
 "use client"
 import React, {useState, useEffect} from "react"
-import {Search, Filter, X, ChevronDown, Calendar, Star, Globe, Play, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
+import {Search, Filter, X, ChevronDown, Star, Globe, Play, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 
 // type defs
 interface AnimeData {
   id: number
   title: string
   description: string
-  type: "Series" | "Movie" | "OVA"
+  type: string
   audioLanguages: string[]
   subtitleLanguages: string[]
-  status: "Ongoing" | "Completed" | "New This Week"
+  status: string
   year: number
   episodes: number
   rating: number
@@ -61,6 +61,7 @@ const App: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>("")
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [sortBy, setSortBy] = useState<SortOption>("newest")
   const [heroMuted, setHeroMuted] = useState<boolean>(true)
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
@@ -292,7 +293,7 @@ const handleVideoError = () => {
 const handleVideoLoad = () => {
     setVideoLoaded(true)
 }
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toggleHeroAudio = () => {
   const video = document.getElementById("hero-video") as HTMLVideoElement
   if (video) {
@@ -818,7 +819,7 @@ return (
           <div className="mb-6 flex flex-wrap gap-2">
             {searchQuery && (
               <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                Search: "{searchQuery}"
+                Search: &quot;{searchQuery}&quot;
                 <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setSearchQuery("")} />
               </div>
             )}
