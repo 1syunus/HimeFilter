@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { encode } from "punycode";
 
 export async function GET(request: Request) {
@@ -24,10 +25,16 @@ export async function GET(request: Request) {
         const data = await jikanResponse.json()
         const transformedData = data.data ? data.data.map(transformJikanAnime) : []
         return NextResponse.json(transformedData)    
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error fetching Jikan browse API:", error)
+        let errorMessage = "Unknown error"
+        if (error instanceof Error) {
+            errorMessage = error.message
+        } else if (typeof error === "string") {
+            errorMessage = error
+        }
         return NextResponse.json(
-            {message: "Failed to fetch data", error: error.message || "Unknown error"},
+            {message: "Failed to fetch data", error: errorMessage},
             {status: 500}
         )
     }
