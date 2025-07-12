@@ -1,12 +1,12 @@
 // utility code for Jikan
-import {AnimeData} from "@/types"
+import {AnimeData} from "@/types/index"
 
 export const JIKAN_API_URL = "https://api.jikan.moe/v4"
 
 // note: @param jikanAnime - raw anime object
 // @returns - transformed object
 
-export function transforJikanAnime(jikanAnime: any): AnimeData {
+export function transformJikanAnime(jikanAnime: any): AnimeData {
     const title = jikanAnime.title_english || jikanAnime.title || "N/A"
     const description = jikanAnime.synopsis || "no description available"
     const type = jikanAnime.type || "unknown"
