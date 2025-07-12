@@ -25,8 +25,8 @@ interface ApiData {
   availableAudioLanguages: string[]
   availableSubtitleLanguages: string[]
   availableGenres: string[]
-  contentTypes: ("Series" | "Movie" | "OVA")[]
-  statusOptions: ("Ongoing" | "Completed" | "New This Week")[]
+  contentTypes: string[]
+  statusOptions: string[]
 }
 
 interface ActiveFilters {
@@ -68,127 +68,28 @@ const App: React.FC = () => {
   const [videoError, setVideoError] = useState<boolean>(false)
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
 
-  // mock api data
-  const mockApiData: ApiData = {
-    availableAudioLanguages: ["Japanese", "English", "Spanish", "Portuguese", "French", "German", "Uranian"],
-    availableSubtitleLanguages: ["English", "Spanish", "Portuguese", "French", "German", "Uranian", "Italian", "Russian", "Arabic"],
-    availableGenres: [
-      "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Music", "Romance", "Sci-Fi", "Seinen", "Shojo", "Shonen", "Slice of Life", "Sports",
-      "Supernatural", "Thriller"
-    ],
-    contentTypes: ["Series", "Movie", "OVA"],
-    statusOptions: ["Ongoing", "Completed", "New This Week"]
-  }
+  // state for api data
+  const [animeList, setAnimeList] = useState<AnimeData[]>([])
+    // store hero
+  const [featuredAnime, setFeaturedAnime] = useState<AnimeData | null>(null)
+  const [apiFilterOptions, setApiFilterOptions] = useState<ApiData>({
+    availableAudioLanguages: [],
+    availableSubtitleLanguages: [],
+    availableGenres: [],
+    contentTypes: [],
+    statusOptions: []
+  })
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+
 
   const filterOptions = {
-    contentType: mockApiData.contentTypes,
-    audioLanguage: mockApiData.availableAudioLanguages,
-    subtitleLanguage: mockApiData.availableSubtitleLanguages,
-    status: mockApiData.statusOptions,
-    genres: mockApiData.availableGenres
+    contentType: apiFilterOptions.contentTypes,
+    audioLanguage: apiFilterOptions.availableAudioLanguages,
+    subtitleLanguage: apiFilterOptions.availableSubtitleLanguages,
+    status: apiFilterOptions.statusOptions,
+    genres: apiFilterOptions.availableGenres
   }
-
-
-// mock data as placeholder
-const featuredAnime: AnimeData = {
-  id: 0,
-  title: "Jujutsu Kaisen: Shibuya Incident",
-  description: "The most intense arc yet. When a group of cursed spirits trap civilians and Jujutsu Sorcerers in Shibuya, Yuji and his allies must face their greatest challenge in a battle that will change everything.",
-  type: "Series",
-  audioLanguages: ["Japanese, English"],
-  subtitleLanguages: ["English", "Spanish", "Portuguese", "French"],
-  status: "New This Week",
-  year: 2024,
-  episodes: 24,
-  rating: 4.9,
-  genres: ["Action", "Supernatural", "Shonen"],
-  image: "https://dummyimage.com/480x720/ff6600/ffffff?text=JJK",
-  heroImage: "https://dummyimage.com/1920x1080/1a1a1a/ff6600?text=JUJUTSU+KAISEN+HERO",
-  trailerUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-  duration: "23m"
-}
-
-const mockAnime: AnimeData[] = [
-  {
-    id: 1,
-  title: "Demon Slayer: Hashira Training Arc",
-  description: "Follow Tanjiro as he trains with the Hashira to prepare for the final battle.",
-  type: "Series",
-  audioLanguages: ["Japanese", "English"],
-  subtitleLanguages: ["English", "Spanish", "Portuguese"],
-  status: "Ongoing",
-  year: 2024,
-  episodes: 12,
-  rating: 4.8,
-  genres: ["Action", "Supernatural", "Shonen"],
-  image: "https://dummyimage.com/480x720/0066ff/ffffff?text=DS",
-  duration: "24m"
-  },
-
-  {
-    id: 2,
-    title: "Your Name",
-    description: "A touching story of two teenagers who share a profound and magical connection.",
-    type: "Movie",
-    audioLanguages: ["Japanese"],
-    subtitleLanguages: ["English", "Spanish", "Portuguese"],
-    status: "Completed",
-    year: 2022,
-    episodes: 1,
-    rating: 4.7,
-    genres: ["Romance", "Drama"],
-    image: "https://dummyimage.com/480x720/9900cc/ffffff?text=YN",
-    duration: "106m"
-  },
-
-  {
-    id: 3,
-    title: "Attack on Titan: Final Season",
-    description: "The epic conclusion to humanity's fight for survival.",
-    type: "Series",
-    audioLanguages: ["Japanese", "English"],
-    subtitleLanguages: ["English", "German"],
-    status: "Completed",
-    year: 2023,
-    episodes: 16,
-    rating: 4.9,
-    genres: ["Action", "Drama", "Shonen"],
-    image: "https://dummyimage.com/480x720/cc3300/ffffff?text=AOT",
-    duration: "24m"
-  },
-
-  {
-    id: 4,
-    title: "Spirited Away",
-    description: "A young girl enters a world ruled by gods and witches.",
-    type: "Movie",
-    audioLanguages: ["Japanese", "English"],
-    subtitleLanguages: ["English", "Spanish", "French", "Uranian"],
-    status: "Completed",
-    year: 2001,
-    episodes: 1,
-    rating: 5,
-    genres: ["Adventure", "Ghibli", "Fantasy", "Supernatural"],
-    image: "https://dummyimage.com/480x720/00cc66/ffffff?text=SA",
-    duration: "125m"
-  },
-
-  {
-    id: 5,
-    title: "One Piece: Wano Arc",
-    description: "The Straw Hats arrive in the mysterious land of Wano.",
-    type: "Series",
-    audioLanguages: ["Japanese"],
-    subtitleLanguages: ["English", "Spanish", "Portuguese"],
-    status: "Ongoing",
-    year: 2023,
-    episodes: 200,
-    rating: 4.7,
-    genres: ["Action", "Adventure", "Shonen"],
-    image: "https://dummyimage.com/480x720/ffcc00/ffffff?text=OP",
-    duration: "24m"
-  }
-]
 
 const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
   setActiveFilters(prev => {
