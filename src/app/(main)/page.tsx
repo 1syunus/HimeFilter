@@ -22,7 +22,7 @@ interface AnimeData {
   duration: string
 }
 
-interface ApiData {
+interface FilterOptionsResponse {
   availableAudioLanguages: string[]
   availableSubtitleLanguages: string[]
   availableGenres: string[]
@@ -73,7 +73,7 @@ const App: React.FC = () => {
   const [animeList, setAnimeList] = useState<AnimeData[]>([])
     // store hero
   const [featuredAnime, setFeaturedAnime] = useState<AnimeData | null>(null)
-  const [apiFilterOptions, setApiFilterOptions] = useState<ApiData>({
+  const [apiFilterOptions, setApiFilterOptions] = useState<FilterOptionsResponse>({
     availableAudioLanguages: [],
     availableSubtitleLanguages: [],
     availableGenres: [],
