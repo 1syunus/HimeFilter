@@ -109,12 +109,46 @@ const App: React.FC = () => {
         // initial load sans search queries/filters
         const browseResponse = await fetch("api/browse")
         if (!browseResponse.ok) {
-          throw new Error(``)
+          throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
+        }
+        const browseData: AnimeData[] = await browseResponse.json()
+        setAnimeList(browseData)
+
+        // featured: 1st item
+        if (browseData.length > 0) {
+          setFeaturedAnime(browseData[0])
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message)
+        } else {
+          setError("An unknown error occurred while fetching data.")
+        }
+        console.error("Failed to fetch initial data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchInitialData()
+  }, [])
+
+  // mobile menu close functionality
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && !(event.target as Element).closest(".mobile-menu")) {
+        const clickX = event.clientX
+        const windowWidth = window.innerWidth
+        if (clickX < windowWidth - 20) {
+          setIsMobileMenuOpen(false)
         }
       }
     }
-  })
 
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [isMobileMenuOpen])
+
+  // handler functions
   const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
     setActiveFilters(prev => {
       const currentValues = prev[category]
@@ -145,7 +179,8 @@ const App: React.FC = () => {
     })
     setSearchQuery("")
   }
-
+  
+  // in App for now
   const FilterSection: React.FC<FilterSectionProps> = ({
     title, options, category, activeFilters, onFilterChange
   }) => (
@@ -185,7 +220,7 @@ const App: React.FC = () => {
   )
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    setActiveFilters(prev => ({...prev, year: e.target.value}))
+    setSortBy(e.target.value as SortOption)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -210,7 +245,7 @@ const App: React.FC = () => {
     ) || searchQuery !== ""
   }
 
-  // video control handler
+    // video control handler
   const handleVideoError = () => {
     setVideoError(true)
   }
@@ -227,23 +262,7 @@ const App: React.FC = () => {
     }
   }
 
-  // mobile menu close functionality
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isMobileMenuOpen && !(event.target as Element).closest(".mobile-menu")) {
-        const clickX = event.clientX
-        const windowWidth = window.innerWidth
-        if (clickX < windowWidth - 20) {
-          setIsMobileMenuOpen(false)
-        }
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [isMobileMenuOpen])
-
-
+// main return
   return (
     <div className="min-h-screen bg-black text-white">
       {/* mobile header */}
@@ -402,6 +421,7 @@ const App: React.FC = () => {
         </header>
 
         {/* Netflix-style hero */}
+        {featuredAnime && (
         <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
           {/* video bg */}
           {!videoError && featuredAnime.trailerUrl ? (
@@ -531,6 +551,7 @@ const App: React.FC = () => {
             </div>
           )}       
         </section>
+        )}
 
         <div className="flex relative">
           {/* mobile filter drawer */}
@@ -551,7 +572,6 @@ const App: React.FC = () => {
                   <Filter className="w-5 h-5 text-orange-500" />
                 </div>
               
-
               <button
                 onClick={clearAllFilters}
                 className="w-full
@@ -648,7 +668,6 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-        
         )}
 
         {/* desktop filter sidebar */}
@@ -777,83 +796,97 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {/* section title */}
-          <div className="mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Browse Titles</h2>
-            <p className="text-gray-400 text-sm">Discover your next favorite series</p>
-          </div>
-
-          {/* results grid - mobile */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-            {mockAnime.map((anime: AnimeData) => (
-              <div key={anime.id} className="group cursor-pointer">
-                <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
-                  <div className="w-full aspect-[2/3] bg-gray-700">
-                    <img
-                      src={anime.image}
-                      alt={anime.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="
-                    absolute inset-0
-                    bg-black bg-opacity-0 group-hover:bg-opacity-60
-                    transition-all
-                    flex items-center justify-center
-                    ">
-                    <Play className="w-8 h-8 sm:w-12 sm:h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>         
-
-                {/* contentType badge */}
-                <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
-                  {anime.type}
-                </div>
-
-                {/* rating */}
-                <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded flex items-center">
-                  <Star className="w-3 h-3 mr-1 fill-current text-yellow-400" />
-                  {anime.rating}
-                </div>
-
-                {/* duration - mobile hidden */}
-                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded hidden sm:block">
-                  {anime.duration}
-                </div>
-              </div>
-
-              <div className="mt-2 sm:mt-3 space-y-1">
-                <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-2 text-sm sm:text-base leading-tight">
-                  {anime.title}
-                </h3>
-                <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
-                  <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
-                  <span>•</span>
-                  <span>{anime.year}</span>
-                  <span>•</span>
-                  <span className="flex items-center">
-                    <Globe className="w-3 h-3 mr-1" />
-                    {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {anime.genres.slice(0, 2).map((genre: string) => (
-                    <span key={genre} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
-                      {genre}
-                    </span>
-                  ))}
-                </div>
-              </div>
+          {/* conditional rendering */}
+          {loading ? (
+            <div className="flex justify-center items-center h-48">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
+              <p className="ml-4 text-lg">Loading anime and filters...</p>
             </div>
-            ))}
-          </div>
+          ) : error ? (
+            <div className="flex justify-center items-center h-48 text-red-500">
+              <p className="text-lg">Error: {error}</p>
+              <p className="ml-2">Please make sure your backend server is running and accessible.</p>
+            </div>
+          ) : (
+            <>
+              {/* section title */}
+              <div className="mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Browse Titles</h2>
+                <p className="text-gray-400 text-sm">Discover your next favorite series</p>
+              </div>
 
-          {/* load more btn */}
-          <div className="mt-8 sm:mt-12 text-center">
-            <button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
-              Load More Anime
-            </button>
-          </div>
+              {/* results grid - mobile */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                {animeList.map((anime: AnimeData) => (
+                  <div key={anime.id} className="group cursor-pointer">
+                    <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
+                      <div className="w-full aspect-[2/3] bg-gray-700">
+                      {/* TODO: update for Nextjs */}
+                        <img
+                          src={anime.image}
+                          alt={anime.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="
+                        absolute inset-0
+                        bg-black bg-opacity-0 group-hover:bg-opacity-60
+                        transition-all
+                        flex items-center justify-center
+                        ">
+                        <Play className="w-8 h-8 sm:w-12 sm:h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>         
+
+                      {/* contentType badge */}
+                      <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
+                        {anime.type}
+                      </div>
+
+                      {/* rating */}
+                      <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded flex items-center">
+                        <Star className="w-3 h-3 mr-1 fill-current text-yellow-400" />
+                        {anime.rating}
+                      </div>
+
+                      {/* duration - mobile hidden */}
+                      <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded hidden sm:block">
+                        {anime.duration}
+                      </div>
+                    </div>
+
+                    <div className="mt-2 sm:mt-3 space-y-1">
+                      <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-2 text-sm sm:text-base leading-tight">
+                        {anime.title}
+                      </h3>
+                      <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
+                        <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
+                        <span>•</span>
+                        <span>{anime.year}</span>
+                        <span>•</span>
+                        <span className="flex items-center">
+                          <Globe className="w-3 h-3 mr-1" />
+                          {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {anime.genres.slice(0, 2).map((genre: string) => (
+                          <span key={genre} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
+                            {genre}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* load more btn */}
+              <div className="mt-8 sm:mt-12 text-center">
+                <button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
+                  Load More Anime
+                </button>
+              </div>
 
           {/* continue watching */}
           <div className="mt-12 sm:mt-16">
