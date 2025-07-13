@@ -882,11 +882,13 @@ const App: React.FC = () => {
               </div>
 
               {/* load more btn */}
-              <div className="mt-8 sm:mt-12 text-center">
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
-                  Load More Anime
-                </button>
-              </div>
+              {animeList.length > 0 && (
+                <div className="mt-8 sm:mt-12 text-center">
+                  <button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
+                    Load More Anime
+                  </button>
+                </div>
+              )}
 
           {/* continue watching */}
           <div className="mt-12 sm:mt-16">
