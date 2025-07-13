@@ -890,150 +890,151 @@ const App: React.FC = () => {
                 </div>
               )}
 
-          {/* continue watching */}
-          <div className="mt-12 sm:mt-16">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {mockAnime.slice(0, 3).map((anime: AnimeData) => (
-                <div key={`continue-${anime.id}`} className="group cursor-pointer">
-                  <div className="relative overflow-hidden rounded-lg bg-gray-800">
-                    <div className="w-full aspect-video bg-gray-700">
-                      <img
-                        src={anime.image}
-                        alt={anime.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
-                      <Play className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
+              {/* continue watching */}
+              <div className="mt-12 sm:mt-16">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {animeList.slice(0, 3).map((anime: AnimeData) => (
+                    <div key={`continue-${anime.id}`} className="group cursor-pointer">
+                      <div className="relative overflow-hidden rounded-lg bg-gray-800">
+                        <div className="w-full aspect-video bg-gray-700">
+                          <img
+                            src={anime.image}
+                            alt={anime.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
+                          <Play className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
 
-                    {/* progress bar */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600">
-                      <div className="h-full bg-orange-500 w-3/4"></div>
-                    </div>
+                        {/* progress bar (still mock) */}
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-600">
+                          <div className="h-full bg-orange-500 w-3/4"></div>
+                        </div>
 
-                    {/* episode info */}
-                    <div className="absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-70 px-2 py-1 rounded">
-                      S1 E{Math.floor(Math.random() * 12) + 1}
-                    </div>
-                  </div>
+                        {/* episode info (still mock) */}
+                        <div className="absolute bottom-2 left-2 text-white text-sm bg-black bg-opacity-70 px-2 py-1 rounded">
+                          S1 E{Math.floor(Math.random() * 12) + 1}
+                        </div>
+                      </div>
 
-                  <div className="mt-3 space-y-1">
-                    <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-1">
-                      {anime.title}
-                    </h3>
-                    <p className="text-sm text-gray-400 line-clamp-2">
-                      {anime.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* trending now */}
-          <div className="mt-12 sm:mt-16">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Trending Now</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-              {mockAnime.slice().reverse().map((anime: AnimeData, index: number) => (
-                <div key={`trending-${anime.id}`} className="group-cursor-pointer">
-                  <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
-                    <div className="w-full aspect-[2/3] bg-gray-700">
-                      <img
-                        src={anime.image}
-                        alt={anime.title}
-                        className="w-full h-full object-cover"
-                        
-                      />
-                    </div>
-                    <div className="
-                      absolute
-                      inset-0
-                      bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all
-                      flex items-center justify-center
-                      ">
-                        <Play className="
-                          w-8 h-8 sm:w-12 sm:h-12
-                          text-white
-                          opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-
-                    {/* trending number */}
-                    <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
-                      #{index +1}
-                    </div>
-
-                    {/* rating */}
-                    <div className="
-                      absolute
-                      top-2 right-2
-                      bg-black bg-opacity-70
-                      text-white text-xs
-                      px-2 py-1
-                      rounded
-                      flex items-center
-                      ">
-                        <Star className="w-3 h-3 mr-1 fill-current text-yellow-400" />
-                        {anime.rating}
-                    </div>
-                  </div>
-
-                  <div className="mt-2 sm:mt-3 space-y-1">
-                    <h3 className="
-                      font-semibold text-white group-hover:text-orange-400 transition-colors
-                      line-clamp-2
-                      text-sm sm:text-base
-                      leading tight
-                      ">
-                        {anime.title}
-                      </h3>
-                      <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
-                        <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
-                        <span>•</span>
-                        <span>{anime.year}</span>
+                      <div className="mt-3 space-y-1">
+                        <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-1">
+                          {anime.title}
+                        </h3>
+                        <p className="text-sm text-gray-400 line-clamp-2">
+                          {anime.description}
+                        </p>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* trending now */}
+              <div className="mt-12 sm:mt-16">
+                <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Trending Now</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                  {/* fake trending but real data through slice+reverse */}
+                  {animeList.slice().reverse().map((anime: AnimeData, index: number) => (
+                    <div key={`trending-${anime.id}`} className="group-cursor-pointer">
+                      <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
+                        <div className="w-full aspect-[2/3] bg-gray-700">
+                          <img
+                            src={anime.image}
+                            alt={anime.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="
+                          absolute
+                          inset-0
+                          bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all
+                          flex items-center justify-center
+                          ">
+                            <Play className="
+                              w-8 h-8 sm:w-12 sm:h-12
+                              text-white
+                              opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+
+                        {/* trending number */}
+                        <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                          #{index +1}
+                        </div>
+
+                        {/* rating */}
+                        <div className="
+                          absolute
+                          top-2 right-2
+                          bg-black bg-opacity-70
+                          text-white text-xs
+                          px-2 py-1
+                          rounded
+                          flex items-center
+                          ">
+                            <Star className="w-3 h-3 mr-1 fill-current text-yellow-400" />
+                            {anime.rating}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 sm:mt-3 space-y-1">
+                        <h3 className="
+                          font-semibold text-white group-hover:text-orange-400 transition-colors
+                          line-clamp-2
+                          text-sm sm:text-base
+                          leading tight
+                          ">
+                            {anime.title}
+                          </h3>
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
+                            <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
+                            <span>•</span>
+                            <span>{anime.year}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-              ))}
-            </div>
+                </div>
+              </>
+            )} 
           </div>
         </div>
-      </div>
 
-      {/* bottom mobile navigation */}
-      <div className="
-        lg:hidden
-        fixed
-        bottom-0 left-0 right-0
-        bg-gray-900
-        border-t border-gray-800
-        px-4 py-3 z-40
-        ">
-          <div className="flex justify-around items-center">
-            <button className="flex flex-col items-center space-y-1 text-orange-500">
-              <div className="w-6 h-6 bg-orange-500 rounded"></div>
-              <span className="text-xs">Browse</span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 text-gray-400">
-              <div className="w-6 h-6 bg-gray-600 rounded"></div>
-              <span className="text-xs">My List</span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 text-gray-400">
-              <div className="w-6 h-6 bg-gray-600 rounded"></div>
-              <span className="text-xs">New</span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 text-gray-400">
-              <div className="w-6 h-6 bg-gray-600 rounded"></div>
-              <span className="text-xs">Profile</span>
-            </button>
-          </div>
+        {/* bottom mobile navigation */}
+        <div className="
+          lg:hidden
+          fixed
+          bottom-0 left-0 right-0
+          bg-gray-900
+          border-t border-gray-800
+          px-4 py-3 z-40
+          ">
+            <div className="flex justify-around items-center">
+              <button className="flex flex-col items-center space-y-1 text-orange-500">
+                <div className="w-6 h-6 bg-orange-500 rounded"></div>
+                <span className="text-xs">Browse</span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 text-gray-400">
+                <div className="w-6 h-6 bg-gray-600 rounded"></div>
+                <span className="text-xs">My List</span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 text-gray-400">
+                <div className="w-6 h-6 bg-gray-600 rounded"></div>
+                <span className="text-xs">New</span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 text-gray-400">
+                <div className="w-6 h-6 bg-gray-600 rounded"></div>
+                <span className="text-xs">Profile</span>
+              </button>
+            </div>
+        </div>
+        {/* bottom padding mobile */}
+        <div className="lg:hidden h-20"></div>
       </div>
-      {/* bottom padding mobile */}
-      <div className="lg:hidden h-20"></div>
-    </div>
-  )
-
-}
+    )
+  }
 export default App
