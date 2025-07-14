@@ -17,6 +17,7 @@ interface AnimeData {
   rating: number
   genres: string[]
   image: string
+  largeImage?: string
   heroImage?: string
   trailerUrl?: string
   duration: string
@@ -430,14 +431,15 @@ const App: React.FC = () => {
           {!videoError && featuredAnime.trailerUrl ? (
             <iframe
               id="hero-video"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full"
               src={`${featuredAnime.trailerUrl}?autoplay=1&mute=${heroMuted ? 1 : 0}&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split("/").pop()?.split("?")[0]}&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3`}
               style={{border: "none"}}
               allow="autoplay; encrypted-media"
               allowFullScreen
               title={featuredAnime.title + " Trailer"}
               onLoad={() => setVideoLoaded(true)}
-              onError={() => setVideoError(true)}              
+              // test w/o onError for iframe reliability
+              // onError={() => setVideoError(true)}              
             ></iframe>
           ) : (
             // fallack image
@@ -452,8 +454,8 @@ const App: React.FC = () => {
           )}
           
             {/* gradient overlays !! important */}
-            <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent pointer-events-none"></div>
           
 
           <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-12">
@@ -546,7 +548,7 @@ const App: React.FC = () => {
           )}
 
           {/* video loading icon */}
-          {!videoLoaded && featuredAnime.trailerUrl && (
+          {!videoLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
             </div>
@@ -900,7 +902,7 @@ const App: React.FC = () => {
                       <div className="relative overflow-hidden rounded-lg bg-gray-800">
                         <div className="w-full aspect-video bg-gray-700">
                           <img
-                            src={anime.image}
+                            src={anime.largeImage || anime.image}
                             alt={anime.title}
                             className="w-full h-full object-cover"
                             loading="lazy"
