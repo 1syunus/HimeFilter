@@ -246,6 +246,7 @@ const App: React.FC = () => {
   }
 
     // video control handler
+      // TOOD: update for iframe
   const handleVideoError = () => {
     setVideoError(true)
   }
@@ -255,11 +256,13 @@ const App: React.FC = () => {
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const toggleHeroAudio = () => {
-    const video = document.getElementById("hero-video") as HTMLVideoElement
-    if (video) {
-      video.muted = !video.muted
-      setHeroMuted(video.muted)
-    }
+    // TODO: Update for YouTube embed :'(
+    // const video = document.getElementById("hero-video") as HTMLVideoElement
+    // if (video) {
+    //   video.muted = !video.muted
+    //   setHeroMuted(video.muted)
+    // }
+    setHeroMuted(prev => !prev)
   }
 
 // main return
@@ -425,27 +428,25 @@ const App: React.FC = () => {
         <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
           {/* video bg */}
           {!videoError && featuredAnime.trailerUrl ? (
-            <video
+            <iframe
               id="hero-video"
               className="absolute inset-0 w-full h-full object-cover"
-              autoPlay
-              muted={heroMuted}
-              loop
-              playsInline
-              onError={handleVideoError}
-              onLoadedData={handleVideoLoad}
-              poster={featuredAnime.heroImage}
-            >
-              <source src={featuredAnime.trailerUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+              src={`${featuredAnime.trailerUrl}?autoplay=1&mute=${heroMuted ? 1 : 0}&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split("/").pop()?.split("?")[0]}&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3`}
+              frameBorder="0"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              title={featuredAnime.title + " Trailer"}
+              onLoad={() => setVideoLoaded(true)}
+              onError={() => setVideoError(true)}              
+            ></iframe>
           ) : (
             // fallack image
             <div 
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
-                backgroundImage: `url(${featuredAnime.heroImage})`,
-                backgroundPosition: 'center 20%'
+                backgroundImage: `url(${featuredAnime.heroImage || featuredAnime.image})`,
+                backgroundPosition: "center",
+                backgroundSize: "cover"
               }}
             />
           )}
@@ -528,9 +529,9 @@ const App: React.FC = () => {
           </div>
 
           {/* audio controls */}
-          {!videoError && featuredAnime.trailerUrl && (
+          {featuredAnime.trailerUrl && (
             <button
-          onClick={() => setHeroMuted(!heroMuted)}
+          onClick={toggleHeroAudio}
           className="
             absolute
             top-4 sm:top-auto sm:bottom-4 right-4
@@ -545,7 +546,7 @@ const App: React.FC = () => {
           )}
 
           {/* video loading icon */}
-          {!videoLoaded && !videoError && featuredAnime.trailerUrl && (
+          {!videoLoaded && featuredAnime.trailerUrl && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
             </div>
