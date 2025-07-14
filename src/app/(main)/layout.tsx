@@ -1,15 +1,17 @@
 import "../globals.css"
 import {Metadata} from "next"
 
-export default function MainLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <section className="antialiased">
-      {children}
-    </section>
+    <html lang="en">
+      <body>
+        {children}
+      </body>
+    </html>
   );
 }
 
