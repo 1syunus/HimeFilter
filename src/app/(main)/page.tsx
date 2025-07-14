@@ -432,7 +432,7 @@ const App: React.FC = () => {
               id="hero-video"
               className="absolute inset-0 w-full h-full object-cover"
               src={`${featuredAnime.trailerUrl}?autoplay=1&mute=${heroMuted ? 1 : 0}&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split("/").pop()?.split("?")[0]}&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3`}
-              frameBorder="0"
+              style={{border: "none"}}
               allow="autoplay; encrypted-media"
               allowFullScreen
               title={featuredAnime.title + " Trailer"}
