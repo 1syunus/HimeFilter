@@ -68,7 +68,12 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
                     jikanAnime.images?.webp?.large_image_url || 
                     jikanAnime.images?.jpg?.large_image_url || 
                     imageUrl
-    const trailerUrl = jikanAnime.trailer?.embed_url || ""
+    let trailerUrl = jikanAnime.trailer?.embed_url || ""
+    if (trailerUrl) {
+        const urlObj = new URL(trailerUrl)
+        urlObj.search = ""
+        trailerUrl = urlObj.toString()
+    }
 
     // tbd
     const audioLanguages: string[] = []
@@ -80,7 +85,7 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
     console.log("Image URL (portrait):", imageUrl)
     console.log("Large Image URL (landscape/high-res):", largeImage)
     console.log("Hero Image URL:", heroImage)
-    console.log("Trailer URL:", trailerUrl)
+    console.log("Trailer URL (cleaned):", trailerUrl)
     console.log("----------------------------")
 
     return {
