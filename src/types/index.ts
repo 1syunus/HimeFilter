@@ -3,15 +3,16 @@ export interface AnimeData {
   id: number
   title: string
   description: string
-  type: "Series" | "Movie" | "OVA"
+  type: "Series" | "Movie" | "OVA" | string
   audioLanguages: string[]
   subtitleLanguages: string[]
-  status: "Ongoing" | "Completed" | "New This Week"
+  status: "Ongoing" | "Completed" | "New This Week" | string
   year: number
   episodes: number
   rating: number
   genres: string[]
   image: string
+  largeImage?: string
   heroImage?: string
   trailerUrl?: string
   duration: string
