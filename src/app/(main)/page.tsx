@@ -270,11 +270,18 @@ const App: React.FC = () => {
     // video control handler
       // TOOD: update for iframe
   const handleVideoError = () => {
+    console.error("Hero iframe failed to load or encountered an error.")
     setVideoError(true)
+    // stop try loading
+    setVideoLoaded(true)
   }
 
   const handleVideoLoad = () => {
       setVideoLoaded(true)
+      // clear timeout on successful load
+      if (videoLoadTimeoutRef.current) {
+        clearTimeout(videoLoadTimeoutRef.current)
+      }
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const toggleHeroAudio = () => {
@@ -458,9 +465,8 @@ const App: React.FC = () => {
               allow="autoplay; encrypted-media"
               allowFullScreen
               title={featuredAnime.title + " Trailer"}
-              onLoad={() => setVideoLoaded(true)}
-              // test w/o onError for iframe reliability
-              // onError={() => setVideoError(true)}              
+              onLoad={handleVideoLoad}
+              onError={handleVideoError}              
             ></iframe>
           ) : (
             // fallack image
@@ -468,16 +474,22 @@ const App: React.FC = () => {
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage: `url(${featuredAnime.heroImage || featuredAnime.image})`,
-                backgroundPosition: "center",
-                backgroundSize: "cover"
+                backgroundSize: "cover",
+                backgroundPosition: "center"                
               }}
             />
           )}
           
-            {/* gradient overlays !! important */}
-            <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent pointer-events-none"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent pointer-events-none"></div>
+          {/* gradient overlays !! important */}
+          <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent pointer-events-none"></div>
           
+          {/* video loading icon */}
+          {!videoLoaded && featuredAnime.trailerUrl && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 pointer-events-none">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+            </div>
+          )}    
 
           <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-12">
             <div className="max-w-2xl space-y-4 sm:space-y-6">
@@ -566,14 +578,7 @@ const App: React.FC = () => {
             ">
               {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
             </button>
-          )}
-
-          {/* video loading icon */}
-          {!videoLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-            </div>
-          )}       
+          )}             
         </section>
         )}
 
