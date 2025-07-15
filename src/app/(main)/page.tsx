@@ -150,6 +150,26 @@ const App: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isMobileMenuOpen])
 
+  // useEffect for Hero timeout
+  useEffect(() => {
+    if (videoLoadTimeoutRef.current) {
+      clearTimeout(videoLoadTimeoutRef.current)
+    }
+
+    if (featuredAnime?.trailerUrl && !videoLoaded){
+      videoLoadTimeoutRef.current = setTimeout(() => {
+        console.warn("Hero video timed out loading. Falling back to anime image.")
+        setVideoError(true)
+      }, 5000)
+    }
+
+    return () => {
+      if (videoLoadTimeoutRef.current) {
+        clearTimeout(videoLoadTimeoutRef.current)
+      }
+    }
+  }, [featuredAnime, videoLoaded])
+
   // handler functions
   const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
     setActiveFilters(prev => {
