@@ -274,6 +274,9 @@ const App: React.FC = () => {
     setVideoError(true)
     // stop try loading
     setVideoLoaded(true)
+    if (videoLoadTimeoutRef.current) {
+      clearTimeout(videoLoadTimeoutRef.current)
+    }
   }
 
   const handleVideoLoad = () => {
@@ -282,6 +285,9 @@ const App: React.FC = () => {
       if (videoLoadTimeoutRef.current) {
         clearTimeout(videoLoadTimeoutRef.current)
       }
+      setTimeout(() => {
+        setVideoLoaded(true)
+      }, 500)
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const toggleHeroAudio = () => {
@@ -458,9 +464,10 @@ const App: React.FC = () => {
           {/* video bg */}
           {!videoError && featuredAnime.trailerUrl ? (
             <iframe
+              key={featuredAnime.trailerUrl}
               id="hero-video"
               className="absolute inset-0 w-full h-full"
-              src={`${featuredAnime.trailerUrl}?autoplay=1&mute=${heroMuted ? 1 : 0}&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split("/").pop()?.split("?")[0]}&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3`}
+              src={`${featuredAnime.trailerUrl}?autoplay=1&mute=${heroMuted ? 1 : 0}&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split("/").pop()?.split("?")[0]}&modestbranding=1&rel=0&iv_load_policy=3`}
               style={{border: "none"}}
               allow="autoplay; encrypted-media"
               allowFullScreen
