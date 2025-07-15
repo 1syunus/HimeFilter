@@ -1,5 +1,5 @@
 "use client"
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { FilterOptions } from "@/types/index"
 
@@ -69,6 +69,7 @@ const App: React.FC = () => {
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
   const [videoError, setVideoError] = useState<boolean>(false)
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
+  const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // state for api data
   const [animeList, setAnimeList] = useState<AnimeData[]>([])
