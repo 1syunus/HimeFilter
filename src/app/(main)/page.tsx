@@ -3,6 +3,8 @@ import React, {useState, useEffect, useRef, useCallback} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { FilterOptions } from "@/types/index"
 
+// TODO: Backdate git from 15th-19th.
+
 // type defs
 interface AnimeData {
   id: number
