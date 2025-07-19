@@ -50,6 +50,21 @@ interface FilterSectionProps {
 
 type SortOption = "newest" | "episodes" | "popular" | "alphabetical"
 
+// global api ready flag and listener
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void
+    YT: any
+  }
+}
+// if (typeof window !== "undefined") {
+//   window.onYouTubeIframeAPIReady = () => {
+//     console.log("GLOBAL: YT Iframe Api is ready")
+//     const event = new Event("youtubeapiready")
+//     window.dispatchEvent(event)
+//   }
+// }
+
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     contentType: [],
