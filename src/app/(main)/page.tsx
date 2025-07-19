@@ -1,6 +1,6 @@
 "use client"
-import React, {useState, useEffect, useRef} from "react"
-import {Search, Filter, X, ChevronDown, Star, Globe, Play, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
+import React, {useState, useEffect, useRef, useCallback} from "react"
+import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { FilterOptions } from "@/types/index"
 
 // type defs
@@ -50,6 +50,21 @@ interface FilterSectionProps {
 
 type SortOption = "newest" | "episodes" | "popular" | "alphabetical"
 
+// global api ready flag and listener
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void
+    YT: any
+  }
+}
+// if (typeof window !== "undefined") {
+//   window.onYouTubeIframeAPIReady = () => {
+//     console.log("GLOBAL: YT Iframe Api is ready")
+//     const event = new Event("youtubeapiready")
+//     window.dispatchEvent(event)
+//   }
+// }
+
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     contentType: [],
@@ -65,11 +80,20 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("")
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [sortBy, setSortBy] = useState<SortOption>("newest")
-  const [heroMuted, setHeroMuted] = useState<boolean>(true)
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
+  const [heroMuted, setHeroMuted] = useState<boolean>(true)
+  // const [heroPlaying, setHeroPlaying]  = useState<boolean>(false)
+  const [ytPlayer, setYtPlayer] = useState<any>(null)
+  const [isPlaying, setIsPlaying] = useState<boolean>(true)
   const [videoError, setVideoError] = useState<boolean>(false)
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // ref for player instance
+  // const playerRef = useRef<any>(null)
+  // // ref for iframe
+  // const iframeContainerRef = useRef<HTMLDivElement>(null)
+  // const [youTubeApiReady, setYouTubeApiReady] = useState<boolean>(false)
 
   // state for api data
   const [animeList, setAnimeList] = useState<AnimeData[]>([])
@@ -94,6 +118,145 @@ const App: React.FC = () => {
     genres: apiFilterOptions.availableGenres
   }
 
+
+  // load iframe api script
+  // useEffect(() => {
+  //   const handleYouTubeApiReady = () => {
+  //     setYouTubeApiReady(true)
+  //     console.log("React Component: YouTube API ready signal received.")
+  //   } 
+
+  //   if (typeof window !== "undefined") {
+  //     if (window.YT && window.YT.Player) {
+  //       setYouTubeApiReady(true)
+  //       console.log("React Component: YouTube API already available on mount.")
+  //     } else {
+  //       const tag = document.createElement("script")
+  //       tag.src = "https://www.youtube.com/iframe_api"
+  //       const firstScriptTag = document.getElementsByTagName("script")[0]
+  //       if (firstScriptTag && firstScriptTag.parentNode) {
+  //         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+  //       } else {
+  //         // fallback
+  //         document.body.appendChild(tag)
+  //       }
+  //     }
+  //     window.addEventListener("youtubeapiready", handleYouTubeApiReady)
+  //   } 
+  //   return () => {
+  //     if (typeof window !== "undefined") {
+  //       window.removeEventListener("youtubeapiready", handleYouTubeApiReady)
+  //     }
+  //   }
+  // }, [])
+
+  // // effect to handle feturedAnime changes and reset video states
+  // useEffect(() => {
+  //   setVideoError(false)
+  //   setVideoLoaded(false)
+  //   setHeroPlaying(false)
+  //   if (videoLoadTimeoutRef.current) {
+  //     clearTimeout(videoLoadTimeoutRef.current)
+  //   }
+
+  //   if (featuredAnime && !featuredAnime.trailerUrl) {
+  //     console.log("No trailer url. Falling back to image")
+  //     setVideoError(true)
+  //     setVideoLoaded(true)
+  //     setHeroPlaying(false)
+  //   }
+  // }, [featuredAnime])
+
+  // // initialize player
+  // useEffect(() => {
+  //   setVideoError(false)
+  //   setVideoLoaded(false)
+  //   setHeroPlaying(false)
+  //   if (videoLoadTimeoutRef.current) {
+  //     clearTimeout(videoLoadTimeoutRef.current)
+  //   }
+
+  //   console.log(`Player Init Effect Check: youTubeApiReady=${youTubeApiReady}, featuredAnime.trailerUrl=${!!featuredAnime?.trailerUrl}, iframeContainerRef.current=${!!iframeContainerRef.current}`)
+  //   if (youTubeApiReady && featuredAnime?.trailerUrl && iframeContainerRef.current) {
+  //     const videoIdMatch = featuredAnime.trailerUrl.match(/(?:youtube\.com\/(?:embed\/|v\/)|youtu\.be\/)([\w-]{11})/)
+  //     const videoId = videoIdMatch ? videoIdMatch[1] : null
+
+  //     if (videoId) {
+  //       // destroy existing player
+  //       if (playerRef.current) {
+  //         playerRef.current.destroy()
+  //       }
+
+  //       playerRef.current = new window.YT.Player(iframeContainerRef.current, {
+  //         videoId: videoId,
+  //         playerVars: {
+  //           autoplay: 1,
+  //           controls: 0,
+  //           mute: heroMuted ? 1 : 0,
+  //           loop: 1,
+  //           playlist: videoId,
+  //           modestbranding: 1,
+  //           rel: 0,
+  //           iv_load_policy: 3,
+  //           disablekb: 1,
+  //           fs: 0,
+  //         },
+  //         events: {
+  //           "onReady": (event: any) => {
+  //             console.log("YouTube player ready:", event.target.getVideoData().title)
+  //             if (heroMuted) {
+  //               event.target.mute()
+  //             } else {
+  //               event.target.unMute()
+  //             }
+  //             event.target.playVideo()
+  //             setHeroPlaying(true)
+  //             setVideoLoaded(true)
+  //             if(videoLoadTimeoutRef.current) {
+  //               clearTimeout(videoLoadTimeoutRef.current)
+  //             }
+  //           },
+  //           "onStateChange": (event: any) => {
+  //             if (event.data === window.YT.PlayerState.PLAYING) {
+  //               setHeroPlaying(true)
+  //               setVideoLoaded(true)
+  //               if (videoLoadTimeoutRef.current) {
+  //                 clearTimeout(videoLoadTimeoutRef.current)
+  //               }
+  //             } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
+  //               setHeroPlaying(false)
+  //             } else if (event.data === window.YT.PlayerState.BUFFERING) {
+  //               setVideoLoaded(false)
+  //             }
+  //           },
+  //           "onError": (event: any) => {
+  //             console.error("YouTube Player Error:", event.data)
+  //             // force fallback
+  //             setVideoError(true)
+  //             // hide spinner
+  //             setVideoLoaded(true)
+  //             setHeroPlaying(false)
+  //             if (videoLoadTimeoutRef.current) {
+  //               clearTimeout(videoLoadTimeoutRef.current)
+  //             }
+  //           }
+  //         }
+  //       })
+  //     } else {
+  //       console.warn("Player Init: Could not extract YouTube video ID from URL:", featuredAnime.trailerUrl)
+  //       setVideoError(true)
+  //       setVideoLoaded(true)
+  //       setHeroPlaying(false)
+  //     }
+  //   } else {
+  //     if (playerRef.current) {
+  //       playerRef.current.destroy()
+  //       playerRef.current = null
+  //     }
+  //   }
+  // }, [youTubeApiReady, featuredAnime, heroMuted])
+
+  // data fetch
   useEffect(() => {
     const fetchInitialData = async () => {
       setLoading(true)
@@ -160,9 +323,11 @@ const App: React.FC = () => {
       videoLoadTimeoutRef.current = setTimeout(() => {
         console.warn("Hero video timed out loading. Falling back to anime image.")
         setVideoError(true)
+        setVideoLoaded(true)
       }, 5000)
     }
 
+    // cleanup function
     return () => {
       if (videoLoadTimeoutRef.current) {
         clearTimeout(videoLoadTimeoutRef.current)
@@ -274,13 +439,19 @@ const App: React.FC = () => {
     setVideoError(true)
     // stop try loading
     setVideoLoaded(true)
+    // // not playing
+    // setHeroPlaying(false)
     if (videoLoadTimeoutRef.current) {
       clearTimeout(videoLoadTimeoutRef.current)
     }
   }
 
+  // const handleIframeLoad = () => {
+  //   console.log("Iframe container div loaded, waiting for yt player api to init player...")
+  // }
+
   const handleVideoLoad = () => {
-      setVideoLoaded(true)
+      // setVideoLoaded(true)
       // clear timeout on successful load
       if (videoLoadTimeoutRef.current) {
         clearTimeout(videoLoadTimeoutRef.current)
@@ -288,16 +459,127 @@ const App: React.FC = () => {
       setTimeout(() => {
         setVideoLoaded(true)
       }, 500)
+      // console.log("Iframe loaded, waiting for YT Player API")
+
+      const onYouTubeIframeAPIReady = () => {
+        const player = new window.YT.Player("hero-video", {
+          events: {
+            onReady: (event:any) => {
+              console.log("player ready")
+              setYtPlayer(event.target)
+              // if (heroMuted) {
+              //   event.target.mute()
+              // } else {
+              //   event.target.unMute()
+              // }
+              console.log("onReady: ytPlayer is", event.target)
+
+              setHeroMuted(true)
+            },
+            onStateChange: (event: any) => {
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                setIsPlaying(true)
+              } else if (event.data === window.YT.PlayerState.PAUSED) {
+                setIsPlaying(false)
+              }
+            }
+          },
+        })
+      }
+
+      if (window.YT && window.YT.Player) {
+        onYouTubeIframeAPIReady()
+      } else {
+        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady
+      }
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const toggleHeroAudio = () => {
+    // console.log("toggle called, ytplayer:", ytPlayer)
     // TODO: Update for YouTube embed :'(
     // const video = document.getElementById("hero-video") as HTMLVideoElement
     // if (video) {
     //   video.muted = !video.muted
     //   setHeroMuted(video.muted)
     // }
-    setHeroMuted(prev => !prev)
+    // setHeroMuted(prev => !prev)
+    // if (playerRef.current) {
+    //   if (heroMuted) {
+    //     playerRef.current.unMute()
+    //   } else {
+    //     playerRef.current.mute()
+    //   }
+      // setHeroMuted(prev => !prev)
+    // }
+    console.log("ytPlayer:", ytPlayer)
+console.log("isMuted?:", ytPlayer?.isMuted?.())
+console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
+
+    if (!ytPlayer) {
+      console.log("yTplayer not ready for mute/unmute")
+      setHeroMuted(prev => !prev)
+      return
+    }
+
+    // try {
+      if (heroMuted) {
+        ytPlayer.unMute()
+        setHeroMuted(false)
+        console.log("Unmute vid")
+      } else {
+        ytPlayer.mute()
+        setHeroMuted(true)
+        console.log("Unmute vid")
+      }
+    // } catch (error) {
+    //   console.error("Error toggling: ", error)
+    //   setHeroMuted(prev => !prev)
+    // }
+    // const isCurrentlyMuted = ytPlayer.isMuted()
+    // if (isCurrentlyMuted) {
+    //   ytPlayer.unMute()
+    //   setHeroMuted(false)
+    // } else {
+    //   ytPlayer.mute()
+    //   setHeroMuted(true)
+    // }
+  }
+
+  const toggleHeroPlayPause = () => {
+    // if (playerRef.current) {
+    //   if (heroPlaying) {
+    //     playerRef.current.pauseVideo()
+    //   } else {
+    //     playerRef.current.playVideo()
+    //   }
+    //   setHeroPlaying(prev => !prev)
+    // }
+    console.log("Toggle play/pause called, ytPlayer:", ytPlayer)
+    if (!ytPlayer) {
+      console.log("Player not ready")
+      return
+    }
+
+    try {
+      if (isPlaying) {
+        ytPlayer.pauseVideo()
+        console.log("Pause vid")
+      } else {
+        ytPlayer.playVideo()
+        console.log("Play vid")
+      }
+    } catch (error) {
+      console.error("Error toggling: ", error)
+    }
+    // const state = ytPlayer.getPlayerState()
+
+    // if (state === 1) {
+    //   ytPlayer.pauseVideo()
+    //   setIsPlaying(false)
+    // } else if (state === 2 || state === 0) {
+    //   ytPlayer.playVideo()
+    //   setIsPlaying(true)
+    // }
   }
 
 // main return
@@ -461,19 +743,28 @@ const App: React.FC = () => {
         {/* Netflix-style hero */}
         {featuredAnime && (
         <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
+            <div className="absolute inset-0 z-20 pointer-events-none">
+              <div 
+                onClick={toggleHeroPlayPause}
+                className="absolute inset-0 cursor-pointer pointer-events-auto"
+              />
+            </div> 
+          
           {/* video bg */}
-          {!videoError && featuredAnime.trailerUrl ? (
+          {featuredAnime.trailerUrl && !videoError ? (
+
+
             <iframe
               key={featuredAnime.trailerUrl}
               id="hero-video"
-              className="absolute inset-0 w-full h-full"
-              src={`${featuredAnime.trailerUrl}?autoplay=1&mute=${heroMuted ? 1 : 0}&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split("/").pop()?.split("?")[0]}&modestbranding=1&rel=0&iv_load_policy=3`}
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              src={`${featuredAnime.trailerUrl.split('?')[0]}?autoplay=1&mute=1&enablejsapi=1&controls=0&loop=1&playlist=${featuredAnime.trailerUrl.split('/').pop()?.split('?')[0]}&modestbranding=1&rel=0&iv_load_policy=3`}
               style={{border: "none"}}
               allow="autoplay; encrypted-media"
               allowFullScreen
               title={featuredAnime.title + " Trailer"}
               onLoad={handleVideoLoad}
-              onError={handleVideoError}              
+              onError={handleVideoError}
             ></iframe>
           ) : (
             // fallack image
@@ -488,8 +779,8 @@ const App: React.FC = () => {
           )}
           
           {/* gradient overlays !! important */}
-          <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent pointer-events-none"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent z-10 pointer-events-none"></div>
           
           {/* video loading icon */}
           {!videoLoaded && featuredAnime.trailerUrl && (
@@ -498,7 +789,7 @@ const App: React.FC = () => {
             </div>
           )}    
 
-          <div className="relative h-full flex items-center px-4 sm:px-6 lg:px-12">
+          <div className="relative z-30 h-full flex items-center px-4 sm:px-6 lg:px-12 pointer-events-none">
             <div className="max-w-2xl space-y-4 sm:space-y-6">
               <div className="flex items-center space-x-2 text-sm text-gray-300">
                 <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold">
@@ -530,7 +821,7 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2 pointer-events-auto">
                 <button className="
                 flex items-center justify-center space-x-2
                 bg-white text-black
@@ -572,19 +863,40 @@ const App: React.FC = () => {
 
           {/* audio controls */}
           {featuredAnime.trailerUrl && (
-            <button
+              // <div className="
+              //   absolute
+              //   top-4 sm:top-auto sm:bottom-4 right-4
+              //   flex items-center space-x-2
+              //   ">
+              //   <button
+              //     onClick={toggleHeroPlayPause}
+              //     className="
+              //       bg-gray-800/80 hover:bg-gray-700
+              //       text-white
+              //       p-2 sm:p-3
+              //       rounded-full 
+              //       transition-colors
+              //     "
+              //   >                  
+              //     {heroPlaying ? <Pause className="w-4 h-4 sm:w-5 sm:h-5" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5" />}
+              //     <span>{heroPlaying ? "Pause" : "Play"}</span>
+              // </button>
+          <button
           onClick={toggleHeroAudio}
           className="
             absolute
-            top-4 sm:top-auto sm:bottom-4 right-4
+            top-4 sm:top-auto sm:bottom-4 right-4 z-30
             bg-gray-800/80 hover:bg-gray-700
             text-white
             p-2 sm:p-3
             rounded-full 
             transition-colors
-            ">
-              {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
+            pointer-events-auto
+            "
+          >
+            {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
             </button>
+            // </div>
           )}             
         </section>
         )}
