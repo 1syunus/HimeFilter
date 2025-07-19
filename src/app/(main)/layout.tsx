@@ -1,5 +1,6 @@
 import "../globals.css"
 import {Metadata} from "next"
+import Script from "next/script"
 
 export default function RootLayout({
   children,
@@ -8,6 +9,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* YouTue Iframe API */}
+        <Script
+          src="https://www.youtube.com/iframe_api"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body>
         {children}
       </body>
