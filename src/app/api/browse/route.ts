@@ -16,49 +16,46 @@ export async function GET(request: Request) {
         const filter = searchParams.get("filter")
 
         // base jikan urls: for browse or filtered lists use /anime; for fanfavorites use /top/anime
-        let jikanEndpoint = `${JIKAN_API_URL}/anime`
+        let jikanEndpoint: string = `${JIKAN_API_URL}/top/anime`
         let queryParams = new URLSearchParams()
 
         // pagination parameters
         queryParams.append("page", page)
         queryParams.append("limit", limit)
 
-        // add filter params
-        if (genre) {
-            // checking w/ genre param, but jikan uses ids. will map later?
-            queryParams.append("genres", genre)
-        }
-
-        if (type) {
-            queryParams.append("type", type)
-        }
-
-        if (status) {
-            queryParams.append("status", status)
-        }
-
-        if (startDate) {
-            queryParams.append("start_date", startDate)
-        }
-
-        if (endDate) {
-            queryParams.append("end_date", endDate)
-        }
-
-        // handle fanfavorites case
-        if (filter === "bypopularity" || filter === "airing" || filter === "upcoming") {
+        // Jikan filter params by request
+        if (filter) {
             jikanEndpoint = `${JIKAN_API_URL}/top/anime`
             queryParams.append("filter", filter)
-            // general check before movies vs tv specifity
+            // default to tv if no type
             if (!type) {
                 queryParams.append("type", "tv")
             }
-        } else {
-            // sfw for general searches
+        } else if (genre || type || status || startDate || endDate) {
+            // request contains specific params but no "top" filter
+            if (genre) queryParams.append("genres", genre);
+            if (type) queryParams.append("type", type);
+            if (status) queryParams.append("status", status);
+            if (startDate) queryParams.append("start_date", startDate);
+            if (endDate) queryParams.append("end_date", endDate);
             queryParams.append("sfw", "true")
+            // default sort
+            queryParams.append("order_by", "popularity")
+            queryParams.append("sort", "desc")
+        } else {
+            // default when NO params provided
+            jikanEndpoint = `${JIKAN_API_URL}/top/anime`
+            queryParams.append("type", "tv")
+            // OPTION: below is another default but bypopularity will yield different popul than no params
+            // Test: for some reason, seems to be higher res images w/ below params
+            // queryParams.append("filter", "bypopularity")
         }
 
-        const jikanUrl = `${JIKAN_API_URL}?${queryParams.toString()}`
+        console.log(`DEBUG: jikanEndpoint base before query string: ${jikanEndpoint}`)
+
+
+        
+        const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
         console.log(`fetching browse data from ${jikanUrl}`)
 
         const jikanResponse = await fetch(jikanUrl)
