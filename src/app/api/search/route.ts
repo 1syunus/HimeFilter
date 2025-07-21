@@ -14,7 +14,7 @@ export async function GET(request: Request) {
             return NextResponse.json([])
         }
 
-        const jikanUrl = `${JIKAN_API_URL}/anime?q=${encodeURIComponent(query)}$sfw&page=${page}&limit=${limit}`
+        const jikanUrl = `${JIKAN_API_URL}/anime?q=${encodeURIComponent(query)}&$sfw=true&page=${page}&limit=${limit}`
         console.log(`fetching browse data from ${jikanUrl}`)
 
         const jikanResponse = await fetch(jikanUrl)
