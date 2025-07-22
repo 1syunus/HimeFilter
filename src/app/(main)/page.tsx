@@ -109,6 +109,10 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
+  // pagination state
+  const [page, setPage] = useState<number>(1)
+  const [more, hasMore] = useState<boolean>(true)
+
 
   const filterOptions = {
     contentType: apiFilterOptions.contentTypes,
