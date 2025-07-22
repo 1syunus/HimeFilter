@@ -21,16 +21,17 @@ export async function GET(request: Request) {
 
         // pagination parameters
         queryParams.append("page", page)
-        queryParams.append("limit", limit)
+        queryParams.append("limt", limit)
 
         // Jikan filter params by request
         if (filter) {
             jikanEndpoint = `${JIKAN_API_URL}/top/anime`
             queryParams.append("filter", filter)
             // default to tv if no type
-            if (!type) {
-                queryParams.append("type", "tv")
-            }
+            // if (!type) {
+            //     queryParams.append("type", "tv")
+            // }
+            queryParams.append("type", type || "tv")
         } else if (genre || type || status || startDate || endDate) {
             // request contains specific params but no "top" filter
             if (genre) queryParams.append("genres", genre);
@@ -38,10 +39,12 @@ export async function GET(request: Request) {
             if (status) queryParams.append("status", status);
             if (startDate) queryParams.append("start_date", startDate);
             if (endDate) queryParams.append("end_date", endDate);
-            queryParams.append("sfw", "true")
+            // queryParams.append("sfw", "true")
             // default sort
-            queryParams.append("order_by", "popularity")
-            queryParams.append("sort", "desc")
+            if (!queryParams.has("order_by")) {
+                queryParams.append("order_by", "popularity")
+                queryParams.append("sort", "desc")
+            }
         } else {
             // default when NO params provided
             jikanEndpoint = `${JIKAN_API_URL}/top/anime`
