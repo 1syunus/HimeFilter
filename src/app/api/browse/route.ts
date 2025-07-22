@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
         // pagination parameters
         queryParams.append("page", page)
-        queryParams.append("limt", limit)
+        queryParams.append("limit", limit)
 
         // Jikan filter params by request
         if (filter) {
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
             if (status) queryParams.append("status", status);
             if (startDate) queryParams.append("start_date", startDate);
             if (endDate) queryParams.append("end_date", endDate);
-            // queryParams.append("sfw", "true")
+            queryParams.append("sfw", "true")
             // default sort
             if (!queryParams.has("order_by")) {
                 queryParams.append("order_by", "popularity")
