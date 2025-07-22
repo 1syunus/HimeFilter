@@ -111,7 +111,7 @@ const App: React.FC = () => {
 
   // pagination state
   const [page, setPage] = useState<number>(1)
-  const [more, hasMore] = useState<boolean>(true)
+  const [hasMore, setHasMore] = useState<boolean>(true)
 
 
   const filterOptions = {
@@ -121,6 +121,91 @@ const App: React.FC = () => {
     status: apiFilterOptions.statusOptions,
     genres: apiFilterOptions.availableGenres
   }
+
+    // build queryParams from active filters + sort
+  const buildQueryParams = useCallback(() => {
+    const params = new URLSearchParams()
+    params.append("page", page.toString())
+
+    activeFilters.genres.forEach(genre => params.append("genre", genre))
+    if (activeFilters.contentType.length > 0) {
+      params.append("type", activeFilters.contentType[0])
+    }
+    if (activeFilters.status.length > 0) {
+      params.append("status", activeFilters.status[0])
+    }
+    if (activeFilters.year) params.append("start_date", `${activeFilters.year}-01-01`)
+    
+    switch (sortBy) {
+      case "popular":
+        params.append("order_by", "popularity")
+        params.append("sort", "desc")
+        break
+      case "newest":
+        params.append("order_by", "start_date")
+        params.append("sort", "desc")
+        break
+      case "episodes":
+        params.append("order_by", "episodes")
+        params.append("sort", "desc")
+        break
+      case "alphabetical":
+        params.append("order_by", "title")
+        params.append("sort", "asc")
+        break
+      default:
+        params.append("order_by", "popularity")
+        params.append("sort", "desc")
+        break
+    } 
+
+    return params.toString()
+  }, [activeFilters, page, sortBy])
+
+  // fetch based on current state
+  const fetchFilteredAndSearchedAnime = useCallback(async (isLoadMore: boolean = false) => {
+    setLoading(true)
+    setError(null)
+
+    let apiUrl = "/api/browse"
+    let currentQueryParams = buildQueryParams()
+
+    if (searchQuery) {
+      apiUrl = "/api/search"
+      currentQueryParams = `q=${encodeURIComponent(searchQuery)}&page=${page}&limit=24`
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}?${currentQueryParams}`)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(`API error: ${response.status} - ${errorData.message || response.statusText}`)
+      }
+      const data: AnimeData[] = await response.json()
+      const uniqueData = deduplicateAnime(data)
+
+      setAnimeList(prev => (isLoadMore ? [...prev, ...uniqueData] : uniqueData))
+      setHasMore(data.length > 0)
+    } catch (err: unknown) {
+      console.log("Failed to fetch anime:", err)
+      if (err instanceof Error) {
+        setError(err.message)
+      } else if (typeof err === "string") {
+        setError(err)
+      } else {
+        setError("An unknown error occurred.")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [searchQuery, page, buildQueryParams])
+
+    const hasActiveFilter = useCallback((): boolean => {
+    return Object.values(activeFilters).some(arr =>
+      Array.isArray(arr) ? arr.length > 0 : arr !== ""
+    ) || searchQuery !== ""
+  }, [activeFilters, searchQuery])
+
 
 
   // load iframe api script
@@ -301,6 +386,17 @@ const App: React.FC = () => {
     fetchInitialData()
   }, [])
 
+// refetch on filter change after load
+useEffect(() => {
+  if (!loading && (page > 1 || hasActiveFilter())) {
+    fetchFilteredAndSearchedAnime(page > 1)
+    } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+      fetchFilteredAndSearchedAnime(false)
+    }
+})
+  
+
+
   // mobile menu close functionality
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -430,11 +526,7 @@ const App: React.FC = () => {
     }
   }
 
-  const hasActiveFilter = (): boolean => {
-    return Object.values(activeFilters).some(arr =>
-      Array.isArray(arr) ? arr.length > 0 : arr !== ""
-    ) || searchQuery !== ""
-  }
+
 
     // video control handler
       // TOOD: update for iframe
