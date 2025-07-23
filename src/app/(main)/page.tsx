@@ -57,13 +57,27 @@ declare global {
     YT: any
   }
 }
-// if (typeof window !== "undefined") {
-//   window.onYouTubeIframeAPIReady = () => {
-//     console.log("GLOBAL: YT Iframe Api is ready")
-//     const event = new Event("youtubeapiready")
-//     window.dispatchEvent(event)
-//   }
-// }
+
+// deduplication function
+const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
+  const seenTitles = new Set<string>()
+  const uniqueAnime: AnimeData[] = []
+
+  for (const anime of animeList) {
+    // test w/ normalize title
+    const normalizedTitle = anime.title
+      .replace(/[:'].*Season \d+| OVA| Movie| Part \d+/gi, '')
+      .replace(/\s*\(\d{4}\)\s*$/g, '')
+      .trim()
+      .toLowerCase()
+
+    if (!seenTitles.has(normalizedTitle)) {
+      seenTitles.add(normalizedTitle)
+      uniqueAnime.push(anime)
+    }
+  }
+  return uniqueAnime
+}
 
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
@@ -153,10 +167,10 @@ const App: React.FC = () => {
         params.append("order_by", "title")
         params.append("sort", "asc")
         break
-      default:
-        params.append("order_by", "popularity")
-        params.append("sort", "desc")
-        break
+      // default:
+      //   params.append("order_by", "popularity")
+      //   params.append("sort", "desc")
+      //   break
     } 
 
     return params.toString()
@@ -386,16 +400,14 @@ const App: React.FC = () => {
     fetchInitialData()
   }, [])
 
-// refetch on filter change after load
-useEffect(() => {
-  if (!loading && (page > 1 || hasActiveFilter())) {
-    fetchFilteredAndSearchedAnime(page > 1)
-    } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-      fetchFilteredAndSearchedAnime(false)
-    }
-}, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
-  
-
+  // refetch on filter change after load
+  useEffect(() => {
+    if (!loading && (page > 1 || hasActiveFilter())) {
+      fetchFilteredAndSearchedAnime(page > 1)
+      } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+        fetchFilteredAndSearchedAnime(false)
+      }
+  }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
 
   // mobile menu close functionality
   useEffect(() => {
@@ -465,6 +477,7 @@ useEffect(() => {
       genres: []
     })
     setSearchQuery("")
+    setPage(1)
   }
   
   // in App for now
