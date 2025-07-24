@@ -103,6 +103,9 @@ const App: React.FC = () => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // try ref to track if no interference with hero player
+  const isMounted = useRef(false)
+
   // ref for player instance
   // const playerRef = useRef<any>(null)
   // // ref for iframe
@@ -136,11 +139,45 @@ const App: React.FC = () => {
     genres: apiFilterOptions.availableGenres
   }
 
-    // build queryParams from active filters + sort
+  // check active filters
+    const hasActiveFilter = useCallback((): boolean => {
+      return Object.values(activeFilters).some(arr =>
+        Array.isArray(arr) ? arr.length > 0 : arr !== ""
+      ) || searchQuery !== ""
+    }, [activeFilters, searchQuery])
+
+  // build queryParams from active filters + sort
   const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams()
     params.append("page", page.toString())
 
+    const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
+
+    if (!isAbsoluteBrowseDefault) {
+      const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || searchQuery !== "") && sortBy === "newest"
+      if (!isFilteredWithFrontendDefaultSort) {
+        switch (sortBy) {
+          case "popular":
+            params.append("order_by", "popularity")
+            params.append("sort", "desc")
+            break
+          case "episodes":
+            params.append("order_by", "episodes")
+            params.append("sort", "desc")
+            break
+          case "alphabetical":
+            params.append("order_by", "title")
+            params.append("sort", "asc")
+            break
+          // default:
+          //   params.append("order_by", "popularity")
+          //   params.append("sort", "desc")
+          //   break
+        }
+      }
+    }
+
+    // append filter params IF active
     activeFilters.genres.forEach(genre => params.append("genre", genre))
     if (activeFilters.contentType.length > 0) {
       params.append("type", activeFilters.contentType[0])
@@ -150,31 +187,8 @@ const App: React.FC = () => {
     }
     if (activeFilters.year) params.append("start_date", `${activeFilters.year}-01-01`)
     
-    switch (sortBy) {
-      case "popular":
-        params.append("order_by", "popularity")
-        params.append("sort", "desc")
-        break
-      case "newest":
-        params.append("order_by", "start_date")
-        params.append("sort", "desc")
-        break
-      case "episodes":
-        params.append("order_by", "episodes")
-        params.append("sort", "desc")
-        break
-      case "alphabetical":
-        params.append("order_by", "title")
-        params.append("sort", "asc")
-        break
-      // default:
-      //   params.append("order_by", "popularity")
-      //   params.append("sort", "desc")
-      //   break
-    } 
-
     return params.toString()
-  }, [activeFilters, page, sortBy])
+  }, [activeFilters, page, sortBy, searchQuery, hasActiveFilter])
 
   // fetch based on current state
   const fetchFilteredAndSearchedAnime = useCallback(async (isLoadMore: boolean = false) => {
@@ -214,11 +228,7 @@ const App: React.FC = () => {
     }
   }, [searchQuery, page, buildQueryParams])
 
-    const hasActiveFilter = useCallback((): boolean => {
-    return Object.values(activeFilters).some(arr =>
-      Array.isArray(arr) ? arr.length > 0 : arr !== ""
-    ) || searchQuery !== ""
-  }, [activeFilters, searchQuery])
+
 
 
 
@@ -380,11 +390,13 @@ const App: React.FC = () => {
           throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
         }
         const browseData: AnimeData[] = await browseResponse.json()
-        setAnimeList(browseData)
+        // setAnimeList(browseData)
+        const uniqueBrowseData = deduplicateAnime(browseData)
+        setAnimeList(uniqueBrowseData)
 
         // featured: 1st item
-        if (browseData.length > 0) {
-          setFeaturedAnime(browseData[0])
+        if (uniqueBrowseData.length > 0) {
+          setFeaturedAnime(uniqueBrowseData[0])
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -397,17 +409,23 @@ const App: React.FC = () => {
         setLoading(false)
       }
     }
-    fetchInitialData()
+    if (isMounted.current) {
+      fetchInitialData()
+      isMounted.current = true
+    }
   }, [])
 
   // refetch on filter change after load
   useEffect(() => {
-    if (!loading && (page > 1 || hasActiveFilter())) {
+    // if (!loading && (page > 1 || hasActiveFilter())) {
+    //   fetchFilteredAndSearchedAnime(page > 1)
+    //   } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+    //     fetchFilteredAndSearchedAnime(false)
+    //   }
+    if (isMounted.current) {
       fetchFilteredAndSearchedAnime(page > 1)
-      } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-        fetchFilteredAndSearchedAnime(false)
-      }
-  }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
+    }
+  }, [activeFilters, searchQuery, sortBy, page, /*/loading,*/ hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
 
   // mobile menu close functionality
   useEffect(() => {
@@ -465,6 +483,7 @@ const App: React.FC = () => {
         }
       }
     })
+    setPage(1)
   }
 
   const clearAllFilters = (): void => {
