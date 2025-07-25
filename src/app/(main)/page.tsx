@@ -496,6 +496,7 @@ const App: React.FC = () => {
       genres: []
     })
     setSearchQuery("")
+    setSortBy("newest")
     setPage(1)
   }
   
