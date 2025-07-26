@@ -111,6 +111,9 @@ const App: React.FC = () => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // try ref to track if no interference with hero player
+  const isMounted = useRef(false)
+
   // ref for player instance
   // const playerRef = useRef<any>(null)
   // // ref for iframe
