@@ -541,14 +541,17 @@ const App: React.FC = () => {
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     setSortBy(e.target.value as SortOption)
+    setPage(1)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(e.target.value)
+    setPage(1)
   }
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setActiveFilters(prev => ({...prev, year: e.target.value}))
+    setPage(1)
   }
 
   const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void => {
@@ -557,6 +560,7 @@ const App: React.FC = () => {
     } else {
       setActiveFilters(prev => ({...prev, [category]: ""}))
     }
+    setPage(1)
   }
 
 
