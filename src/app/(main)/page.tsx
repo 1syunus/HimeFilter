@@ -57,27 +57,19 @@ declare global {
     YT: any
   }
 }
+// if (typeof window !== "undefined") {
+//   window.onYouTubeIframeAPIReady = () => {
+//     console.log("GLOBAL: YT Iframe Api is ready")
+//     const event = new Event("youtubeapiready")
+//     window.dispatchEvent(event)
+//   }
+// }
 
-// deduplication function
-const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
-  const seenTitles = new Set<string>()
-  const uniqueAnime: AnimeData[] = []
-
-  for (const anime of animeList) {
-    // test w/ normalize title
-    const normalizedTitle = anime.title
-      .replace(/[:'].*Season \d+| OVA| Movie| Part \d+/gi, '')
-      .replace(/\s*\(\d{4}\)\s*$/g, '')
-      .trim()
-      .toLowerCase()
-
-    if (!seenTitles.has(normalizedTitle)) {
-      seenTitles.add(normalizedTitle)
-      uniqueAnime.push(anime)
-    }
-  }
-  return uniqueAnime
-}
+  const hasActiveFilter = useCallback((): boolean => {
+    return Object.values(activeFilters).some(arr =>
+      Array.isArray(arr) ? arr.length > 0 : arr !== ""
+    ) || searchQuery !== ""
+  }, [activeFilters, searchQuery])
 
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
@@ -103,9 +95,6 @@ const App: React.FC = () => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // try ref to track if no interference with hero player
-  const isMounted = useRef(false)
-
   // ref for player instance
   // const playerRef = useRef<any>(null)
   // // ref for iframe
@@ -127,8 +116,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
 
   // pagination state
-  const [page, setPage] = useState<number>(1)
-  const [hasMore, setHasMore] = useState<boolean>(true)
+const [page, setPage] = useState<number>(1)
+const [hasMore, setHasMore] = useState<boolean>(true)
 
 
   const filterOptions = {
@@ -138,98 +127,6 @@ const App: React.FC = () => {
     status: apiFilterOptions.statusOptions,
     genres: apiFilterOptions.availableGenres
   }
-
-  // check active filters
-    const hasActiveFilter = useCallback((): boolean => {
-      return Object.values(activeFilters).some(arr =>
-        Array.isArray(arr) ? arr.length > 0 : arr !== ""
-      ) || searchQuery !== ""
-    }, [activeFilters, searchQuery])
-
-  // build queryParams from active filters + sort
-  const buildQueryParams = useCallback(() => {
-    const params = new URLSearchParams()
-    params.append("page", page.toString())
-
-    const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
-
-    if (!isAbsoluteBrowseDefault) {
-      const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || searchQuery !== "") && sortBy === "newest"
-      if (!isFilteredWithFrontendDefaultSort) {
-        switch (sortBy) {
-          case "popular":
-            params.append("order_by", "popularity")
-            params.append("sort", "desc")
-            break
-          case "episodes":
-            params.append("order_by", "episodes")
-            params.append("sort", "desc")
-            break
-          case "alphabetical":
-            params.append("order_by", "title")
-            params.append("sort", "asc")
-            break
-          // default:
-          //   params.append("order_by", "popularity")
-          //   params.append("sort", "desc")
-          //   break
-        }
-      }
-    }
-
-    // append filter params IF active
-    activeFilters.genres.forEach(genre => params.append("genre", genre))
-    if (activeFilters.contentType.length > 0) {
-      params.append("type", activeFilters.contentType[0])
-    }
-    if (activeFilters.status.length > 0) {
-      params.append("status", activeFilters.status[0])
-    }
-    if (activeFilters.year) params.append("start_date", `${activeFilters.year}-01-01`)
-    
-    return params.toString()
-  }, [activeFilters, page, sortBy, searchQuery, hasActiveFilter])
-
-  // fetch based on current state
-  const fetchFilteredAndSearchedAnime = useCallback(async (isLoadMore: boolean = false) => {
-    setLoading(true)
-    setError(null)
-
-    let apiUrl = "/api/browse"
-    let currentQueryParams = buildQueryParams()
-
-    if (searchQuery) {
-      apiUrl = "/api/search"
-      currentQueryParams = `q=${encodeURIComponent(searchQuery)}&page=${page}&limit=24`
-    }
-
-    try {
-      const response = await fetch(`${apiUrl}?${currentQueryParams}`)
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(`API error: ${response.status} - ${errorData.message || response.statusText}`)
-      }
-      const data: AnimeData[] = await response.json()
-      const uniqueData = deduplicateAnime(data)
-
-      setAnimeList(prev => (isLoadMore ? [...prev, ...uniqueData] : uniqueData))
-      setHasMore(data.length > 0)
-    } catch (err: unknown) {
-      console.log("Failed to fetch anime:", err)
-      if (err instanceof Error) {
-        setError(err.message)
-      } else if (typeof err === "string") {
-        setError(err)
-      } else {
-        setError("An unknown error occurred.")
-      }
-    } finally {
-      setLoading(false)
-    }
-  }, [searchQuery, page, buildQueryParams])
-
-
-
 
 
   // load iframe api script
@@ -390,13 +287,11 @@ const App: React.FC = () => {
           throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
         }
         const browseData: AnimeData[] = await browseResponse.json()
-        // setAnimeList(browseData)
-        const uniqueBrowseData = deduplicateAnime(browseData)
-        setAnimeList(uniqueBrowseData)
+        setAnimeList(browseData)
 
         // featured: 1st item
-        if (uniqueBrowseData.length > 0) {
-          setFeaturedAnime(uniqueBrowseData[0])
+        if (browseData.length > 0) {
+          setFeaturedAnime(browseData[0])
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -409,23 +304,8 @@ const App: React.FC = () => {
         setLoading(false)
       }
     }
-    if (isMounted.current) {
-      fetchInitialData()
-      isMounted.current = true
-    }
+    fetchInitialData()
   }, [])
-
-  // refetch on filter change after load
-  useEffect(() => {
-    // if (!loading && (page > 1 || hasActiveFilter())) {
-    //   fetchFilteredAndSearchedAnime(page > 1)
-    //   } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-    //     fetchFilteredAndSearchedAnime(false)
-    //   }
-    if (isMounted.current) {
-      fetchFilteredAndSearchedAnime(page > 1)
-    }
-  }, [activeFilters, searchQuery, sortBy, page, /*/loading,*/ hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
 
   // mobile menu close functionality
   useEffect(() => {
@@ -483,7 +363,6 @@ const App: React.FC = () => {
         }
       }
     })
-    setPage(1)
   }
 
   const clearAllFilters = (): void => {
@@ -496,8 +375,6 @@ const App: React.FC = () => {
       genres: []
     })
     setSearchQuery("")
-    setSortBy("newest")
-    setPage(1)
   }
   
   // in App for now
@@ -541,17 +418,14 @@ const App: React.FC = () => {
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     setSortBy(e.target.value as SortOption)
-    setPage(1)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(e.target.value)
-    setPage(1)
   }
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setActiveFilters(prev => ({...prev, year: e.target.value}))
-    setPage(1)
   }
 
   const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void => {
@@ -560,7 +434,6 @@ const App: React.FC = () => {
     } else {
       setActiveFilters(prev => ({...prev, [category]: ""}))
     }
-    setPage(1)
   }
 
 
