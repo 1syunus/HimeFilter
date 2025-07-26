@@ -484,6 +484,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       genres: []
     })
     setSearchQuery("")
+    setPage(1)
   }
   
   // in App for now
