@@ -327,7 +327,42 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   }, [activeFilters, hasActiveFilter, sortBy, searchQuery, page])
 
   // fetch based on current state
-  
+  const fetchFilteredAndSearchedAnime = useCallback(async (isLoadMore: boolean = false) => {
+    setLoading(true)
+    setError(null)
+
+    let apiUrl = "/api/browse"
+    let currentQueryParams = buildQueryParams()
+
+    if (searchQuery) {
+      apiUrl = "/api/search"
+      currentQueryParams = `q=${encodeURIComponent(searchQuery)}&page=${page}&limit=24`
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}?${currentQueryParams}`)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(`API error: ${response.status} - ${errorData.message || response.statusText}`)
+      }
+      const data: AnimeData[] = await response.json()
+      const uniqueData = deduplicateAnime(data)
+
+      setAnimeList(prev => (isLoadMore ? [...prev, ...uniqueData] : uniqueData))
+      setHasMore(data.length > 0)
+    } catch (err: unknown) {
+      console.log("Failed to fetch anime:", err)
+      if (err instanceof Error) {
+        setError(err.message)
+      } else if (typeof err === "string") {
+        setError(err)
+      } else {
+        setError("An unknown error occurred.")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [searchQuery, page, buildQueryParams])
 
   // data fetch
   useEffect(() => {
