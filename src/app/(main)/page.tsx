@@ -1,5 +1,5 @@
 "use client"
-import React, {useState, useEffect, useRef, useCallback} from "react"
+import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { FilterOptions } from "@/types/index"
 
@@ -265,6 +265,45 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   //   }
   // }, [youTubeApiReady, featuredAnime, heroMuted])
 
+  // build queryParams from activeFilters + sort
+  const buildQueryParams = useCallback(() => {
+    const params = new URLSearchParams()
+    params.append("page", page.toString())
+
+    // check if in pure default (i.e., no filters, no query, no unique sort order)
+    const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
+    // otherwise
+    if (!isAbsoluteBrowseDefault) {
+      const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || searchQuery !== "") && sortBy === "newest"
+
+      if (!isFilteredWithFrontendDefaultSort) {
+        switch (sortBy) {
+          case "popular":
+            params.append("order_by", "popularity")
+            params.append("sort", "desc")
+            break
+          case "episodes":
+            params.append("order_by", "episodes")
+            params.append("sort", "desc")
+            break 
+          case "alphabetical":
+            params.append("order_by", "title")
+            params.append("sort", "asc")
+            break
+        }
+      }
+    }
+    activeFilters.genres.forEach(genre => params.append("genre", genre))
+    if (activeFilters.genres.length > 0) {
+      params.append("type", activeFilters.contentType[0])
+    }
+    if (activeFilters.status.length > 0) {
+      params.append("status", activeFilters.status[0])
+    }
+    if (activeFilters.year) params.append("start_date", `${activeFilters.year}-01-01`)
+    return params.toString()
+  }, [activeFilters, hasActiveFilter, sortBy, searchQuery, page])
+  
   // data fetch
   useEffect(() => {
     const fetchInitialData = async () => {
