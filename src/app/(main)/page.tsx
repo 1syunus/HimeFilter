@@ -2,6 +2,7 @@
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { FilterOptions } from "@/types/index"
+import { normalize } from "path"
 
 // type defs
 interface AnimeData {
@@ -64,6 +65,27 @@ declare global {
 //     window.dispatchEvent(event)
 //   }
 // }
+
+// deduplication function
+const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
+  const seenTitles = new Set<string>()
+  const uniqueAnime: AnimeData[] = []
+
+  for (const anime of animeList) {
+    const normalizedTitle = anime.title
+      .replace(/[:'].*Season \d+| OVA| Movie| Part \d+/gi, '')
+      .replace(/\s*\(\d{4}\)\s*$/g, '')
+      .trim()
+      .toLowerCase()
+
+    if (!seenTitles.has(normalizedTitle)) {
+      seenTitles.add(normalizedTitle)
+      uniqueAnime.push(anime)
+    }
+  }
+
+  return uniqueAnime
+}
 
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
@@ -303,7 +325,9 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     if (activeFilters.year) params.append("start_date", `${activeFilters.year}-01-01`)
     return params.toString()
   }, [activeFilters, hasActiveFilter, sortBy, searchQuery, page])
+
   
+
   // data fetch
   useEffect(() => {
     const fetchInitialData = async () => {
