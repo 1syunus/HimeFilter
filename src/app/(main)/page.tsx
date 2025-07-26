@@ -326,6 +326,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     return params.toString()
   }, [activeFilters, hasActiveFilter, sortBy, searchQuery, page])
 
+  // fetch based on current state
   
 
   // data fetch
@@ -349,11 +350,13 @@ const [hasMore, setHasMore] = useState<boolean>(true)
           throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
         }
         const browseData: AnimeData[] = await browseResponse.json()
-        setAnimeList(browseData)
+        const uniqueBrowseData = deduplicateAnime(browseData)
+        setAnimeList(uniqueBrowseData)
+        // setAnimeList(browseData)
 
         // featured: 1st item
-        if (browseData.length > 0) {
-          setFeaturedAnime(browseData[0])
+        if (uniqueBrowseData.length > 0) {
+          setFeaturedAnime(uniqueBrowseData[0])
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -368,6 +371,15 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     }
     fetchInitialData()
   }, [])
+
+  // refetch after load
+  // useEffect(() => {
+  //   if (!loading && (page > 1 || hasActiveFilter())) {
+  //   fetchFilteredAndSearchedAnime(page > 1)
+  //   } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+  //     fetchFilteredAndSearchedAnime(false)
+  //   }
+  // })
 
   // mobile menu close functionality
   useEffect(() => {
