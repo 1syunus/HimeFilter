@@ -408,13 +408,13 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   }, [])
 
   // refetch after load
-  // useEffect(() => {
-  //   if (!loading && (page > 1 || hasActiveFilter())) {
-  //   fetchFilteredAndSearchedAnime(page > 1)
-  //   } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-  //     fetchFilteredAndSearchedAnime(false)
-  //   }
-  // })
+  useEffect(() => {
+    if (!loading && (page > 1 || hasActiveFilter())) {
+    fetchFilteredAndSearchedAnime(page > 1)
+    } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+      fetchFilteredAndSearchedAnime(false)
+    }
+  })
 
   // mobile menu close functionality
   useEffect(() => {
