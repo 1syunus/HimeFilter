@@ -65,12 +65,6 @@ declare global {
 //   }
 // }
 
-  const hasActiveFilter = useCallback((): boolean => {
-    return Object.values(activeFilters).some(arr =>
-      Array.isArray(arr) ? arr.length > 0 : arr !== ""
-    ) || searchQuery !== ""
-  }, [activeFilters, searchQuery])
-
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     contentType: [],
@@ -128,6 +122,11 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     genres: apiFilterOptions.availableGenres
   }
 
+    const hasActiveFilter = useCallback((): boolean => {
+    return Object.values(activeFilters).some(arr =>
+      Array.isArray(arr) ? arr.length > 0 : arr !== ""
+    ) || searchQuery !== ""
+  }, [activeFilters, searchQuery])
 
   // load iframe api script
   // useEffect(() => {
