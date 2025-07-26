@@ -414,7 +414,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
       fetchFilteredAndSearchedAnime(false)
     }
-  })
+  }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
 
   // mobile menu close functionality
   useEffect(() => {
