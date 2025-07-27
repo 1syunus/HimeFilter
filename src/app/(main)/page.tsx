@@ -111,8 +111,6 @@ const App: React.FC = () => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // try ref to track if no interference with hero player
-  const isMounted = useRef(false)
 
   // ref for player instance
   // const playerRef = useRef<any>(null)
@@ -407,10 +405,6 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         setLoading(false)
       }
     }
-    // if (isMounted.current) {
-    //   fetchInitialData()
-    //   isMounted.current = true
-    // }
     fetchInitialData()
   }, [])
 
