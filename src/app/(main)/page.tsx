@@ -407,22 +407,19 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         setLoading(false)
       }
     }
-    if (isMounted.current) {
-      fetchInitialData()
-      isMounted.current = true
-    }
-    // fetchInitialData()
+    // if (isMounted.current) {
+    //   fetchInitialData()
+    //   isMounted.current = true
+    // }
+    fetchInitialData()
   }, [])
 
   // refetch after load
   useEffect(() => {
-    // if (!loading && (page > 1 || hasActiveFilter())) {
-    // fetchFilteredAndSearchedAnime(page > 1)
-    // } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-    //   fetchFilteredAndSearchedAnime(false)
-    // }
-    if (isMounted.current) {
-      fetchFilteredAndSearchedAnime(page > 1)
+    if (!loading && (page > 1 || hasActiveFilter())) {
+    fetchFilteredAndSearchedAnime(page > 1)
+    } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+      fetchFilteredAndSearchedAnime(false)
     }
   }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
 
