@@ -383,7 +383,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
         // fetch browse anime
         // initial load sans search queries/filters
-        const browseResponse = await fetch("api/browse")
+        const browseResponse = await fetch("/api/browse")
         if (!browseResponse.ok) {
           throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
         }
@@ -407,15 +407,22 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         setLoading(false)
       }
     }
-    fetchInitialData()
+    if (isMounted.current) {
+      fetchInitialData()
+      isMounted.current = true
+    }
+    // fetchInitialData()
   }, [])
 
   // refetch after load
   useEffect(() => {
-    if (!loading && (page > 1 || hasActiveFilter())) {
-    fetchFilteredAndSearchedAnime(page > 1)
-    } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-      fetchFilteredAndSearchedAnime(false)
+    // if (!loading && (page > 1 || hasActiveFilter())) {
+    // fetchFilteredAndSearchedAnime(page > 1)
+    // } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+    //   fetchFilteredAndSearchedAnime(false)
+    // }
+    if (isMounted.current) {
+      fetchFilteredAndSearchedAnime(page > 1)
     }
   }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
 
