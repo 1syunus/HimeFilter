@@ -110,6 +110,7 @@ const App: React.FC = () => {
   const [videoError, setVideoError] = useState<boolean>(false)
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
 
   // ref for player instance
@@ -538,7 +539,18 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchQuery(e.target.value)
+    const query = e.target.value
+    // keep UI responsive
+    setSearchQuery(query)
+    // clear debounce if exist
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+    // set new timeout
+    debounceTimeoutRef.current = setTimeout(() => {
+      setPage(1)
+      setHasMore(true)
+    }, 500)
   }
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
