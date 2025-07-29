@@ -302,6 +302,10 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
       if (!isFilteredWithFrontendDefaultSort) {
         switch (sortBy) {
+          case "newest":
+            params.append("order_by", "start_date")
+            params.append("sort", "desc")
+            break
           case "popular":
             params.append("order_by", "popularity")
             params.append("sort", "desc")
