@@ -409,13 +409,19 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   }, [])
 
   // refetch after load
+  // useEffect(() => {
+    // this version keeps initial loading perfect but causes infinite loop + glitch on refetch
+  //   if (!loading && (page > 1 || hasActiveFilter())) {
+  //   fetchFilteredAndSearchedAnime(page > 1)
+  //   } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
+  //     fetchFilteredAndSearchedAnime(false)
+  //   }
+  // }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
   useEffect(() => {
-    if (!loading && (page > 1 || hasActiveFilter())) {
-    fetchFilteredAndSearchedAnime(page > 1)
-    } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-      fetchFilteredAndSearchedAnime(false)
-    }
-  }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
+    // this version causes cls error on initial load
+    const isLoadMore = page > 1
+    fetchFilteredAndSearchedAnime(isLoadMore)
+  }, [activeFilters, searchQuery, page, sortBy, fetchFilteredAndSearchedAnime])
 
   // mobile menu close functionality
   useEffect(() => {
