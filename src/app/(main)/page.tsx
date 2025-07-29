@@ -480,6 +480,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         }
       }
     })
+    setPage(1)
+    setHasMore(true)
   }
 
   const clearAllFilters = (): void => {
@@ -536,6 +538,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     setSortBy(e.target.value as SortOption)
+    setPage(1)
+    setHasMore(true)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -555,6 +559,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setActiveFilters(prev => ({...prev, year: e.target.value}))
+    setPage(1)
+    setHasMore(true)
   }
 
   const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void => {
