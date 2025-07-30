@@ -6,6 +6,22 @@ import { useDebounce } from "../components/hooks/useDebounce"
 import { normalize } from "path"
 
 // type defs
+type SortOption = "newest" | "episodes" | "popular" | "alphabetical"
+
+interface Genre {
+  id: number
+  name: string
+}
+
+interface ActiveFilters {
+  contentType: string[]
+  audioLanguages: string[]
+  subtitleLanguages: string[]
+  status: string[]
+  year: string
+  genres: number[]
+}
+
 interface AnimeData {
   id: number
   title: string
@@ -17,7 +33,7 @@ interface AnimeData {
   year: number
   episodes: number
   rating: number
-  genres: string[]
+  genres: Genre[]
   image: string
   largeImage?: string
   heroImage?: string
@@ -28,29 +44,19 @@ interface AnimeData {
 interface FilterOptionsResponse {
   availableAudioLanguages: string[]
   availableSubtitleLanguages: string[]
-  availableGenres: string[]
+  availableGenres: Genre[]
   contentTypes: string[]
   statusOptions: string[]
 }
 
-interface ActiveFilters {
-  contentType: string[]
-  audioLanguages: string[]
-  subtitleLanguages: string[]
-  status: string[]
-  year: string
-  genres: string[]
-}
-
 interface FilterSectionProps {
   title: string
-  options: string[]
+  options: Genre[]
   category: keyof ActiveFilters
   activeFilters: ActiveFilters
   onFilterChange: (category: keyof ActiveFilters, value: string) => void
 }
 
-type SortOption = "newest" | "episodes" | "popular" | "alphabetical"
 
 // global api ready flag and listener
 declare global {
@@ -112,7 +118,6 @@ const App: React.FC = () => {
   const [videoError, setVideoError] = useState<boolean>(false)
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const debouncedQuery = useDebounce(searchQuery, 300)
 
   // ref for player instance
@@ -561,17 +566,17 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     <div className="mb-6">
       <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{title}</h3>
       <div className="space-y-2">
-        {options.map((option: string) => {
+        {options.map((option: {id: number, name: string}) => {
           const isActive = Array.isArray(activeFilters[category])
-          ? (activeFilters[category] as string[]).includes(option)
-          : activeFilters[category] === option
+          ? (activeFilters[category] as string[]).includes(option.id.toString())
+          : activeFilters[category] === option.id.toString()
 
           return (
-            <label key={option} className="flex items-center cursor-pointer group">
+            <label key={option.id} className="flex items-center cursor-pointer group">
               <input
               type="checkbox"
               checked={isActive}
-              onChange={() => onFilterChange(category, option)}
+              onChange={() => onFilterChange(category, option.id.toString())}
               className="sr-only"
               />
               <div className={`w-4 h-4 rounded border-2 mr-3 flex items-center justify-center transition-all
@@ -584,7 +589,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
                 )}
               </div>
               <span className="text-gray-300 text-sm group-hover:text-white transition colors">
-                {option}
+                {option.name}
               </span>
             </label>
           )
@@ -601,18 +606,6 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(e.target.value)
-    // const query = e.target.value
-    // // keep UI responsive
-    // setSearchQuery(query)
-    // // clear debounce if exist
-    // if (debounceTimeoutRef.current) {
-    //   clearTimeout(debounceTimeoutRef.current)
-    // }
-    // // set new timeout
-    // debounceTimeoutRef.current = setTimeout(() => {
-    //   setPage(1)
-    //   setHasMore(true)
-    // }, 500)
   }
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
