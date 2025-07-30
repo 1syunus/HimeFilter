@@ -2,6 +2,7 @@
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { FilterOptions } from "@/types/index"
+import { useDebounce } from "../components/hooks/useDebounce"
 import { normalize } from "path"
 
 // type defs
@@ -87,6 +88,7 @@ const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
   return uniqueAnime
 }
 
+
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     contentType: [],
@@ -111,7 +113,7 @@ const App: React.FC = () => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-
+  const debouncedQuery = useDebounce(searchQuery, 300)
 
   // ref for player instance
   // const playerRef = useRef<any>(null)
@@ -321,16 +323,36 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         }
       }
     }
-    activeFilters.genres.forEach(genre => params.append("genre", genre))
-    if (activeFilters.genres.length > 0) {
-      params.append("type", activeFilters.contentType[0])
+    Object.entries(activeFilters).forEach(([filterType, filterValue]) => {
+      if (Array.isArray(filterValue)) {
+        // handle array based filters
+        filterValue.forEach(val => {
+          if (val) {
+            params.append(filterType, val)
+          }
+        })
+      } else if (typeof filterValue === "string") {
+        // handle string based filters
+        if (filterValue && filterValue !== "undefined" && filterValue !== "") {
+          // map frontend names to backend names
+          if (filterType === "contentType") {
+            params.append("type", filterValue)
+          } else if (filterType === "status") {
+            params.append("status", filterValue)
+          } else if (filterType === "year") {
+            params.append("start_date", `${filterValue}-01-01`)
+          } else {
+            params.append(filterType, filterValue)
+          }
+        }
+      }
+    })
+    // searchQuery logic
+    if (debouncedQuery) {
+      params.append("q", debouncedQuery)
     }
-    if (activeFilters.status.length > 0) {
-      params.append("status", activeFilters.status[0])
-    }
-    if (activeFilters.year) params.append("start_date", `${activeFilters.year}-01-01`)
     return params.toString()
-  }, [activeFilters, hasActiveFilter, sortBy, searchQuery, page])
+  }, [activeFilters, sortBy, debouncedQuery, page])
 
   // fetch based on current state
   const fetchFilteredAndSearchedAnime = useCallback(async (isLoadMore: boolean = false) => {
@@ -340,9 +362,9 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     let apiUrl = "/api/browse"
     let currentQueryParams = buildQueryParams()
 
-    if (searchQuery) {
+    if (debouncedQuery) {
       apiUrl = "/api/search"
-      currentQueryParams = `q=${encodeURIComponent(searchQuery)}&page=${page}&limit=24`
+      currentQueryParams = `q=${encodeURIComponent(debouncedQuery)}&page=${page}&limit=24`
     }
 
     try {
@@ -368,7 +390,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     } finally {
       setLoading(false)
     }
-  }, [searchQuery, page, buildQueryParams])
+  }, [debouncedQuery, page, buildQueryParams])
 
   // data fetch
   useEffect(() => {
@@ -426,7 +448,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     // this version causes cls error on initial load
     const isLoadMore = page > 1
     fetchFilteredAndSearchedAnime(isLoadMore)
-  }, [activeFilters, searchQuery, page, sortBy, fetchFilteredAndSearchedAnime])
+  }, [activeFilters, debouncedQuery, page, sortBy, fetchFilteredAndSearchedAnime])
 
   // mobile menu close functionality
   useEffect(() => {
@@ -465,6 +487,37 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       }
     }
   }, [featuredAnime, videoLoaded])
+
+  // // useEffect for debounced search
+  // useEffect(() => {
+  //   // skip debounce on initial load
+  //   if (searchQuery === "") {
+  //     // reset/reload on clear search
+  //     setPage(1)
+  //     setHasMore(true)
+  //     return
+  //   }
+    
+  //   // timeout
+  //   const handler = setTimeout(() => {
+  //     setPage(1)
+  //     setHasMore(true)
+  //   }, 500)
+
+  //   // cleanup
+  //   return () => {
+  //     clearTimeout(handler)
+  //   }
+  // }, [searchQuery])
+  // useEffect(() => {
+  //   const handler = setTimeout(() => {
+  //     setDebouncedSearchQuery(searchQuery)
+  //   }, 500)
+
+  //   return () => {
+  //     clearTimeout(handler)
+  //   }
+  // }, [searchQuery])
 
   // handler functions
   const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
@@ -547,18 +600,19 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const query = e.target.value
-    // keep UI responsive
-    setSearchQuery(query)
-    // clear debounce if exist
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current)
-    }
-    // set new timeout
-    debounceTimeoutRef.current = setTimeout(() => {
-      setPage(1)
-      setHasMore(true)
-    }, 500)
+    setSearchQuery(e.target.value)
+    // const query = e.target.value
+    // // keep UI responsive
+    // setSearchQuery(query)
+    // // clear debounce if exist
+    // if (debounceTimeoutRef.current) {
+    //   clearTimeout(debounceTimeoutRef.current)
+    // }
+    // // set new timeout
+    // debounceTimeoutRef.current = setTimeout(() => {
+    //   setPage(1)
+    //   setHasMore(true)
+    // }, 500)
   }
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
