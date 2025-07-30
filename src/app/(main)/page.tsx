@@ -305,7 +305,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
     // otherwise
     if (!isAbsoluteBrowseDefault) {
-      const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || searchQuery !== "") && sortBy === "newest"
+      const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || debouncedQuery !== "") && sortBy === "newest"
 
       if (!isFilteredWithFrontendDefaultSort) {
         switch (sortBy) {
