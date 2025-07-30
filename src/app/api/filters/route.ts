@@ -12,7 +12,7 @@ export async function GET(request: Request) {
         }
         const genresData = await genresResponse.json()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const availableGenres = genresData.data ? genresData.data.map((g: any) => g.name) : []
+        const availableGenres = genresData.data ? genresData.data.map((g: any) => ({id: g.mal_id, name: g.name})) : []
         
         const contentTypes = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
         const statusOptions = ["Finished Airing", "Currently Airing", "Not yet aired"]
