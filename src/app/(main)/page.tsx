@@ -331,11 +331,16 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     Object.entries(activeFilters).forEach(([filterType, filterValue]) => {
       if (Array.isArray(filterValue)) {
         // handle array based filters
-        filterValue.forEach(val => {
-          if (val) {
-            params.append(filterType, val)
-          }
-        })
+        // genre case
+        if (filterType === "genres") {
+          filterValue.forEach((val) => {
+            params.append("genres", val.toString())
+          })
+        } else {
+          filterValue.forEach((val) => {
+            if (val) params.append(filterType, val)
+          })
+        }
       } else if (typeof filterValue === "string") {
         // handle string based filters
         if (filterValue && filterValue !== "undefined" && filterValue !== "") {
