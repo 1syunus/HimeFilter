@@ -534,11 +534,23 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     setActiveFilters(prev => {
       const currentValues = prev[category]
       if (Array.isArray(currentValues)) {
+        // handle genres
+        if (category === "genres") {
+          const numVal = parseInt(value, 10)
+          return {
+            ...prev,
+            genres: prev.genres.includes(numVal)
+            ? prev.genres.filter(g => g !== numVal)
+            : [...prev.genres, numVal],
+          }
+        }
+        // default string arrays
+        const stringArray = currentValues as string[]
         return {
           ...prev,
-          [category]: currentValues.includes(value)
-          ? currentValues.filter(item => item !== value)
-          : [...currentValues, value]
+          [category]: stringArray.includes(value)
+          ? stringArray.filter(item => item !== value)
+          : [...stringArray, value]
         }
       } else {
         return {
