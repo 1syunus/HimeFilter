@@ -1031,9 +1031,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
               </p>
 
               <div className="flex flex-wrap gap-2">
-                {featuredAnime.genres.slice(0, 3).map((genre: string) => (
-                  <span key={genre} className="text-xs bg-gray-800/80 text-gray-300 px-3 py-1 rounded-full">
-                    {genre}
+                {featuredAnime.genres.slice(0, 3).map((genre) => (
+                  <span key={genre.id} className="text-xs bg-gray-800/80 text-gray-300 px-3 py-1 rounded-full">
+                    {genre.name}
                   </span>
                 ))}
               </div>
