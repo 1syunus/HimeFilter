@@ -583,17 +583,25 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     <div className="mb-6">
       <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{title}</h3>
       <div className="space-y-2">
-        {options.map((option: {id: number, name: string}) => {
+        {options.map((option) => {
+          const optionValue = typeof option === "string"
+          ? option
+          : (option as Genre).id.toString()
+
+          const optionLabel = typeof option === "string"
+          ? option
+          : (option as Genre).name
+
           const isActive = Array.isArray(activeFilters[category])
-          ? (activeFilters[category] as string[]).includes(option.id.toString())
-          : activeFilters[category] === option.id.toString()
+          ? (activeFilters[category] as string[]).includes(optionValue)
+          : activeFilters[category] === optionValue
 
           return (
-            <label key={option.id} className="flex items-center cursor-pointer group">
+            <label key={optionValue} className="flex items-center cursor-pointer group">
               <input
               type="checkbox"
               checked={isActive}
-              onChange={() => onFilterChange(category, option.id.toString())}
+              onChange={() => onFilterChange(category, optionValue)}
               className="sr-only"
               />
               <div className={`w-4 h-4 rounded border-2 mr-3 flex items-center justify-center transition-all
@@ -606,7 +614,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
                 )}
               </div>
               <span className="text-gray-300 text-sm group-hover:text-white transition colors">
-                {option.name}
+                {optionLabel}
               </span>
             </label>
           )
