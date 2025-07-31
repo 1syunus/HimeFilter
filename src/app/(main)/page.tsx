@@ -51,7 +51,7 @@ interface FilterOptionsResponse {
 
 interface FilterSectionProps {
   title: string
-  options: Genre[]
+  options: (string | Genre)[]
   category: keyof ActiveFilters
   activeFilters: ActiveFilters
   onFilterChange: (category: keyof ActiveFilters, value: string) => void
@@ -1435,9 +1435,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {anime.genres.slice(0, 2).map((genre: string) => (
-                          <span key={genre} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
-                            {genre}
+                        {anime.genres.slice(0, 2).map((genre) => (
+                          <span key={genre.id} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
+                            {genre.name}
                           </span>
                         ))}
                       </div>
@@ -1445,6 +1445,7 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                   </div>
                 ))}
               </div>
+              
 
               {/* load more btn */}
               {animeList.length > 0 && (
