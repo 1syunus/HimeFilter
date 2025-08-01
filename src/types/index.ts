@@ -1,4 +1,8 @@
 // type defs
+export interface AnimeGenre {
+  id: number
+  name: string
+}
 export interface AnimeData {
   id: number
   title: string
@@ -10,7 +14,7 @@ export interface AnimeData {
   year: number
   episodes: number
   rating: number
-  genres: string[]
+  genres: AnimeGenre[]
   image: string
   largeImage?: string
   heroImage?: string
@@ -27,7 +31,7 @@ export interface ApiData {
 }
 
 export interface FilterOptions {
-  genre: string | null
+  genre: {id: number; name: string} | null
   type: string | null
   status: string | null
   // tbc
