@@ -54,7 +54,7 @@ interface FilterSectionProps {
   options: (string | Genre)[]
   category: keyof ActiveFilters
   activeFilters: ActiveFilters
-  onFilterChange: (category: keyof ActiveFilters, value: string) => void
+  onFilterChange: (category: keyof ActiveFilters, value: string | Genre) => void
 }
 
 
