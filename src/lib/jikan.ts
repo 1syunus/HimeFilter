@@ -12,7 +12,7 @@ interface RawJikanAnime {
     type: string
     episodes: number
     score: number
-    genres: Array<{name: string}>
+    genres: Array<{mal_id: number; name: string}>
     images: {
         jpg: {
             image_url: string
@@ -58,7 +58,9 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
     const year = jikanAnime.aired?.prop?.from?.year || (jikanAnime.aired?.string ? parseInt(jikanAnime.aired.string.match(/\b\d{4}\b/)?.[0] || "0", 10) : 0)
     const episodes = jikanAnime.episodes || 0
     const rating = jikanAnime.score || 0
-    const genres = jikanAnime.genres ? jikanAnime.genres.map((g: {name: string}) => g.name) : []
+    const genres = jikanAnime.genres
+        ? jikanAnime.genres.map((g: {mal_id: number; name: string}) => ({
+            id: g.mal_id, name: g.name,})) : []
     const duration = jikanAnime.duration || "N/A"
     const imageUrl = jikanAnime.images?.webp?.image_url || jikanAnime.images?.jpg?.image_url || "https://dummyimage.com/480x720/555/fff&text=No+Image"
     const largeImage = jikanAnime.images.webp?.large_image_url || jikanAnime.images.jpg?.large_image_url || imageUrl
