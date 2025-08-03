@@ -595,9 +595,16 @@ const [hasMore, setHasMore] = useState<boolean>(true)
           ? option
           : (option as Genre).name
 
-          const isActive = Array.isArray(activeFilters[category])
-          ? (activeFilters[category] as string[]).includes(optionValue)
-          : activeFilters[category] === optionValue
+          const isActive = 
+          category === "genres"
+          ? (activeFilters.genres as Genre[]).some(
+            g => g.id === (option as Genre).id
+          )
+          : Array.isArray(activeFilters[category])
+          ? (activeFilters[category] as number[]).includes(
+              typeof option === "string" ? parseInt(option, 10) : option.id
+            )
+          : false
 
           return (
             <label key={optionValue} className="flex items-center cursor-pointer group">
