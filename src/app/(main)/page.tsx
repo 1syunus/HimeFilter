@@ -530,32 +530,35 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   // }, [searchQuery])
 
   // handler functions
-  const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
+  const handleFilterChange = (category: keyof ActiveFilters, value: string | Genre): void => {
     setActiveFilters(prev => {
-      const currentValues = prev[category]
-      if (Array.isArray(currentValues)) {
-        // handle genres
-        if (category === "genres") {
-          const numVal = parseInt(value, 10)
-          return {
-            ...prev,
-            genres: prev.genres.includes(numVal)
-            ? prev.genres.filter(g => g !== numVal)
-            : [...prev.genres, numVal],
-          }
-        }
-        // default string arrays
-        const stringArray = currentValues as string[]
+      // handle genres (object)
+      if (category === "genres") {
+        const genre = value as Genre
+        const exists = prev.genres.some(g => g.id === genre.id)
+
         return {
           ...prev,
-          [category]: stringArray.includes(value)
-          ? stringArray.filter(item => item !== value)
-          : [...stringArray, value]
+          genres: exists
+            ? prev.genres.filter(g => g.id !== genre.id)
+            : [...prev.genres, genre]
+        }
+      }
+      // non-genre handling (string)
+      if (Array.isArray(prev[category])) {
+        const stringValue = typeof value === "string" ? value : value.id.toString()
+        const stringArray = prev[category] as string[]
+
+        return {
+          ...prev,
+          [category]: stringArray.includes(stringValue)
+          ? stringArray.filter(item => item !== stringValue)
+          : [...stringArray, stringValue]
         }
       } else {
         return {
           ...prev,
-          [category]: value
+          [category]: typeof value === "string" ? value : value.name
         }
       }
     })
