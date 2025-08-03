@@ -19,7 +19,7 @@ interface ActiveFilters {
   subtitleLanguages: string[]
   status: string[]
   year: string
-  genres: number[]
+  genres: {id: number; name: string}[]
 }
 
 interface AnimeData {
