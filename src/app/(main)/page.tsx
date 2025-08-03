@@ -1339,16 +1339,17 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                 </div>
               )}
               {Object.entries(activeFilters).map(([category, values]) => 
-                Array.isArray(values) ? values.map((value: string) => (
-                  <div key={`${category}-${value}`} className="
-                    bg-gray-700
-                    text-white
-                    px-3 py-1 
-                    rounded-full 
-                    text-sm
-                    flex items-center
-                    ">
-                    {value}
+                Array.isArray(values) ? values.map((value) => (
+                  <div key={`${category}-${typeof value === "string" ? value : value.id}`}
+                    className="
+                      bg-gray-700
+                      text-white
+                      px-3 py-1 
+                      rounded-full 
+                      text-sm
+                      flex items-center
+                      ">
+                    {typeof value === "string" ? value : value.name}
                     <X
                       className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
                       onClick={() => removeActiveFilter(category as keyof ActiveFilters, value)}
@@ -1356,10 +1357,10 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                   </div>
                 )) : values && (
                   <div key={category} className="bg-gray-700 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                    {category} : {values}
+                    {category} : {typeof values === "string" ? values : values.name}
                     <X
                       className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
-                      onClick={() => removeActiveFilter(category as keyof ActiveFilters)}
+                      onClick={() => removeActiveFilter(category as keyof ActiveFilters, values)}
                     />
                   </div>
                 )
