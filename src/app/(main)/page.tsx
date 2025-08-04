@@ -620,10 +620,13 @@ const [hasMore, setHasMore] = useState<boolean>(true)
               <input
               type="checkbox"
               checked={isActive}
-              onChange={() => onFilterChange(category, {
-                id: (option as Genre).id,
-                name: (option as Genre).name
-              })}
+              onChange={() => onFilterChange(category, 
+                typeof option === "string"
+                ? option
+                : {
+                  id: (option as Genre).id,
+                  name: (option as Genre).name
+                })}
               className="sr-only"
               />
               <div className={`w-4 h-4 rounded border-2 mr-3 flex items-center justify-center transition-all
