@@ -333,12 +333,15 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         // handle array based filters
         // genre case
         if (filterType === "genres") {
-          filterValue.forEach((val) => {
-            params.append("genres", val.toString())
+          (filterValue as Genre[]).forEach((val) => {
+            console.log("Appending genre ID to params:", val.id)
+            params.append("genres", val.id.toString())
           })
         } else {
           filterValue.forEach((val) => {
-            if (val) params.append(filterType, val)
+            if (val) {
+              console.log(`Appending ${filterType}:`, val)
+              params.append(filterType, val)}
           })
         }
       } else if (typeof filterValue === "string") {
@@ -546,7 +549,13 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       }
       // non-genre handling (string)
       if (Array.isArray(prev[category])) {
-        const stringValue = typeof value === "string" ? value : value.id.toString()
+        console.log("[handleFilterChange] Non-genre filter:", { category, value })
+        const stringValue =
+          typeof value === "string"
+            ? value
+            : value && "id" in value
+              ? value.id.toString()
+              : ""
         const stringArray = prev[category] as string[]
 
         return {
