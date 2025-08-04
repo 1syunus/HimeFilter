@@ -610,8 +610,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
             g => g.id === (option as Genre).id
           )
           : Array.isArray(activeFilters[category])
-          ? (activeFilters[category] as number[]).includes(
-              typeof option === "string" ? parseInt(option, 10) : option.id
+          ? (activeFilters[category] as string[]).includes(
+              typeof option === "string" ? option : (option as Genre).name
             )
           : false
 
