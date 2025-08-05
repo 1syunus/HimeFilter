@@ -108,6 +108,7 @@ const App: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>("")
+  const [yearInput, setYearInput] = useState<string>("")
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [sortBy, setSortBy] = useState<SortOption>("newest")
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
@@ -119,6 +120,7 @@ const App: React.FC = () => {
   const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
   const videoLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const debouncedQuery = useDebounce(searchQuery, 300)
+  const debouncedYear = useDebounce(yearInput, 700)
 
   // ref for player instance
   // const playerRef = useRef<any>(null)
@@ -501,6 +503,14 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     }
   }, [featuredAnime, videoLoaded])
 
+  // useEffect for debounced year input
+  useEffect(() => {
+    setActiveFilters(currentFilters => ({
+      ...currentFilters,
+      year: debouncedYear
+    }))
+  }, [debouncedYear])
+
   // // useEffect for debounced search
   // useEffect(() => {
   //   // skip debounce on initial load
@@ -658,11 +668,9 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     setSearchQuery(e.target.value)
   }
 
-  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setActiveFilters(prev => ({...prev, year: e.target.value}))
-    setPage(1)
-    setHasMore(true)
-  }
+  // const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  //   setActiveFilters(prev => ({...prev, year: e.target.value}))
+  // }
 
   const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void => {
     if (value) {
@@ -1218,8 +1226,8 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     <input
                       type="number"
                       placeholder="e.g., 2024"
-                      value={activeFilters.year}
-                      onChange={handleYearChange}
+                      value={yearInput}
+                      onChange={(e) => setYearInput(e.target.value)}
                       className="
                         w-full
                         px-3 py-2
@@ -1326,8 +1334,8 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     <input
                       type="number"
                       placeholder="e.g., 2024"
-                      value={activeFilters.year}
-                      onChange={handleYearChange}
+                      value={yearInput}
+                      onChange={(e) => setYearInput(e.target.value)}
                       className="
                         w-full
                         px-3 py-2
