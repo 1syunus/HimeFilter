@@ -374,16 +374,23 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     setLoading(true)
     setError(null)
 
-    let apiUrl = "/api/browse"
-    let currentQueryParams = buildQueryParams()
+// let apiUrl = hasActiveFilter() ? "/api/anime" : "/api/browse"
+// let currentQueryParams = buildQueryParams()
+const apiUrl = "/api/anime"
+    const currentQueryParams = buildQueryParams().toString()
 
-    if (debouncedQuery) {
-      apiUrl = "/api/search"
-      currentQueryParams = `q=${encodeURIComponent(debouncedQuery)}&page=${page}&limit=24`
-    }
+    // if (debouncedQuery) {
+//         apiUrl = "/api/search"
+//         currentQueryParams = `q=${encodeURIComponent(debouncedQuery)}&page=${page}&limit=24`
+//     }
 
     try {
-      const response = await fetch(`${apiUrl}?${currentQueryParams}`)
+      const response = await fetch(`${apiUrl}?${currentQueryParams}`, {signal})
+      if (response.headers.get("Content-Type")?.includes("application/json") === false) {
+        const text = await response.text()
+        throw new Error(`Expected JSON, but recieved HTML/Text. Status: ${response.status}. Response: ${text.substring(0, 200)}...`)
+      }
+
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(`API error: ${response.status} - ${errorData.message || response.statusText}`)
@@ -405,7 +412,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     } finally {
       setLoading(false)
     }
-  }, [debouncedQuery, page, buildQueryParams])
+  }, [buildQueryParams])
 
   // data fetch
   useEffect(() => {
