@@ -28,9 +28,7 @@ export async function GET(request: Request) {
             throw new Error(`Jikan API error: ${jikanResponse.status} - ${errorData.message || jikanResponse.statusText}`)            
         }
         const data = await jikanResponse.json()
-        console.log("RAW JIKAN RESPONSE (should be good now):", JSON.stringify(data, null, 2))
         const transformedData = data.data ? data.data.map(transformJikanAnime) : []
-        console.log("TRANSFORMED DATA SENT TO FRONTEND:", transformedData)
         return NextResponse.json(transformedData)    
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)
