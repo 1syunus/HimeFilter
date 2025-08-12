@@ -426,9 +426,9 @@ const apiUrl = "/api/anime"
     const currentQueryParams = buildQueryParams().toString()
 
     // if (debouncedQuery) {
-//         apiUrl = "/api/search"
-//         currentQueryParams = `q=${encodeURIComponent(debouncedQuery)}&page=${page}&limit=24`
-//     }
+//   apiUrl = "/api/search"
+//   currentQueryParams = `q=${encodeURIComponent(debouncedQuery)}&page=${page}&limit=24`
+// }
 
     try {
       const response = await fetch(`${apiUrl}?${currentQueryParams}`, {signal})
