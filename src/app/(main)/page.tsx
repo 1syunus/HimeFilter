@@ -388,8 +388,35 @@ params.append("limit", "24")
 return params
   }, [activeFilters, sortBy, debouncedQuery, page])
 
+  // reset to default grid
+  const fetchBrowseData = useCallback(async (options: {signal: AbortSignal}) => {
+    const {signal} = options
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch("/api/browse", {signal})
+      if (!response.ok) {
+        throw new Error(`Failed to fetch browse data: ${response.statusText}`)
+      }
+      const browseData: AnimeData[] = await response.json()
+      const uniqueBrowseData = deduplicateAnime(browseData)
+      setAnimeList(uniqueBrowseData)
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") {
+        console.log("Browse fetch aborted")
+        return
+      }
+      if (err instanceof Error) setError(err.message)
+        else setError("An unknown error occured while resetting.")
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
   // fetch based on current state
-  const fetchFilteredAndSearchedAnime = useCallback(async (isLoadMore: boolean = false) => {
+  const fetchFilteredAndSearchedAnime = useCallback(async (options: {isLoadMore?: boolean; signal:AbortSignal}) => {
+    const {isLoadMore = false, signal} = options
     setLoading(true)
     setError(null)
 
@@ -421,6 +448,10 @@ const apiUrl = "/api/anime"
       setHasMore(data.length > 0)
     } catch (err: unknown) {
       console.log("Failed to fetch anime:", err)
+if (err instanceof Error && err.name === "AbortError") {
+        console.log("Fetch Aborted")
+        return
+      }
       if (err instanceof Error) {
         setError(err.message)
       } else if (typeof err === "string") {
@@ -485,11 +516,34 @@ const apiUrl = "/api/anime"
   //     fetchFilteredAndSearchedAnime(false)
   //   }
   // }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
+const isInitialMount = useRef(true)
   useEffect(() => {
     // this version causes cls error on initial load
+
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+
+    const controller = new AbortController()
+    const shouldReset = !debouncedQuery && !hasActiveFilter()
+
+    if (shouldReset) {
+      console.log("RESETTING to DEFAULT VIEW")
+      fetchBrowseData({signal: controller.signal})
+    } else {
+      console.log("FETCHING FILTERED/SEARCHED")
     const isLoadMore = page > 1
-    fetchFilteredAndSearchedAnime(isLoadMore)
-  }, [activeFilters, debouncedQuery, page, sortBy, fetchFilteredAndSearchedAnime])
+    fetchFilteredAndSearchedAnime({isLoadMore, signal: controller.signal})
+    }
+
+    // cleanup
+    return () => {
+      console.log("Cleanup: aborting prev fetch")
+      controller.abort()
+    }
+    
+  }, [activeFilters, debouncedQuery, page, sortBy, fetchBrowseData, hasActiveFilter, fetchFilteredAndSearchedAnime])
 
   // mobile menu close functionality
   useEffect(() => {
