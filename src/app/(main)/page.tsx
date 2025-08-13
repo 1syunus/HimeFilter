@@ -764,7 +764,10 @@ const isInitialMount = useRef(true)
     if (value) {
       handleFilterChange(category, value)
     } else {
-      setActiveFilters(prev => ({...prev, [category]: ""}))
+      setActiveFilters(prev => ({
+        ...prev,
+        [category]: Array.isArray(prev[category]) ? [] : ""
+      }))
     }
   }
 
