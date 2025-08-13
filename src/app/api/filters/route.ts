@@ -12,10 +12,26 @@ export async function GET(request: Request) {
         }
         const genresData = await genresResponse.json()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const availableGenres = genresData.data ? genresData.data.map((g: any) => ({id: g.mal_id, name: g.name})) : []
+        const availableGenres = genresData.data
+            ? genresData.data.map((g: {mal_id: number; name: string}) => ({
+                value: g.mal_id.toString(),
+                label: g.name
+                }))
+            : []
+        // const availableGenres = genresData.data ? genresData.data.map((g: any) => ({id: g.mal_id, name: g.name})) : []
         
-        const contentTypes = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
-        const statusOptions = ["Finished Airing", "Currently Airing", "Not yet aired"]
+        // const contentTypes = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
+        const contentTypesRaw = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
+        const contentTypes = contentTypesRaw.map(type => ({
+            value: type.toLowerCase(),
+            label: type
+        }))
+        
+        const statusOptions = [
+            {label: "Finished Airing", value: "complete"},
+            {label: "Currently Airing", value: "airing"},
+            {label: "Not yet aired", value: "upcoming"}
+        ]
         // tbd
         const availableAudioLanguages: string[] = []
         const availableSubtitleLanguages: string[] = []
