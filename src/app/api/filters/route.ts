@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+import { FilterOption } from "@/types/index";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: Request) {
@@ -12,7 +13,7 @@ export async function GET(request: Request) {
         }
         const genresData = await genresResponse.json()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const availableGenres = genresData.data
+        const availableGenres: FilterOption[] = genresData.data
             ? genresData.data.map((g: {mal_id: number; name: string}) => ({
                 value: g.mal_id.toString(),
                 label: g.name
@@ -22,12 +23,12 @@ export async function GET(request: Request) {
         
         // const contentTypes = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
         const contentTypesRaw = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
-        const contentTypes = contentTypesRaw.map(type => ({
+        const contentTypes: FilterOption[] = contentTypesRaw.map(type => ({
             value: type.toLowerCase(),
             label: type
         }))
         
-        const statusOptions = [
+        const statusOptions: FilterOption[] = [
             {label: "Finished Airing", value: "complete"},
             {label: "Currently Airing", value: "airing"},
             {label: "Not yet aired", value: "upcoming"}
