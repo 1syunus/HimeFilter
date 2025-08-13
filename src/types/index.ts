@@ -30,6 +30,11 @@ export interface ApiData {
   statusOptions: string[]
 }
 
+export interface FilterOption {
+  value: string
+  label: string
+}
+
 export interface FilterOptions {
   genre: {id: number; name: string} | null
   type: string | null
