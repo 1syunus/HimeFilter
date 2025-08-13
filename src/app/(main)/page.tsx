@@ -44,14 +44,14 @@ interface AnimeData {
 interface FilterOptionsResponse {
   availableAudioLanguages: string[]
   availableSubtitleLanguages: string[]
-  availableGenres: Genre[]
-  contentTypes: string[]
-  statusOptions: string[]
+  availableGenres: FilterOption[]
+  contentTypes: FilterOption[]
+  statusOptions: FilterOption[]
 }
 
 interface FilterSectionProps {
   title: string
-  options: (string | Genre)[]
+  options: Array<{value: string; label: string}>
   category: keyof ActiveFilters
   activeFilters: ActiveFilters
   onFilterChange: (category: keyof ActiveFilters, value: string | Genre) => void
