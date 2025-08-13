@@ -19,7 +19,8 @@ interface ActiveFilters {
   subtitleLanguages: string[]
   status: string[]
   year: string
-  genres: {id: number; name: string}[]
+  // genres: {id: number; name: string}[]
+  genres: string[]
 }
 
 interface AnimeData {
@@ -54,7 +55,7 @@ interface FilterSectionProps {
   options: Array<{value: string; label: string}>
   category: keyof ActiveFilters
   activeFilters: ActiveFilters
-  onFilterChange: (category: keyof ActiveFilters, value: string | Genre) => void
+  onFilterChange: (category: keyof ActiveFilters, value: string) => void
 }
 
 
