@@ -624,41 +624,48 @@ const isInitialMount = useRef(true)
   // }, [searchQuery])
 
   // handler functions
-  const handleFilterChange = (category: keyof ActiveFilters, value: string | Genre): void => {
+  const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
     setActiveFilters(prev => {
-      // handle genres (object)
-      if (category === "genres") {
-        const genre = value as Genre
-        const exists = prev.genres.some(g => g.id === genre.id)
+      // // handle genres (object)
+      // if (category === "genres") {
+      //   const genre = value as Genre
+      //   const exists = prev.genres.some(g => g.id === genre.id)
 
-        return {
-          ...prev,
-          genres: exists
-            ? prev.genres.filter(g => g.id !== genre.id)
-            : [...prev.genres, genre]
-        }
-      }
-      // non-genre handling (string)
+      //   return {
+      //     ...prev,
+      //     genres: exists
+      //       ? prev.genres.filter(g => g.id !== genre.id)
+      //       : [...prev.genres, genre]
+      //   }
+      // }
+      // unified string handling
       if (Array.isArray(prev[category])) {
-        console.log("[handleFilterChange] Non-genre filter:", { category, value })
-        const stringValue =
-          typeof value === "string"
-            ? value
-            : value && "id" in value
-              ? value.id.toString()
-              : ""
+        // const stringValue =
+        //   typeof value === "string"
+        //     ? value
+        //     : value && "id" in value
+        //       ? value.id.toString()
+        //       : ""
         const stringArray = prev[category] as string[]
+        const exists = stringArray.includes(value)
 
         return {
           ...prev,
-          [category]: stringArray.includes(stringValue)
-          ? stringArray.filter(item => item !== stringValue)
-          : [...stringArray, stringValue]
+          [category]: exists
+            ? stringArray.filter(item => item !== value)
+            : [...stringArray, value]
         }
+
+        // return {
+        //   ...prev,
+        //   [category]: stringArray.includes(stringValue)
+        //   ? stringArray.filter(item => item !== stringValue)
+        //   : [...stringArray, stringValue]
+        // }
       } else {
         return {
           ...prev,
-          [category]: typeof value === "string" ? value : value.name
+          [category]: value
         }
       }
     })
