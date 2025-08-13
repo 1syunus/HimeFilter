@@ -155,11 +155,11 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     genres: apiFilterOptions.availableGenres
   }
 
-    const hasActiveFilter = useCallback((): boolean => {
+  const hasActiveFilter = useCallback((): boolean => {
     return Object.values(activeFilters).some(arr =>
       Array.isArray(arr) ? arr.length > 0 : arr !== ""
-    ) || searchQuery !== ""
-  }, [activeFilters, searchQuery])
+    )
+  }, [activeFilters])
 
   // load iframe api script
   // useEffect(() => {
