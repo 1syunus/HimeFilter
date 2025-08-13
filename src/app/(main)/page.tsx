@@ -1,7 +1,7 @@
 "use client"
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
-import { FilterOptions } from "@/types/index"
+import { FilterOptions, FilterOption } from "@/types/index"
 import { useDebounce } from "../components/hooks/useDebounce"
 import { normalize } from "path"
 
