@@ -1457,8 +1457,16 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                 </div>
               )}
               {Object.entries(activeFilters).map(([category, values]) => 
-                Array.isArray(values) ? values.map((value) => (
-                  <div key={`${category}-${typeof value === "string" ? value : value.id}`}
+                Array.isArray(values) ? values.map((value) => {
+                  let displayLabel = value
+                  if (category === "genres") {
+                    const match = apiFilterOptions.availableGenres.find(g => g.value === value)
+                    if (match) displayLabel = match.label
+                  }
+                  
+                return (
+
+                  <div key={`${category}-${value}`}
                     className="
                       bg-gray-700
                       text-white
@@ -1467,13 +1475,13 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                       text-sm
                       flex items-center
                       ">
-                    {typeof value === "string" ? value : value.name}
+                    {displayLabel}
                     <X
                       className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
                       onClick={() => removeActiveFilter(category as keyof ActiveFilters, value)}
                     />
                   </div>
-                )) : values && (
+                )}) : values && (
                   <div key={category} className="bg-gray-700 text-white px-3 py-1 rounded-full text-sm flex items-center">
                     {category} : {typeof values === "string" ? values : values.name}
                     <X
