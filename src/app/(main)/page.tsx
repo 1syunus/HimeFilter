@@ -311,12 +311,12 @@ params.append("limit", "24")
     }
 
     // check if in pure default (i.e., no filters, no query, no unique sort order)
-    const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
-    // otherwise
-    if (!isAbsoluteBrowseDefault) {
-      const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || debouncedQuery !== "") && sortBy === "newest"
+    // const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
+    // // otherwise
+    // if (!isAbsoluteBrowseDefault) {
+    //   const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || debouncedQuery !== "") && sortBy === "newest"
 
-      if (!isFilteredWithFrontendDefaultSort) {
+      // if (!isFilteredWithFrontendDefaultSort) {
         switch (sortBy) {
           case "newest":
             params.append("order_by", "start_date")
@@ -334,59 +334,70 @@ params.append("limit", "24")
             params.append("order_by", "title")
             params.append("sort", "asc")
             break
-        }
-      }
+        // }
+      // }
     }
-// Object.entries(activeFilters).forEach(([filterType, filterValue]) => {
-//   if (Array.isArray(filterValue)) {
-//     // handle array based filters
-//     // genre case
-//     if (filterType === "genres") {
-//       (filterValue as Genre[]).forEach((val) => {
-//         console.log("Appending genre ID to params:", val.id)
-//         params.append("genres", val.id.toString())
-//       })
-//     } else {
-//       filterValue.forEach((val) => {
-//         if (val) {
-//           console.log(`Appending ${filterType}:`, val)
-//           params.append(filterType, val)}
-//       })
-        //     }
+    // Object.entries(activeFilters).forEach(([filterType, filterValue]) => {
+    //   if (Array.isArray(filterValue)) {
+    //     // handle array based filters
+    //     // genre case
+    //     if (filterType === "genres") {
+    //       (filterValue as Genre[]).forEach((val) => {
+    //         console.log("Appending genre ID to params:", val.id)
+    //         params.append("genres", val.id.toString())
+    //       })
+    //     } else {
+    //       filterValue.forEach((val) => {
+    //         if (val) {
+    //           console.log(`Appending ${filterType}:`, val)
+    //           params.append(filterType, val)}
+    //       })
+    //     }
     //   } else if (typeof filterValue === "string") {
-//     // handle string based filters
-//     if (filterValue && filterValue !== "undefined" && filterValue !== "") {
-//       // map frontend names to backend names
-//       if (filterType === "contentType") {
-//         params.append("type", filterValue)
-//       } else if (filterType === "status") {
-//         params.append("status", filterValue)
-//       } else if (filterType === "year") {
-//         params.append("start_date", `${filterValue}-01-01`)
-//       } else {
-//         params.append(filterType, filterValue)
-          //       }
+    //     // handle string based filters
+    //     if (filterValue && filterValue !== "undefined" && filterValue !== "") {
+    //       // map frontend names to backend names
+    //       if (filterType === "contentType") {
+    //         params.append("type", filterValue)
+    //       } else if (filterType === "status") {
+    //         params.append("status", filterValue)
+    //       } else if (filterType === "year") {
+    //         params.append("start_date", `${filterValue}-01-01`)
+    //       } else {
+    //         params.append(filterType, filterValue)
+    //       }
     //     }
     //   }
     // })
     Object.entries(activeFilters).forEach(([key, value]) => {
-      if (key === "genres" && Array.isArray(value) && value.length > 0) {
-        const genreIds = (value as Genre[]).map(g => g.id).join(',')
-        if (genreIds) params.append("genres", genreIds)
-          // year
-      } else if (key === "year" && typeof value === "string" && value) {
-      params.append("start_date", `${value}-01-01`)
-        // other
-      } else if (typeof value === "string" && value && key !== "year") {
-        const paramKey = key === "contentType" ? "type" : key
-        params.append(paramKey, value)
-      } else if (Array.isArray(value)) {
-        const values = value.join(",")
-        if (values) params.append(key, values)
-    }
-})    
+      let paramKey = key
+      if (key === "contentType") {
+        paramKey = "type"
+      }
+
+      if (Array.isArray(value) && value.length > 0 ) {
+        params.append(paramKey, value.join(","))
+      } else if (typeof value === "string" && value && key === "year") {
+        params.append("start_date", `${value}-01-01`)
+      }
+    })
+    //   if (key === "genres" && Array.isArray(value) && value.length > 0) {
+    //     const genreIds = (value as Genre[]).map(g => g.id).join(',')
+    //     if (genreIds) params.append("genres", genreIds)
+    //       // year
+    //   } else if (key === "year" && typeof value === "string" && value) {
+    //     params.append("start_date", `${value}-01-01`)
+    //     // other
+    //   } else if (typeof value === "string" && value && key !== "year") {
+    //     const paramKey = key === "contentType" ? "type" : key
+    //     params.append(paramKey, value)
+    //   } else if (Array.isArray(value)) {
+    //     const values = value.join(",")
+    //     if (values) params.append(key, values)
+    //   }
+    // })    
     // return params.toString()
-return params
+    return params
   }, [activeFilters, sortBy, debouncedQuery, page])
 
   // reset to default grid
