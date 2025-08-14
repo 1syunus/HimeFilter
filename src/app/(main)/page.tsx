@@ -323,7 +323,7 @@ params.append("limit", "24")
             params.append("sort", "desc")
             break
           case "popular":
-            params.append("order_by", "popularity")
+            params.append("order_by", "score")
             params.append("sort", "desc")
             break
           case "episodes":
