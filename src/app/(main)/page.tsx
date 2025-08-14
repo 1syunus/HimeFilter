@@ -683,6 +683,7 @@ const isInitialMount = useRef(true)
       genres: []
     })
     setSearchQuery("")
+    setYearInput("")
     setPage(1)
   }
   
