@@ -303,25 +303,39 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams()
     params.append("page", page.toString())
-params.append("limit", "24")
+    params.append("limit", "24")
 
     // add search query if exists
     if (debouncedQuery) {
       params.append("q", debouncedQuery)
     }
 
-    // check if in pure default (i.e., no filters, no query, no unique sort order)
-    // const isAbsoluteBrowseDefault = !hasActiveFilter() && sortBy === "newest"
-    // // otherwise
-    // if (!isAbsoluteBrowseDefault) {
-    //   const isFilteredWithFrontendDefaultSort = (hasActiveFilter() || debouncedQuery !== "") && sortBy === "newest"
 
-      // if (!isFilteredWithFrontendDefaultSort) {
         switch (sortBy) {
-          case "newest":
+          case "newest":{
+            const getCurrentSeasonAndYear = () => {
+              const now = new Date()
+              const year = now.getFullYear()
+              const month = now.getMonth()
+              const season =
+                month >= 0 && month <= 2
+                  ? "winter"
+                  : month >= 3 && month <= 5
+                  ? "spring"
+                  : month >= 6 && month <= 8
+                  ? "summer"
+                  : "fall"
+
+              return {season, year}
+            }
+
+            const {season, year} = getCurrentSeasonAndYear()
+            params.append("season", season)
+            params.append("year", year.toString())
             params.append("order_by", "start_date")
             params.append("sort", "desc")
             break
+          }
           case "popular":
             params.append("order_by", "score")
             params.append("sort", "desc")
@@ -334,8 +348,6 @@ params.append("limit", "24")
             params.append("order_by", "title")
             params.append("sort", "asc")
             break
-        // }
-      // }
     }
    
     Object.entries(activeFilters).forEach(([key, value]) => {
