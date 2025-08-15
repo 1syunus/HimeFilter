@@ -661,37 +661,42 @@ const isInitialMount = useRef(true)
       <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{title}</h3>
       <div className="space-y-2">
         {options.map((option) => {
-          const optionValue = typeof option === "string"
-          ? option
-          : (option as Genre).id.toString()
+          // const optionValue = typeof option === "string"
+          // ? option
+          // : (option as Genre).id.toString()
 
-          const optionLabel = typeof option === "string"
-          ? option
-          : (option as Genre).name
+          // const optionLabel = typeof option === "string"
+          // ? option
+          // : (option as Genre).name
 
-          const isActive = 
-          category === "genres"
-          ? (activeFilters.genres as Genre[]).some(
-            g => g.id === (option as Genre).id
-          )
-          : Array.isArray(activeFilters[category])
-          ? (activeFilters[category] as string[]).includes(
-              typeof option === "string" ? option : (option as Genre).name
-            )
-          : false
+          // const isActive = 
+          // category === "genres"
+          // ? (activeFilters.genres as Genre[]).some(
+          //   g => g.id === (option as Genre).id
+          // )
+          // : Array.isArray(activeFilters[category])
+          // ? (activeFilters[category] as string[]).includes(
+          //     typeof option === "string" ? option : (option as Genre).name
+          //   )
+          // : false
 
+          const isActive = Array.isArray(activeFilters[category])
+            ? activeFilters[category].includes(option.value)
+            : activeFilters[category] === option.value
+            
           return (
-            <label key={optionValue} className="flex items-center cursor-pointer group">
+            <label key={option.value} className="flex items-center cursor-pointer group">
               <input
               type="checkbox"
               checked={isActive}
-              onChange={() => onFilterChange(category, 
-                typeof option === "string"
-                ? option
-                : {
-                  id: (option as Genre).id,
-                  name: (option as Genre).name
-                })}
+              // onChange={() => onFilterChange(category, 
+              //   typeof option === "string"
+              //   ? option
+              //   : {
+              //     id: (option as Genre).id,
+              //     name: (option as Genre).name
+              //   })}
+              onChange={() => onFilterChange(category, option.value)}
               className="sr-only"
               />
               <div className={`w-4 h-4 rounded border-2 mr-3 flex items-center justify-center transition-all
@@ -703,8 +708,8 @@ const isInitialMount = useRef(true)
                   <div className="w-2 h-2 bg-white rounded-sm"></div>
                 )}
               </div>
+                {option.label}
               <span className="text-gray-300 text-sm group-hover:text-white transition colors">
-                {optionLabel}
               </span>
             </label>
           )
