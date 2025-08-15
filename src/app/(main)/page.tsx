@@ -337,38 +337,7 @@ params.append("limit", "24")
         // }
       // }
     }
-    // Object.entries(activeFilters).forEach(([filterType, filterValue]) => {
-    //   if (Array.isArray(filterValue)) {
-    //     // handle array based filters
-    //     // genre case
-    //     if (filterType === "genres") {
-    //       (filterValue as Genre[]).forEach((val) => {
-    //         console.log("Appending genre ID to params:", val.id)
-    //         params.append("genres", val.id.toString())
-    //       })
-    //     } else {
-    //       filterValue.forEach((val) => {
-    //         if (val) {
-    //           console.log(`Appending ${filterType}:`, val)
-    //           params.append(filterType, val)}
-    //       })
-    //     }
-    //   } else if (typeof filterValue === "string") {
-    //     // handle string based filters
-    //     if (filterValue && filterValue !== "undefined" && filterValue !== "") {
-    //       // map frontend names to backend names
-    //       if (filterType === "contentType") {
-    //         params.append("type", filterValue)
-    //       } else if (filterType === "status") {
-    //         params.append("status", filterValue)
-    //       } else if (filterType === "year") {
-    //         params.append("start_date", `${filterValue}-01-01`)
-    //       } else {
-    //         params.append(filterType, filterValue)
-    //       }
-    //     }
-    //   }
-    // })
+   
     Object.entries(activeFilters).forEach(([key, value]) => {
       let paramKey = key
       if (key === "contentType") {
@@ -381,22 +350,7 @@ params.append("limit", "24")
         params.append("start_date", `${value}-01-01`)
       }
     })
-    //   if (key === "genres" && Array.isArray(value) && value.length > 0) {
-    //     const genreIds = (value as Genre[]).map(g => g.id).join(',')
-    //     if (genreIds) params.append("genres", genreIds)
-    //       // year
-    //   } else if (key === "year" && typeof value === "string" && value) {
-    //     params.append("start_date", `${value}-01-01`)
-    //     // other
-    //   } else if (typeof value === "string" && value && key !== "year") {
-    //     const paramKey = key === "contentType" ? "type" : key
-    //     params.append(paramKey, value)
-    //   } else if (Array.isArray(value)) {
-    //     const values = value.join(",")
-    //     if (values) params.append(key, values)
-    //   }
-    // })    
-    // return params.toString()
+   
     return params
   }, [activeFilters, sortBy, debouncedQuery, page])
 
