@@ -695,6 +695,7 @@ const isInitialMount = useRef(true)
     })
     setSearchQuery("")
     setYearInput("")
+    setSortBy("newest")
     setPage(1)
   }
   
