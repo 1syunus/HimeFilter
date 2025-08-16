@@ -310,44 +310,45 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       params.append("q", debouncedQuery)
     }
 
+    switch (sortBy) {
+      case "newest":{
+        params.append("order_by", "start_date")
+        params.append("sort", "desc")
+        break
+      }
+      case "popular":
+        params.append("order_by", "score")
+        params.append("sort", "desc")
+        break
+      case "episodes":{
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = now.getMonth()
+        let seasonStartDate: string, seasonEndDate: string
 
-        switch (sortBy) {
-          case "newest":{
-            const getCurrentSeasonAndYear = () => {
-              const now = new Date()
-              const year = now.getFullYear()
-              const month = now.getMonth()
-              const season =
-                month >= 0 && month <= 2
-                  ? "winter"
-                  : month >= 3 && month <= 5
-                  ? "spring"
-                  : month >= 6 && month <= 8
-                  ? "summer"
-                  : "fall"
-
-              return {season, year}
-            }
-
-            const {season, year} = getCurrentSeasonAndYear()
-            params.append("season", season)
-            params.append("year", year.toString())
-            params.append("order_by", "start_date")
-            params.append("sort", "desc")
-            break
-          }
-          case "popular":
-            params.append("order_by", "score")
-            params.append("sort", "desc")
-            break
-          case "episodes":
-            params.append("order_by", "episodes")
-            params.append("sort", "desc")
-            break 
-          case "alphabetical":
-            params.append("order_by", "title")
-            params.append("sort", "asc")
-            break
+        if (month >= 0 && month <=2) {
+          seasonStartDate = `${year}-01-01`
+          seasonEndDate = `${year}-03-31`
+        } else if (month >= 3 && month <=5) {
+          seasonStartDate = `${year}-04-01`
+          seasonEndDate = `${year}-06-30`
+        } else if (month >= 6 && month <=8) {
+          seasonStartDate = `${year}-07-01`
+          seasonEndDate = `${year}-09-30`
+        } else {
+          seasonStartDate = `${year}-10-01`
+          seasonEndDate = `${year}-12-31`
+        }
+        params.append("start_date", seasonStartDate)
+        params.append("end_date", seasonEndDate)
+        params.append("order_by", "start_date")
+        params.append("sort", "desc")
+        break
+      }
+      case "alphabetical":
+        params.append("order_by", "title")
+        params.append("sort", "asc")
+        break
     }
    
     Object.entries(activeFilters).forEach(([key, value]) => {
