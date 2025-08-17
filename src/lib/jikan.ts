@@ -1,9 +1,18 @@
 // utility code for Jikan
-import {AnimeData} from "@/types/index"
+import {Aired, AnimeData} from "@/types/index"
 
 export const JIKAN_API_URL = "https://api.jikan.moe/v4"
 
 // define raw anime object structure (type safety)
+interface RawJikanAired {
+    from: string | null
+    to: string | null
+    prop: {
+        from: {day: number | null; month: number | null; year: number | null}
+        to: {day: number | null; month: number | null; year: number | null}
+    }
+    string: string
+}
 interface RawJikanAnime {
     mal_id: number
     title: string
@@ -34,12 +43,7 @@ interface RawJikanAnime {
             maximum_image_url?: string
         }
     }
-    aired: {
-        prop: {
-            from: {year: number}
-        }
-        string: string
-    }
+    aired: RawJikanAired | null
     status: string
     duration: string
 }
@@ -76,7 +80,11 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
         urlObj.search = ""
         trailerUrl = urlObj.toString()
     }
-
+    const aired: Aired = {
+        from: jikanAnime.aired?.from || null,
+        to: jikanAnime.aired?.to || null
+    }
+    
     // tbd
     const audioLanguages: string[] = []
     const subtitleLanguages: string[] = []
@@ -99,6 +107,7 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
         subtitleLanguages,
         status,
         year,
+        aired,
         episodes,
         rating,
         genres,
