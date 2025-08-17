@@ -3,6 +3,15 @@ import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { encode } from "punycode";
 
+// helper function for filtering future/0-ep titles
+const isReleased = (anime: {aired: {from: string | null}}): boolean => {
+    if (!anime.aired?.from) {
+        return false
+    }
+    const startDate = new Date(anime.aired.from)
+    return !isNaN(startDate.getTime()) && startDate <= new Date()
+}
+
 export async function GET(request: Request) {
     try {
         const {searchParams} = new URL(request.url)
@@ -28,7 +37,10 @@ export async function GET(request: Request) {
             throw new Error(`Jikan API error: ${jikanResponse.status} - ${errorData.message || jikanResponse.statusText}`)            
         }
         const data = await jikanResponse.json()
-        const transformedData = data.data ? data.data.map(transformJikanAnime) : []
+        const rawAnimeList = data.data || []
+        const filteredList = rawAnimeList.filter(isReleased)
+            .filter((anime: {episodes: number | null}) => anime.episodes && anime.episodes > 0)
+        const transformedData = filteredList.map(transformJikanAnime)
         return NextResponse.json(transformedData)    
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)
