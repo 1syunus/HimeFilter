@@ -361,6 +361,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         params.append(paramKey, value.join(","))
       } else if (typeof value === "string" && value && key === "year") {
         params.append("start_date", `${value}-01-01`)
+        params.append("end_date", `${value}-12-31`)
       }
     })
    
