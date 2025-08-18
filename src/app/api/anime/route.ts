@@ -21,12 +21,6 @@ export async function GET(request: Request) {
         const queryParams = new URLSearchParams(searchParams)
         queryParams.set("sfw", "true")
         const query = searchParams.get("q") || ""
-        // const page = searchParams.get("page") || "1"
-        // const limit = searchParams.get("limit") || "24"
-
-        // if (!query) {
-        //     return NextResponse.json([])
-        // }
 
         const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
         console.log(`fetching filtered/searched data from ${jikanUrl}`)
