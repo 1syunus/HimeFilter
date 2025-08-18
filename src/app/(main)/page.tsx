@@ -310,6 +310,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       params.append("q", debouncedQuery)
     }
 
+    const isYearFilterActive = !!activeFilters.year
     switch (sortBy) {
       case "newest":{
         params.append("order_by", "start_date")
@@ -320,7 +321,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         params.append("order_by", "score")
         params.append("sort", "desc")
         break
-      case "episodes":{
+      case "episodes":
+        if (!isYearFilterActive) {
         const now = new Date()
         const year = now.getFullYear()
         const month = now.getMonth()
@@ -341,10 +343,10 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         }
         params.append("start_date", seasonStartDate)
         params.append("end_date", seasonEndDate)
+      }
         params.append("order_by", "start_date")
         params.append("sort", "desc")
         break
-      }
       case "alphabetical":
         params.append("order_by", "title")
         params.append("sort", "asc")
