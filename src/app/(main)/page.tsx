@@ -303,7 +303,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams()
     params.append("page", page.toString())
-    params.append("limit", "24")
+    // params.append("limit", "24")
 
     // add search query if exists
     if (debouncedQuery) {
@@ -312,11 +312,12 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
     const isYearFilterActive = !!activeFilters.year
     switch (sortBy) {
-      case "newest":{
+      case "newest":
         params.append("order_by", "start_date")
+        params.append("end_date", new Date().toISOString().split("T")[0])
         params.append("sort", "desc")
         break
-      }
+      
       case "popular":
         params.append("order_by", "score")
         params.append("sort", "desc")
