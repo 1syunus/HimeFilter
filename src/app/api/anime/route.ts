@@ -12,6 +12,11 @@ const isReleased = (anime: {aired: {from: string | null}}): boolean => {
     return !isNaN(startDate.getTime()) && startDate <= new Date()
 }
 
+// helper to check valid episode count
+const hasEpisodes = (anime: {episodes: number | null}): boolean => {
+    return anime.episodes === null || anime.episodes > 0
+}
+
 export async function GET(request: Request) {
     try {
         const {searchParams} = new URL(request.url)
