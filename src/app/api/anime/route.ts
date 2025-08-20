@@ -41,6 +41,21 @@ const hasDurationOver5Minutes = (anime: {duration: string | null}): boolean => {
 export async function GET(request: Request) {
     try {
         const {searchParams} = new URL(request.url)
+
+        const CLIENT_PAGE_LIMIT = 24
+        const clientPage = parseInt(searchParams.get("page") || "1", 10)
+
+        // context awareness for privileging user year input
+        const isDateFiltered = searchParams.has("start_date") || searchParams.has("end_date")
+        const inputYear = parseInt(searchParams.get("start_date")?.substring(0, 4) || "0", 10)
+
+        // const userSelectedTypes = searchParams.get('type')?.split(',') || []
+        // const isShortTypeSelected = userSelectedTypes.some(type => ['music', 'pv', 'ona', 'special'].includes(type))
+        const isFutureYear = isDateFiltered && inputYear > new Date().getFullYear()
+
+        // smart pagination
+        searchParams.delete("page")
+
         // endpoint for all filtering and searching
         const jikanEndpoint = `${JIKAN_API_URL}/anime`
         // create new url object from incoming
