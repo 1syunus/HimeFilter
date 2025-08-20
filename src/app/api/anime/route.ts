@@ -61,21 +61,56 @@ export async function GET(request: Request) {
         // create new url object from incoming
         const queryParams = new URLSearchParams(searchParams)
         queryParams.set("sfw", "true")
-        const query = searchParams.get("q") || ""
+        queryParams.set("limit", "25")
+        if (isFutureYear) {
+            queryParams.delete("end_date")
+        }
 
+        let validResults: any[] = []
+        let jikanPage = 1
+        const MAX_JIKAN_PAGES_TO_CHECK = 15
+
+        // loop check until enough results found
+        while (validResults.length < (CLIENT_PAGE_LIMIT * clientPage) && jikanPage <= MAX_JIKAN_PAGES_TO_CHECK) {
+            queryParams.set("page", jikanPage.toString())
         const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
-        console.log(`fetching filtered/searched data from ${jikanUrl}`)
+            console.log(`AGGREGATING: Fetching Jikan page ${jikanPage}...`)
 
         const jikanResponse = await fetch(jikanUrl)
-        if (!jikanResponse.ok) {
-            const errorData = await jikanResponse.json()
-            throw new Error(`Jikan API error: ${jikanResponse.status} - ${errorData.message || jikanResponse.statusText}`)            
+            if (!jikanResponse.ok) break
+
+            const data = await jikanResponse.json()
+            const rawAnimeList = data.data || []
+            let newValidResults = rawAnimeList
+
+            if (isDateFiltered) {
+                if (isFutureYear) {
+                    newValidResults = rawAnimeList
+                } else {
+                    newValidResults = rawAnimeList
+                        .filter(hasEpisodes)
+                        .filter(hasScore)
+                        .filter(hasDurationOver5Minutes)
+                }
+            } else {
+                newValidResults = rawAnimeList
+                    .filter(isReleased)
+                    .filter(hasEpisodes)
+                    .filter(hasScore)
+                    .filter(hasDurationOver5Minutes)
+            }
+            validResults.push(...newValidResults)
+
+            if (!data.pagination?.has_next_page) break
+            jikanPage++
         }
-        const data = await jikanResponse.json()
-        const rawAnimeList = data.data || []
-        const filteredList = rawAnimeList.filter(isReleased)
-            .filter((anime: {episodes: number | null}) => anime.episodes && anime.episodes > 0)
-        const transformedData = filteredList.map(transformJikanAnime)
+
+        const startIndex = (clientPage - 1) * CLIENT_PAGE_LIMIT
+        const endIndex = (startIndex + CLIENT_PAGE_LIMIT)
+        const pageData = validResults.slice(startIndex, endIndex)
+
+        const transformedData = pageData.map(transformJikanAnime)
+     
         return NextResponse.json(transformedData)    
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)
