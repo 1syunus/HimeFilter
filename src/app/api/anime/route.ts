@@ -17,6 +17,27 @@ const hasEpisodes = (anime: {episodes: number | null}): boolean => {
     return anime.episodes === null || anime.episodes > 0
 }
 
+// score helper
+const hasScore = (anime: {score: number | null}): boolean => {
+    return anime.score !== null && anime.score > 0
+}
+
+// duration helper
+const hasDurationOver5Minutes = (anime: {duration: string | null}): boolean => {
+    if (!anime.duration) return false
+
+    const durationRegex = /(?:(\d+)\s*hr)?\s*(?:(\d+)\s*min)?/i
+    const match = anime.duration?.match(durationRegex)
+
+    if (!match) return false
+
+    const hours = match[1] ? parseInt(match[1]) : 0
+    const minutes = match[2] ? parseInt(match[2]) : 0
+    const totalMinutes = hours * 60 + minutes
+
+    return totalMinutes >= 5
+}
+
 export async function GET(request: Request) {
     try {
         const {searchParams} = new URL(request.url)
