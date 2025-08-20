@@ -426,10 +426,8 @@ const apiUrl = "/api/anime"
       }
       const data: AnimeData[] = await response.json()
       const uniqueData = deduplicateAnime(data)
-      const filteredData = uniqueData.filter(anime => anime.episodes && anime.episodes > 0)
-
-      setAnimeList(prev => (isLoadMore ? [...prev, ...filteredData] : filteredData))
-      setHasMore(filteredData.length > 0)
+      setAnimeList(prev => (isLoadMore ? [...prev, ...uniqueData] : uniqueData))
+      setHasMore(uniqueData.length > 0)
     } catch (err: unknown) {
       console.log("Failed to fetch anime:", err)
 if (err instanceof Error && err.name === "AbortError") {
