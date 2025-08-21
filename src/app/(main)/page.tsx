@@ -6,7 +6,7 @@ import { useDebounce } from "../components/hooks/useDebounce"
 import { normalize } from "path"
 
 // type defs
-type SortOption = "newest" | "episodes" | "popular" | "alphabetical"
+type SortOption = "newest" | "season" | "popular" | "alphabetical"
 
 interface Genre {
   id: number
@@ -322,7 +322,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         params.append("order_by", "score")
         params.append("sort", "desc")
         break
-      case "episodes":
+      case "season":
         if (!isYearFilterActive) {
         const now = new Date()
         const year = now.getFullYear()
@@ -1038,8 +1038,8 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                   focus:outline-none focus:border-orange-500 appearance-none
                   pr-8
                   ">
-                    <option value="newest">New This Week</option>
-                    <option value="episodes">Latest Episodes</option>
+                    <option value="newest">Newest Releases</option>
+                    <option value="season">Latest this Season</option>
                     <option value="popular">Most Popular</option>
                     <option value="alphabetical">A-Z</option>
                   </select>
@@ -1336,8 +1336,8 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     text-white
                     focus:outline-none focus:border-orange-500"
                 >
-                  <option value="newest">New This Week</option>
-                  <option value="episodes">Latest Episodes</option>
+                  <option value="newest">Newest Releases</option>
+                  <option value="season">Latest this Season</option>
                   <option value="popular">Most Popular</option>
                   <option value="alphabetical">A-Z</option>
                 </select>
