@@ -314,7 +314,6 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     switch (sortBy) {
       case "newest":
         params.append("order_by", "start_date")
-        params.append("end_date", new Date().toISOString().split("T")[0])
         params.append("sort", "desc")
         break
       
