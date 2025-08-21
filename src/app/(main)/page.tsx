@@ -445,6 +445,14 @@ if (err instanceof Error && err.name === "AbortError") {
     }
   }, [buildQueryParams])
 
+  // manage user input conflicts
+  useEffect(() => {
+    if (activeFilters.year && sortBy === "season") {
+      console.log("Conflict detected: Year search overrides season sort. Resetting sort to default.")
+      setSortBy("newest")
+    }
+  }, [activeFilters, sortBy])
+
   // data fetch
   useEffect(() => {
     const fetchInitialData = async () => {
