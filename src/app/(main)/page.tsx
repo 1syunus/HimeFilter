@@ -1,17 +1,12 @@
 "use client"
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
-import { FilterOptions, FilterOption } from "@/types/index"
+import { AnimeData, FilterOptions, FilterOption } from "@/types/index"
 import { useDebounce } from "../components/hooks/useDebounce"
 import { normalize } from "path"
 
 // type defs
 type SortOption = "newest" | "season" | "popular" | "alphabetical"
-
-interface Genre {
-  id: number
-  name: string
-}
 
 interface ActiveFilters {
   contentType: string[]
@@ -21,25 +16,6 @@ interface ActiveFilters {
   year: string
   // genres: {id: number; name: string}[]
   genres: string[]
-}
-
-interface AnimeData {
-  id: number
-  title: string
-  description: string
-  type: string
-  audioLanguages: string[]
-  subtitleLanguages: string[]
-  status: string
-  year: number
-  episodes: number
-  rating: number
-  genres: Genre[]
-  image: string
-  largeImage?: string
-  heroImage?: string
-  trailerUrl?: string
-  duration: string
 }
 
 interface FilterOptionsResponse {

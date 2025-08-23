@@ -3,6 +3,12 @@ export interface AnimeGenre {
   id: number
   name: string
 }
+
+export interface Aired {
+  from: string | null
+  to: string | null
+}
+
 export interface AnimeData {
   id: number
   title: string
@@ -12,6 +18,7 @@ export interface AnimeData {
   subtitleLanguages: string[]
   status: "Ongoing" | "Completed" | "New This Week" | string
   year: number
+  aired: Aired
   episodes: number
   rating: number
   genres: AnimeGenre[]
