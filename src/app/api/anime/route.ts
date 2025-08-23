@@ -3,6 +3,9 @@ import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { encode } from "punycode";
 
+// helper to introduce delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 // helper function for filtering future/0-ep titles
 const isReleased = (anime: {aired: {from: string | null}}): boolean => {
     if (!anime.aired?.from) {
@@ -103,6 +106,8 @@ export async function GET(request: Request) {
 
             if (!data.pagination?.has_next_page) break
             jikanPage++
+
+            await delay(500)
         }
 
         const startIndex = (clientPage - 1) * CLIENT_PAGE_LIMIT
