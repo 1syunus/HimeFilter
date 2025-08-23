@@ -70,6 +70,7 @@ export async function GET(request: Request) {
             queryParams.delete("end_date")
         }
 
+        const seenIds = new Set<number>()
         let validResults: any[] = []
         let jikanPage = 1
         const MAX_JIKAN_PAGES_TO_CHECK = 15
@@ -77,10 +78,10 @@ export async function GET(request: Request) {
         // loop check until enough results found
         while (validResults.length < (CLIENT_PAGE_LIMIT * clientPage) && jikanPage <= MAX_JIKAN_PAGES_TO_CHECK) {
             queryParams.set("page", jikanPage.toString())
-        const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
+            const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
             console.log(`AGGREGATING: Fetching Jikan page ${jikanPage}...`)
-
-        const jikanResponse = await fetch(jikanUrl)
+            
+            const jikanResponse = await fetch(jikanUrl)
             if (!jikanResponse.ok) break
 
             const data = await jikanResponse.json()
@@ -103,9 +104,13 @@ export async function GET(request: Request) {
                     .filter(hasScore)
                     .filter(hasDurationOver5Minutes)
             }
-            validResults.push(...newValidResults)
-
-            if (!data.pagination?.has_next_page) break
+            for (const anime of newValidResults) {
+                if (!seenIds.has(anime.mal_id)) {
+                    seenIds.add(anime.mal_id)
+                    validResults.push(anime)
+                }
+            }
+            
             jikanPage++
 
             await delay(500)
@@ -117,7 +122,8 @@ export async function GET(request: Request) {
 
         const transformedData = pageData.map(transformJikanAnime)
      
-        return NextResponse.json(transformedData)    
+        return NextResponse.json(transformedData)
+
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)
         let errorMessage = "Unknown error"
