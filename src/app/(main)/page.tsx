@@ -75,25 +75,25 @@ declare global {
 // }
 
 // deduplication function
-const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
-  const seenTitles = new Set<string>()
-  const uniqueAnime: AnimeData[] = []
+// const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
+//   const seenTitles = new Set<string>()
+//   const uniqueAnime: AnimeData[] = []
 
-  for (const anime of animeList) {
-    const normalizedTitle = anime.title
-      .replace(/[:'].*Season \d+| OVA| Movie| Part \d+/gi, '')
-      .replace(/\s*\(\d{4}\)\s*$/g, '')
-      .trim()
-      .toLowerCase()
+//   for (const anime of animeList) {
+//     const normalizedTitle = anime.title
+//       .replace(/[:'].*Season \d+| OVA| Movie| Part \d+/gi, '')
+//       .replace(/\s*\(\d{4}\)\s*$/g, '')
+//       .trim()
+//       .toLowerCase()
 
-    if (!seenTitles.has(normalizedTitle)) {
-      seenTitles.add(normalizedTitle)
-      uniqueAnime.push(anime)
-    }
-  }
+//     if (!seenTitles.has(normalizedTitle)) {
+//       seenTitles.add(normalizedTitle)
+//       uniqueAnime.push(anime)
+//     }
+//   }
 
-  return uniqueAnime
-}
+//   return uniqueAnime
+// }
 
 
 const App: React.FC = () => {
@@ -382,8 +382,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         throw new Error(`Failed to fetch browse data: ${response.statusText}`)
       }
       const browseData: AnimeData[] = await response.json()
-      const uniqueBrowseData = deduplicateAnime(browseData)
-      setAnimeList(uniqueBrowseData)
+      // const uniqueBrowseData = deduplicateAnime(browseData)
+      setAnimeList(browseData)
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "AbortError") {
         console.log("Browse fetch aborted")
@@ -424,9 +424,9 @@ const apiUrl = "/api/anime"
         throw new Error(`API error: ${response.status} - ${errorData.message || response.statusText}`)
       }
       const data: AnimeData[] = await response.json()
-      const uniqueData = deduplicateAnime(data)
-      setAnimeList(prev => (isLoadMore ? [...prev, ...uniqueData] : uniqueData))
-      setHasMore(uniqueData.length > 0)
+      // const uniqueData = deduplicateAnime(data)
+      setAnimeList(prev => (isLoadMore ? [...prev, ...data] : data))
+      setHasMore(data.length > 0)
     } catch (err: unknown) {
       console.log("Failed to fetch anime:", err)
 if (err instanceof Error && err.name === "AbortError") {
@@ -474,13 +474,13 @@ if (err instanceof Error && err.name === "AbortError") {
           throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
         }
         const browseData: AnimeData[] = await browseResponse.json()
-        const uniqueBrowseData = deduplicateAnime(browseData)
-        setAnimeList(uniqueBrowseData)
+        // const uniqueBrowseData = deduplicateAnime(browseData)
+        // setAnimeList(uniqueBrowseData)
         // setAnimeList(browseData)
 
         // featured: 1st item
-        if (uniqueBrowseData.length > 0) {
-          setFeaturedAnime(uniqueBrowseData[0])
+        if (browseData.length > 0) {
+          setFeaturedAnime(browseData[0])
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
