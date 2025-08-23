@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+import { AnimeData } from "@/types/index";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { encode } from "punycode";
 
