@@ -421,6 +421,13 @@ if (err instanceof Error && err.name === "AbortError") {
     }
   }, [buildQueryParams])
 
+  // pagination
+  const handleLoadMore = useCallback(() => {
+    if (!loading) {
+      setPage(prevPage => prevPage + 1)
+    }
+  }, [loading])
+
   // manage user input conflicts
   useEffect(() => {
     if (activeFilters.year && sortBy === "season") {
@@ -1552,9 +1559,12 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
               
 
               {/* load more btn */}
-              {animeList.length > 0 && (
+              {animeList.length > 0 && !loading && hasMore && (
                 <div className="mt-8 sm:mt-12 text-center">
-                  <button className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors">
+                  <button 
+                    onClick={handleLoadMore}
+                    className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
+                  >
                     Load More Anime
                   </button>
                 </div>
