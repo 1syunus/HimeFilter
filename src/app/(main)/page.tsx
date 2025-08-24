@@ -428,14 +428,6 @@ if (err instanceof Error && err.name === "AbortError") {
     }
   }, [loading])
 
-  // manage user input conflicts
-  useEffect(() => {
-    if (activeFilters.year && sortBy === "season") {
-      console.log("Conflict detected: Year search overrides season sort. Resetting sort to default.")
-      setSortBy("newest")
-    }
-  }, [activeFilters, sortBy])
-
   // data fetch
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -901,6 +893,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
     // }
   }
 
+  const currentYear = new Date().getFullYear().toString()
+  const showThisSeasonSort = !activeFilters.year || activeFilters.year === currentYear
+
 // main return
   return (
     <div className="min-h-screen bg-black text-white">
@@ -1029,7 +1024,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                   pr-8
                   ">
                     <option value="newest">Newest Releases</option>
-                    <option value="season">Latest this Season</option>
+                    {showThisSeasonSort && (
+                      <option value="season">Latest this Season</option>
+                      )}
                     <option value="popular">Most Popular</option>
                     <option value="alphabetical">A-Z</option>
                   </select>
@@ -1327,7 +1324,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     focus:outline-none focus:border-orange-500"
                 >
                   <option value="newest">Newest Releases</option>
-                  <option value="season">Latest this Season</option>
+                  {showThisSeasonSort && (
+                    <option value="season">Latest this Season</option>
+                    )}
                   <option value="popular">Most Popular</option>
                   <option value="alphabetical">A-Z</option>
                 </select>
