@@ -53,8 +53,12 @@ export async function GET(request: Request) {
         const isDateFiltered = searchParams.has("start_date") || searchParams.has("end_date")
         const inputYear = parseInt(searchParams.get("start_date")?.substring(0, 4) || "0", 10)
 
-        // const userSelectedTypes = searchParams.get('type')?.split(',') || []
-        // const isShortTypeSelected = userSelectedTypes.some(type => ['music', 'pv', 'ona', 'special'].includes(type))
+        const userSelectedTypes = searchParams.get("type")?.split(',') || []
+        const isShortTypeSelected = userSelectedTypes.some(type => ["music", "pv", "ova", "ona", "special"].includes(type))
+        
+        // compare duration with user input
+        const shouldIncludeByDuration = (anime: {duration: string | null}) => isShortTypeSelected || hasDurationOver5Minutes(anime)
+
         const isFutureYear = isDateFiltered && inputYear > new Date().getFullYear()
 
         // smart pagination
@@ -102,7 +106,7 @@ export async function GET(request: Request) {
                     .filter(isReleased)
                     .filter(hasEpisodes)
                     .filter(hasScore)
-                    .filter(hasDurationOver5Minutes)
+                    .filter(shouldIncludeByDuration)
             }
             for (const anime of newValidResults) {
                 if (!seenIds.has(anime.mal_id)) {
