@@ -16,6 +16,7 @@ interface ActiveFilters {
   year: string
   // genres: {id: number; name: string}[]
   genres: string[]
+  season: string
 }
 
 interface FilterOptionsResponse {
@@ -24,6 +25,7 @@ interface FilterOptionsResponse {
   availableGenres: FilterOption[]
   contentTypes: FilterOption[]
   statusOptions: FilterOption[]
+  timeframeOptions: FilterOption[]
 }
 
 interface FilterSectionProps {
@@ -79,7 +81,8 @@ const App: React.FC = () => {
     subtitleLanguages: [],
     status: [],
     year: "",
-    genres: []
+    genres: [],
+    season: ""
   })
 
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
@@ -114,7 +117,8 @@ const App: React.FC = () => {
     availableSubtitleLanguages: [],
     availableGenres: [],
     contentTypes: [],
-    statusOptions: []
+    statusOptions: [],
+    timeframeOptions: [],
   })
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -129,7 +133,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     audioLanguage: apiFilterOptions.availableAudioLanguages,
     subtitleLanguage: apiFilterOptions.availableSubtitleLanguages,
     status: apiFilterOptions.statusOptions,
-    genres: apiFilterOptions.availableGenres
+    genres: apiFilterOptions.availableGenres,
+    timeframes: apiFilterOptions.timeframeOptions
   }
 
   const hasActiveFilter = useCallback((): boolean => {
@@ -275,6 +280,10 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   //   }
   // }, [youTubeApiReady, featuredAnime, heroMuted])
 
+  // dating
+  const currentYear = new Date().getFullYear().toString()
+  const showNewSeriesFilter = !activeFilters.year || activeFilters.year === currentYear
+
   // build queryParams from activeFilters + sort
   const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams()
@@ -328,7 +337,28 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         params.append("sort", "asc")
         break
     }
-   
+        const getCurrentSeason = () => {
+          const now = new Date()
+          const year = now.getFullYear()
+          const month = now.getMonth()
+          let seasonStartDate: string, seasonEndDate: string
+
+          if (month >= 0 && month <=2) {
+            seasonStartDate = `${year}-01-01`
+            seasonEndDate = `${year}-03-31`
+          } else if (month >= 3 && month <=5) {
+            seasonStartDate = `${year}-04-01`
+            seasonEndDate = `${year}-06-30`
+          } else if (month >= 6 && month <=8) {
+            seasonStartDate = `${year}-07-01`
+            seasonEndDate = `${year}-09-30`
+          } else {
+            seasonStartDate = `${year}-10-01`
+            seasonEndDate = `${year}-12-31`
+          }
+          return {seasonStartDate, seasonEndDate}
+        }
+  
     Object.entries(activeFilters).forEach(([key, value]) => {
       let paramKey = key
       if (key === "contentType") {
@@ -337,10 +367,20 @@ const [hasMore, setHasMore] = useState<boolean>(true)
 
       if (Array.isArray(value) && value.length > 0 ) {
         params.append(paramKey, value.join(","))
-      } else if (typeof value === "string" && value && key === "year") {
-        params.append("start_date", `${value}-01-01`)
-        params.append("end_date", `${value}-12-31`)
+      } else if (typeof value === "string" && value) {
+          if (key === "year") {
+            params.append("start_date", `${value}-01-01`)
+            params.append("end_date", `${value}-12-31`)
+          }
+          if (key === "season" && value === "this-season") {
+            if (showNewSeriesFilter) {
+              const {seasonStartDate, seasonEndDate} = getCurrentSeason()
+              params.append("start_date", seasonStartDate)
+              params.append("end_date", seasonEndDate)
+            }
+          }
       }
+
     })
    
     return params
@@ -626,9 +666,10 @@ const isInitialMount = useRef(true)
         //   : [...stringArray, stringValue]
         // }
       } else {
+        const currentValue = prev[category] as string
         return {
           ...prev,
-          [category]: value
+          [category]: currentValue === value ? "" : value
         }
       }
     })
@@ -643,7 +684,8 @@ const isInitialMount = useRef(true)
       subtitleLanguages: [],
       status: [],
       year: "",
-      genres: []
+      genres: [],
+      season: "",
     })
     setSearchQuery("")
     setYearInput("")
@@ -893,9 +935,6 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
     // }
   }
 
-  const currentYear = new Date().getFullYear().toString()
-  const showThisSeasonSort = !activeFilters.year || activeFilters.year === currentYear
-
 // main return
   return (
     <div className="min-h-screen bg-black text-white">
@@ -1024,7 +1063,7 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                   pr-8
                   ">
                     <option value="newest">Newest Releases</option>
-                    {showThisSeasonSort && (
+                    {showNewSeriesFilter && (
                       <option value="season">Latest this Season</option>
                       )}
                     <option value="popular">Most Popular</option>
@@ -1279,6 +1318,15 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     activeFilters={activeFilters}
                     onFilterChange={handleFilterChange}
                 />
+                {showNewSeriesFilter && (
+                  <FilterSection
+                    title="New Series"
+                    options={filterOptions.timeframes}
+                    category="season"
+                    activeFilters={activeFilters}
+                    onFilterChange={handleFilterChange}
+                  />
+                )}
                 <FilterSection
                     title="Genres"
                     options={filterOptions.genres}
@@ -1324,7 +1372,7 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     focus:outline-none focus:border-orange-500"
                 >
                   <option value="newest">Newest Releases</option>
-                  {showThisSeasonSort && (
+                  {showNewSeriesFilter && (
                     <option value="season">Latest this Season</option>
                     )}
                   <option value="popular">Most Popular</option>
@@ -1389,6 +1437,15 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     activeFilters={activeFilters}
                     onFilterChange={handleFilterChange}
                 />
+                {showNewSeriesFilter && (
+                  <FilterSection
+                    title="New Series"
+                    options={filterOptions.timeframes}
+                    category="season"
+                    activeFilters={activeFilters}
+                    onFilterChange={handleFilterChange}
+                  />
+                )}
                 <FilterSection
                     title="Genres"
                     options={filterOptions.genres}
