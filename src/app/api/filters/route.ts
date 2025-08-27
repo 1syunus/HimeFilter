@@ -29,8 +29,8 @@ export async function GET(request: Request) {
         }))
         
         const statusOptions: FilterOption[] = [
-            {label: "Finished Airing", value: "complete"},
             {label: "Currently Airing", value: "airing"},
+            {label: "Finished Airing", value: "complete"},
             {label: "Not yet aired", value: "upcoming"}
         ]
         // tbd
