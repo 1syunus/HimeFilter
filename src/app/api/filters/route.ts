@@ -37,12 +37,17 @@ export async function GET(request: Request) {
         const availableAudioLanguages: string[] = []
         const availableSubtitleLanguages: string[] = []
 
+        const timeframeOptions: FilterOption[] = [
+            {label: "Premiered this Season", value: "this-season"}
+        ]
+
         return NextResponse.json({
             availableAudioLanguages,
             availableSubtitleLanguages,
             availableGenres,
             contentTypes,
-            statusOptions
+            statusOptions,
+            timeframeOptions
         })
     } catch (error: unknown) {
         console.error("Error fetching Jikan filter options:", error)
