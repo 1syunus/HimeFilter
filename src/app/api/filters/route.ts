@@ -3,6 +3,42 @@ import { NextResponse } from "next/server";
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
 import { FilterOption } from "@/types/index";
 
+// genres blocklist
+const genreBlocklist = [
+    "Avant Garde",
+    "Award Winning",
+    "Boys Love",
+    "Girls Love",
+    "Ecchi",
+    "Erotica",
+    "Hentai",
+    "Adult Cast",
+    "Anthropomorphic",
+    "CGDCT",
+    "Childcare",
+    "Combat Sports",
+    "Crossdressing",
+    "Gag Humor",
+    "Gore",
+    "High Stakes Game",
+    "Love Polygon",
+    "Magical Sex Shift",
+    "Otaku Culture",
+    "Reincarnation",
+    "Reverse Harem",
+    "Love Status Quo",
+    "Showbiz",
+    "Strategy Game",
+    "Super Power",
+    "Team Sports",
+    "Time Travel",
+    "Video Game",
+    "Visual Arts",
+    "Workplace",
+    "Urban Fantasy",
+    "Villainess"
+]
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: Request) {
     try {
@@ -18,7 +54,9 @@ export async function GET(request: Request) {
                 value: g.mal_id.toString(),
                 label: g.name
                 }))
+                .filter((genre: FilterOption) => !genreBlocklist.includes(genre.label))
             : []
+        availableGenres.sort((a, b) => a.label.localeCompare(b.label))
         // const availableGenres = genresData.data ? genresData.data.map((g: any) => ({id: g.mal_id, name: g.name})) : []
         
         // const contentTypes = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
