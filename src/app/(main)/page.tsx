@@ -112,6 +112,8 @@ const App: React.FC = () => {
   const [animeList, setAnimeList] = useState<AnimeData[]>([])
     // store hero
   const [featuredAnime, setFeaturedAnime] = useState<AnimeData | null>(null)
+  // continue watching
+  const [continueWatchingList, setContinueWatchingList] = useState<AnimeData[]>([])
   const [apiFilterOptions, setApiFilterOptions] = useState<FilterOptionsResponse>({
     availableAudioLanguages: [],
     availableSubtitleLanguages: [],
@@ -475,27 +477,26 @@ if (err instanceof Error && err.name === "AbortError") {
       setError(null)
       try {
         // fetch filter options
-        const filtersResponse = await fetch("/api/filters")
+        const [browseResponse, filtersResponse] = await Promise.all([
+          fetch("/api/browse"),
+          fetch("/api/filters")
+        ])
+        if(!browseResponse.ok) {
+          throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
+        }
         if(!filtersResponse.ok) {
           throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
         }
+
+        const browseData: AnimeData[] = await browseResponse.json()
         const filtersData: FilterOptionsResponse = await filtersResponse.json()
         setApiFilterOptions(filtersData)
 
-        // fetch browse anime
-        // initial load sans search queries/filters
-        const browseResponse = await fetch("/api/browse")
-        if (!browseResponse.ok) {
-          throw new Error(`Failed to fetch anime list ${browseResponse.statusText}`)
-        }
-        const browseData: AnimeData[] = await browseResponse.json()
-        // const uniqueBrowseData = deduplicateAnime(browseData)
-        // setAnimeList(uniqueBrowseData)
-        // setAnimeList(browseData)
-
         // featured: 1st item
-        if (browseData.length > 0) {
+        if (browseData && browseData.length > 0) {
           setFeaturedAnime(browseData[0])
+          setAnimeList(browseData)
+          setContinueWatchingList(browseData.slice(0, 3))
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -1630,7 +1631,7 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
               <div className="mt-12 sm:mt-16">
                 <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {animeList.slice(0, 3).map((anime: AnimeData) => (
+                  {continueWatchingList.map((anime: AnimeData) => (
                     <div key={`continue-${anime.id}`} className="group cursor-pointer">
                       <div className="relative overflow-hidden rounded-lg bg-gray-800">
                         <div className="w-full aspect-video bg-gray-700">
