@@ -34,12 +34,6 @@ const App: React.FC = () => {
   const debouncedQuery = useDebounce(searchQuery, 300)
   const debouncedYear = useDebounce(yearInput, 700)
 
-  // ref for player instance
-  // const playerRef = useRef<any>(null)
-  // // ref for iframe
-  // const iframeContainerRef = useRef<HTMLDivElement>(null)
-  // const [youTubeApiReady, setYouTubeApiReady] = useState<boolean>(false)
-
   // state for api data
   const [animeList, setAnimeList] = useState<AnimeData[]>([])
     // store hero
@@ -76,143 +70,6 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       Array.isArray(arr) ? arr.length > 0 : arr !== ""
     )
   }, [activeFilters])
-
-  // load iframe api script
-  // useEffect(() => {
-  //   const handleYouTubeApiReady = () => {
-  //     setYouTubeApiReady(true)
-  //     console.log("React Component: YouTube API ready signal received.")
-  //   } 
-
-  //   if (typeof window !== "undefined") {
-  //     if (window.YT && window.YT.Player) {
-  //       setYouTubeApiReady(true)
-  //       console.log("React Component: YouTube API already available on mount.")
-  //     } else {
-  //       const tag = document.createElement("script")
-  //       tag.src = "https://www.youtube.com/iframe_api"
-  //       const firstScriptTag = document.getElementsByTagName("script")[0]
-  //       if (firstScriptTag && firstScriptTag.parentNode) {
-  //         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
-  //       } else {
-  //         // fallback
-  //         document.body.appendChild(tag)
-  //       }
-  //     }
-  //     window.addEventListener("youtubeapiready", handleYouTubeApiReady)
-  //   } 
-  //   return () => {
-  //     if (typeof window !== "undefined") {
-  //       window.removeEventListener("youtubeapiready", handleYouTubeApiReady)
-  //     }
-  //   }
-  // }, [])
-
-  // // effect to handle feturedAnime changes and reset video states
-  // useEffect(() => {
-  //   setVideoError(false)
-  //   setVideoLoaded(false)
-  //   setHeroPlaying(false)
-  //   if (videoLoadTimeoutRef.current) {
-  //     clearTimeout(videoLoadTimeoutRef.current)
-  //   }
-
-  //   if (featuredAnime && !featuredAnime.trailerUrl) {
-  //     console.log("No trailer url. Falling back to image")
-  //     setVideoError(true)
-  //     setVideoLoaded(true)
-  //     setHeroPlaying(false)
-  //   }
-  // }, [featuredAnime])
-
-  // // initialize player
-  // useEffect(() => {
-  //   setVideoError(false)
-  //   setVideoLoaded(false)
-  //   setHeroPlaying(false)
-  //   if (videoLoadTimeoutRef.current) {
-  //     clearTimeout(videoLoadTimeoutRef.current)
-  //   }
-
-  //   console.log(`Player Init Effect Check: youTubeApiReady=${youTubeApiReady}, featuredAnime.trailerUrl=${!!featuredAnime?.trailerUrl}, iframeContainerRef.current=${!!iframeContainerRef.current}`)
-  //   if (youTubeApiReady && featuredAnime?.trailerUrl && iframeContainerRef.current) {
-  //     const videoIdMatch = featuredAnime.trailerUrl.match(/(?:youtube\.com\/(?:embed\/|v\/)|youtu\.be\/)([\w-]{11})/)
-  //     const videoId = videoIdMatch ? videoIdMatch[1] : null
-
-  //     if (videoId) {
-  //       // destroy existing player
-  //       if (playerRef.current) {
-  //         playerRef.current.destroy()
-  //       }
-
-  //       playerRef.current = new window.YT.Player(iframeContainerRef.current, {
-  //         videoId: videoId,
-  //         playerVars: {
-  //           autoplay: 1,
-  //           controls: 0,
-  //           mute: heroMuted ? 1 : 0,
-  //           loop: 1,
-  //           playlist: videoId,
-  //           modestbranding: 1,
-  //           rel: 0,
-  //           iv_load_policy: 3,
-  //           disablekb: 1,
-  //           fs: 0,
-  //         },
-  //         events: {
-  //           "onReady": (event: any) => {
-  //             console.log("YouTube player ready:", event.target.getVideoData().title)
-  //             if (heroMuted) {
-  //               event.target.mute()
-  //             } else {
-  //               event.target.unMute()
-  //             }
-  //             event.target.playVideo()
-  //             setHeroPlaying(true)
-  //             setVideoLoaded(true)
-  //             if(videoLoadTimeoutRef.current) {
-  //               clearTimeout(videoLoadTimeoutRef.current)
-  //             }
-  //           },
-  //           "onStateChange": (event: any) => {
-  //             if (event.data === window.YT.PlayerState.PLAYING) {
-  //               setHeroPlaying(true)
-  //               setVideoLoaded(true)
-  //               if (videoLoadTimeoutRef.current) {
-  //                 clearTimeout(videoLoadTimeoutRef.current)
-  //               }
-  //             } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
-  //               setHeroPlaying(false)
-  //             } else if (event.data === window.YT.PlayerState.BUFFERING) {
-  //               setVideoLoaded(false)
-  //             }
-  //           },
-  //           "onError": (event: any) => {
-  //             console.error("YouTube Player Error:", event.data)
-  //             // force fallback
-  //             setVideoError(true)
-  //             // hide spinner
-  //             setVideoLoaded(true)
-  //             setHeroPlaying(false)
-  //             if (videoLoadTimeoutRef.current) {
-  //               clearTimeout(videoLoadTimeoutRef.current)
-  //             }
-  //           }
-  //         }
-  //       })
-  //     } else {
-  //       console.warn("Player Init: Could not extract YouTube video ID from URL:", featuredAnime.trailerUrl)
-  //       setVideoError(true)
-  //       setVideoLoaded(true)
-  //       setHeroPlaying(false)
-  //     }
-  //   } else {
-  //     if (playerRef.current) {
-  //       playerRef.current.destroy()
-  //       playerRef.current = null
-  //     }
-  //   }
-  // }, [youTubeApiReady, featuredAnime, heroMuted])
 
   // dating
   const currentYear = new Date().getFullYear().toString()
@@ -352,15 +209,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     setLoading(true)
     setError(null)
 
-// let apiUrl = hasActiveFilter() ? "/api/anime" : "/api/browse"
-// let currentQueryParams = buildQueryParams()
-const apiUrl = "/api/anime"
+    const apiUrl = "/api/anime"
     const currentQueryParams = buildQueryParams().toString()
-
-    // if (debouncedQuery) {
-//   apiUrl = "/api/search"
-//   currentQueryParams = `q=${encodeURIComponent(debouncedQuery)}&page=${page}&limit=24`
-// }
 
     try {
       const response = await fetch(`${apiUrl}?${currentQueryParams}`, {signal})
@@ -374,12 +224,11 @@ const apiUrl = "/api/anime"
         throw new Error(`API error: ${response.status} - ${errorData.message || response.statusText}`)
       }
       const data: AnimeData[] = await response.json()
-      // const uniqueData = deduplicateAnime(data)
       setAnimeList(prev => (isLoadMore ? [...prev, ...data] : data))
       setHasMore(data.length > 0)
     } catch (err: unknown) {
       console.log("Failed to fetch anime:", err)
-if (err instanceof Error && err.name === "AbortError") {
+      if (err instanceof Error && err.name === "AbortError") {
         console.log("Fetch Aborted")
         return
       }
@@ -444,19 +293,9 @@ if (err instanceof Error && err.name === "AbortError") {
     fetchInitialData()
   }, [])
 
-  // refetch after load
-  // useEffect(() => {
-    // this version keeps initial loading perfect but causes infinite loop + glitch on refetch
-  //   if (!loading && (page > 1 || hasActiveFilter())) {
-  //   fetchFilteredAndSearchedAnime(page > 1)
-  //   } else if (!loading && page === 1 && !hasActiveFilter() && animeList.length === 0) {
-  //     fetchFilteredAndSearchedAnime(false)
-  //   }
-  // }, [activeFilters, searchQuery, sortBy, page, loading, hasActiveFilter, fetchFilteredAndSearchedAnime, animeList.length])
-const isInitialMount = useRef(true)
-  useEffect(() => {
-    // this version causes cls error on initial load
-
+  // watch for cls error
+  const isInitialMount = useRef(true)
+  useEffect(() => {    
     if (isInitialMount.current) {
       isInitialMount.current = false
       return
@@ -470,8 +309,8 @@ const isInitialMount = useRef(true)
       fetchBrowseData({signal: controller.signal})
     } else {
       console.log("FETCHING FILTERED/SEARCHED")
-    const isLoadMore = page > 1
-    fetchFilteredAndSearchedAnime({isLoadMore, signal: controller.signal})
+      const isLoadMore = page > 1
+      fetchFilteredAndSearchedAnime({isLoadMore, signal: controller.signal})
     }
 
     // cleanup
@@ -528,60 +367,11 @@ const isInitialMount = useRef(true)
     }))
   }, [debouncedYear])
 
-  // // useEffect for debounced search
-  // useEffect(() => {
-  //   // skip debounce on initial load
-  //   if (searchQuery === "") {
-  //     // reset/reload on clear search
-  //     setPage(1)
-  //     setHasMore(true)
-  //     return
-  //   }
-    
-  //   // timeout
-  //   const handler = setTimeout(() => {
-  //     setPage(1)
-  //     setHasMore(true)
-  //   }, 500)
-
-  //   // cleanup
-  //   return () => {
-  //     clearTimeout(handler)
-  //   }
-  // }, [searchQuery])
-  // useEffect(() => {
-  //   const handler = setTimeout(() => {
-  //     setDebouncedSearchQuery(searchQuery)
-  //   }, 500)
-
-  //   return () => {
-  //     clearTimeout(handler)
-  //   }
-  // }, [searchQuery])
-
   // handler functions
   const handleFilterChange = (category: keyof ActiveFilters, value: string): void => {
     setActiveFilters(prev => {
-      // // handle genres (object)
-      // if (category === "genres") {
-      //   const genre = value as Genre
-      //   const exists = prev.genres.some(g => g.id === genre.id)
-
-      //   return {
-      //     ...prev,
-      //     genres: exists
-      //       ? prev.genres.filter(g => g.id !== genre.id)
-      //       : [...prev.genres, genre]
-      //   }
-      // }
       // unified string handling
       if (Array.isArray(prev[category])) {
-        // const stringValue =
-        //   typeof value === "string"
-        //     ? value
-        //     : value && "id" in value
-        //       ? value.id.toString()
-        //       : ""
         const stringArray = prev[category] as string[]
         const exists = stringArray.includes(value)
 
@@ -591,13 +381,6 @@ const isInitialMount = useRef(true)
             ? stringArray.filter(item => item !== value)
             : [...stringArray, value]
         }
-
-        // return {
-        //   ...prev,
-        //   [category]: stringArray.includes(stringValue)
-        //   ? stringArray.filter(item => item !== stringValue)
-        //   : [...stringArray, stringValue]
-        // }
       } else {
         const currentValue = prev[category] as string
         return {
@@ -634,25 +417,6 @@ const isInitialMount = useRef(true)
       <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{title}</h3>
       <div className="space-y-2">
         {options.map((option) => {
-          // const optionValue = typeof option === "string"
-          // ? option
-          // : (option as Genre).id.toString()
-
-          // const optionLabel = typeof option === "string"
-          // ? option
-          // : (option as Genre).name
-
-          // const isActive = 
-          // category === "genres"
-          // ? (activeFilters.genres as Genre[]).some(
-          //   g => g.id === (option as Genre).id
-          // )
-          // : Array.isArray(activeFilters[category])
-          // ? (activeFilters[category] as string[]).includes(
-          //     typeof option === "string" ? option : (option as Genre).name
-          //   )
-          // : false
-
           const isActive = Array.isArray(activeFilters[category])
             ? activeFilters[category].includes(option.value)
             : activeFilters[category] === option.value
@@ -662,13 +426,6 @@ const isInitialMount = useRef(true)
               <input
               type="checkbox"
               checked={isActive}
-              // onChange={() => onFilterChange(category, 
-              //   typeof option === "string"
-              //   ? option
-              //   : {
-              //     id: (option as Genre).id,
-              //     name: (option as Genre).name
-              //   })}
               onChange={() => onFilterChange(category, option.value)}
               className="sr-only"
               />
@@ -701,10 +458,6 @@ const isInitialMount = useRef(true)
     setSearchQuery(e.target.value)
   }
 
-  // const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-  //   setActiveFilters(prev => ({...prev, year: e.target.value}))
-  // }
-
   const removeActiveFilter = (category: keyof ActiveFilters, value?: string): void => {
     if (value) {
       handleFilterChange(category, value)
@@ -715,8 +468,6 @@ const isInitialMount = useRef(true)
       }))
     }
   }
-
-
 
     // video control handler
       // TOOD: update for iframe
@@ -732,12 +483,7 @@ const isInitialMount = useRef(true)
     }
   }
 
-  // const handleIframeLoad = () => {
-  //   console.log("Iframe container div loaded, waiting for yt player api to init player...")
-  // }
-
   const handleVideoLoad = () => {
-      // setVideoLoaded(true)
       // clear timeout on successful load
       if (videoLoadTimeoutRef.current) {
         clearTimeout(videoLoadTimeoutRef.current)
@@ -745,7 +491,6 @@ const isInitialMount = useRef(true)
       setTimeout(() => {
         setVideoLoaded(true)
       }, 500)
-      // console.log("Iframe loaded, waiting for YT Player API")
 
       const onYouTubeIframeAPIReady = () => {
         const player = new window.YT.Player("hero-video", {
@@ -753,11 +498,6 @@ const isInitialMount = useRef(true)
             onReady: (event:any) => {
               console.log("player ready")
               setYtPlayer(event.target)
-              // if (heroMuted) {
-              //   event.target.mute()
-              // } else {
-              //   event.target.unMute()
-              // }
               console.log("onReady: ytPlayer is", event.target)
 
               setHeroMuted(true)
@@ -781,33 +521,15 @@ const isInitialMount = useRef(true)
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const toggleHeroAudio = () => {
-    // console.log("toggle called, ytplayer:", ytPlayer)
-    // TODO: Update for YouTube embed :'(
-    // const video = document.getElementById("hero-video") as HTMLVideoElement
-    // if (video) {
-    //   video.muted = !video.muted
-    //   setHeroMuted(video.muted)
-    // }
-    // setHeroMuted(prev => !prev)
-    // if (playerRef.current) {
-    //   if (heroMuted) {
-    //     playerRef.current.unMute()
-    //   } else {
-    //     playerRef.current.mute()
-    //   }
-      // setHeroMuted(prev => !prev)
-    // }
     console.log("ytPlayer:", ytPlayer)
-console.log("isMuted?:", ytPlayer?.isMuted?.())
-console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
+    console.log("isMuted?:", ytPlayer?.isMuted?.())
+    console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
 
     if (!ytPlayer) {
       console.log("yTplayer not ready for mute/unmute")
       setHeroMuted(prev => !prev)
       return
     }
-
-    // try {
       if (heroMuted) {
         ytPlayer.unMute()
         setHeroMuted(false)
@@ -817,29 +539,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
         setHeroMuted(true)
         console.log("Unmute vid")
       }
-    // } catch (error) {
-    //   console.error("Error toggling: ", error)
-    //   setHeroMuted(prev => !prev)
-    // }
-    // const isCurrentlyMuted = ytPlayer.isMuted()
-    // if (isCurrentlyMuted) {
-    //   ytPlayer.unMute()
-    //   setHeroMuted(false)
-    // } else {
-    //   ytPlayer.mute()
-    //   setHeroMuted(true)
-    // }
-  }
+     }
 
   const toggleHeroPlayPause = () => {
-    // if (playerRef.current) {
-    //   if (heroPlaying) {
-    //     playerRef.current.pauseVideo()
-    //   } else {
-    //     playerRef.current.playVideo()
-    //   }
-    //   setHeroPlaying(prev => !prev)
-    // }
     console.log("Toggle play/pause called, ytPlayer:", ytPlayer)
     if (!ytPlayer) {
       console.log("Player not ready")
@@ -857,15 +559,6 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
     } catch (error) {
       console.error("Error toggling: ", error)
     }
-    // const state = ytPlayer.getPlayerState()
-
-    // if (state === 1) {
-    //   ytPlayer.pauseVideo()
-    //   setIsPlaying(false)
-    // } else if (state === 2 || state === 0) {
-    //   ytPlayer.playVideo()
-    //   setIsPlaying(true)
-    // }
   }
 
 // main return
@@ -1040,8 +733,6 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
           
           {/* video bg */}
           {featuredAnime.trailerUrl && !videoError ? (
-
-
             <iframe
               key={featuredAnime.trailerUrl}
               id="hero-video"
@@ -1151,40 +842,21 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
 
           {/* audio controls */}
           {featuredAnime.trailerUrl && (
-              // <div className="
-              //   absolute
-              //   top-4 sm:top-auto sm:bottom-4 right-4
-              //   flex items-center space-x-2
-              //   ">
-              //   <button
-              //     onClick={toggleHeroPlayPause}
-              //     className="
-              //       bg-gray-800/80 hover:bg-gray-700
-              //       text-white
-              //       p-2 sm:p-3
-              //       rounded-full 
-              //       transition-colors
-              //     "
-              //   >                  
-              //     {heroPlaying ? <Pause className="w-4 h-4 sm:w-5 sm:h-5" /> : <Play className="w-4 h-4 sm:w-5 sm:h-5" />}
-              //     <span>{heroPlaying ? "Pause" : "Play"}</span>
-              // </button>
-          <button
-          onClick={toggleHeroAudio}
-          className="
-            absolute
-            top-4 sm:top-auto sm:bottom-4 right-4 z-30
-            bg-gray-800/80 hover:bg-gray-700
-            text-white
-            p-2 sm:p-3
-            rounded-full 
-            transition-colors
-            pointer-events-auto
-            "
-          >
+            <button
+            onClick={toggleHeroAudio}
+            className="
+              absolute
+              top-4 sm:top-auto sm:bottom-4 right-4 z-30
+              bg-gray-800/80 hover:bg-gray-700
+              text-white
+              p-2 sm:p-3
+              rounded-full 
+              transition-colors
+              pointer-events-auto
+              "
+            >
             {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
             </button>
-            // </div>
           )}             
         </section>
         )}
@@ -1553,7 +1225,6 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                 ))}
               </div>
               
-
               {/* load more btn */}
               {animeList.length > 0 && !loading && hasMore && (
                 <div className="mt-8 sm:mt-12 text-center">
