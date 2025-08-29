@@ -68,6 +68,7 @@ export async function GET(request: Request) {
         }
         const data = await jikanResponse.json()
         const transformedData = data.data ? data.data.map(transformJikanAnime) : []
+        
         return NextResponse.json(transformedData)    
     } catch (error: unknown) {
         console.error("Error fetching Jikan browse API:", error)
