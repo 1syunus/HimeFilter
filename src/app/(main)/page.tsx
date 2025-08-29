@@ -3,6 +3,7 @@ import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { AnimeData, FilterOptions, FilterOption } from "@/types/index"
 import { useDebounce } from "../components/hooks/useDebounce"
+import Image from "next/image"
 import { normalize } from "path"
 
 // type defs
@@ -1560,12 +1561,12 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     >
                     <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
                       <div className="w-full aspect-[2/3] bg-gray-700">
-                      {/* TODO: update for Nextjs */}
-                        <img
+                        <Image
                           src={anime.image}
                           alt={anime.title}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                         />
                       </div>
                       <div className="
@@ -1642,11 +1643,12 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                     <div key={`continue-${anime.id}`} className="group cursor-pointer">
                       <div className="relative overflow-hidden rounded-lg bg-gray-800">
                         <div className="w-full aspect-video bg-gray-700">
-                          <img
+                          <Image
                             src={anime.largeImage || anime.image}
                             alt={anime.title}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                         </div>
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex items-center justify-center">
