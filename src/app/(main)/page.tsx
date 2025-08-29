@@ -1552,6 +1552,12 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                 {animeList.map((anime: AnimeData) => (
                   <div key={anime.id} className="group cursor-pointer">
+                    <a
+                      href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(anime.title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
                     <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
                       <div className="w-full aspect-[2/3] bg-gray-700">
                       {/* TODO: update for Nextjs */}
@@ -1610,6 +1616,7 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
                         ))}
                       </div>
                     </div>
+                    </a>
                   </div>
                 ))}
               </div>
