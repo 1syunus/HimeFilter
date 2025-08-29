@@ -1,79 +1,10 @@
 "use client"
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
-import { AnimeData, FilterOptions, FilterOption } from "@/types/index"
+import { AnimeData, SortOption, ActiveFilters, FilterOptionsResponse, FilterSectionProps, FilterOptions, FilterOption } from "@/types/index"
 import { useDebounce } from "../components/hooks/useDebounce"
 import Image from "next/image"
 import { normalize } from "path"
-
-// type defs
-type SortOption = "newest" | "season" | "popular" | "alphabetical"
-
-interface ActiveFilters {
-  contentType: string[]
-  audioLanguages: string[]
-  subtitleLanguages: string[]
-  status: string[]
-  year: string
-  // genres: {id: number; name: string}[]
-  genres: string[]
-  season: string
-}
-
-interface FilterOptionsResponse {
-  availableAudioLanguages: string[]
-  availableSubtitleLanguages: string[]
-  availableGenres: FilterOption[]
-  contentTypes: FilterOption[]
-  statusOptions: FilterOption[]
-  timeframeOptions: FilterOption[]
-}
-
-interface FilterSectionProps {
-  title: string
-  options: Array<{value: string; label: string}>
-  category: keyof ActiveFilters
-  activeFilters: ActiveFilters
-  onFilterChange: (category: keyof ActiveFilters, value: string) => void
-}
-
-
-// global api ready flag and listener
-declare global {
-  interface Window {
-    onYouTubeIframeAPIReady: () => void
-    YT: any
-  }
-}
-// if (typeof window !== "undefined") {
-//   window.onYouTubeIframeAPIReady = () => {
-//     console.log("GLOBAL: YT Iframe Api is ready")
-//     const event = new Event("youtubeapiready")
-//     window.dispatchEvent(event)
-//   }
-// }
-
-// deduplication function
-// const deduplicateAnime = (animeList: AnimeData[]): AnimeData[] => {
-//   const seenTitles = new Set<string>()
-//   const uniqueAnime: AnimeData[] = []
-
-//   for (const anime of animeList) {
-//     const normalizedTitle = anime.title
-//       .replace(/[:'].*Season \d+| OVA| Movie| Part \d+/gi, '')
-//       .replace(/\s*\(\d{4}\)\s*$/g, '')
-//       .trim()
-//       .toLowerCase()
-
-//     if (!seenTitles.has(normalizedTitle)) {
-//       seenTitles.add(normalizedTitle)
-//       uniqueAnime.push(anime)
-//     }
-//   }
-
-//   return uniqueAnime
-// }
-
 
 const App: React.FC = () => {
   const   [activeFilters, setActiveFilters] = useState<ActiveFilters>({

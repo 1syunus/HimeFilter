@@ -1,12 +1,12 @@
-// type defs
-export interface AnimeGenre {
-  id: number
-  name: string
-}
-
+// core data structures
 export interface Aired {
   from: string | null
   to: string | null
+}
+
+export interface AnimeGenre {
+  id: number
+  name: string
 }
 
 export interface AnimeData {
@@ -29,6 +29,21 @@ export interface AnimeData {
   duration: string
 }
 
+// filtering/sorting
+export type SortOption = "newest" | "season" | "popular" | "alphabetical"
+
+export interface ActiveFilters {
+  contentType: string[]
+  audioLanguages: string[]
+  subtitleLanguages: string[]
+  status: string[]
+  year: string
+  // genres: {id: number; name: string}[]
+  genres: string[]
+  season: string
+}
+
+// api and component props
 export interface ApiData {
   availableAudioLanguages: string[]
   availableSubtitleLanguages: string[]
@@ -47,4 +62,21 @@ export interface FilterOptions {
   type: string | null
   status: string | null
   // tbc
+}
+
+export interface FilterOptionsResponse {
+  availableAudioLanguages: string[]
+  availableSubtitleLanguages: string[]
+  availableGenres: FilterOption[]
+  contentTypes: FilterOption[]
+  statusOptions: FilterOption[]
+  timeframeOptions: FilterOption[]
+}
+
+export interface FilterSectionProps {
+  title: string
+  options: Array<{value: string; label: string}>
+  category: keyof ActiveFilters
+  activeFilters: ActiveFilters
+  onFilterChange: (category: keyof ActiveFilters, value: string) => void
 }
