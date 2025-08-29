@@ -1135,9 +1135,9 @@ console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
             />
           )}
           
-          {/* gradient overlays !! important */}
-          <div className="absolute inset-0 bg-gradient-to-r from black via black/70 to transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from black via transparent to transparent z-10 pointer-events-none"></div>
+          {/* gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/30 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent z-10 pointer-events-none"></div>
           
           {/* video loading icon */}
           {!videoLoaded && featuredAnime.trailerUrl && (
