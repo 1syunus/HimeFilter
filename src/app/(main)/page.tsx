@@ -97,32 +97,32 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         params.append("order_by", "score")
         params.append("sort", "desc")
         break
-      case "season":
-        if (!isYearFilterActive) {
-        const now = new Date()
-        const year = now.getFullYear()
-        const month = now.getMonth()
-        let seasonStartDate: string, seasonEndDate: string
+      // case "season":
+      //   if (!isYearFilterActive) {
+      //   const now = new Date()
+      //   const year = now.getFullYear()
+      //   const month = now.getMonth()
+      //   let seasonStartDate: string, seasonEndDate: string
 
-        if (month >= 0 && month <=2) {
-          seasonStartDate = `${year}-01-01`
-          seasonEndDate = `${year}-03-31`
-        } else if (month >= 3 && month <=5) {
-          seasonStartDate = `${year}-04-01`
-          seasonEndDate = `${year}-06-30`
-        } else if (month >= 6 && month <=8) {
-          seasonStartDate = `${year}-07-01`
-          seasonEndDate = `${year}-09-30`
-        } else {
-          seasonStartDate = `${year}-10-01`
-          seasonEndDate = `${year}-12-31`
-        }
-        params.append("start_date", seasonStartDate)
-        params.append("end_date", seasonEndDate)
-      }
-        params.append("order_by", "start_date")
-        params.append("sort", "desc")
-        break
+      //   if (month >= 0 && month <=2) {
+      //     seasonStartDate = `${year}-01-01`
+      //     seasonEndDate = `${year}-03-31`
+      //   } else if (month >= 3 && month <=5) {
+      //     seasonStartDate = `${year}-04-01`
+      //     seasonEndDate = `${year}-06-30`
+      //   } else if (month >= 6 && month <=8) {
+      //     seasonStartDate = `${year}-07-01`
+      //     seasonEndDate = `${year}-09-30`
+      //   } else {
+      //     seasonStartDate = `${year}-10-01`
+      //     seasonEndDate = `${year}-12-31`
+      //   }
+      //   params.append("start_date", seasonStartDate)
+      //   params.append("end_date", seasonEndDate)
+      // }
+      //   params.append("order_by", "start_date")
+      //   params.append("sort", "desc")
+      //   break
       case "alphabetical":
         params.append("order_by", "title")
         params.append("sort", "asc")
@@ -689,9 +689,9 @@ const [hasMore, setHasMore] = useState<boolean>(true)
                   pr-8
                   ">
                     <option value="newest">Newest Releases</option>
-                    {showNewSeriesFilter && (
+                    {/* {showNewSeriesFilter && (
                       <option value="season">Latest this Season</option>
-                      )}
+                      )} */}
                     <option value="popular">Most Popular</option>
                     <option value="alphabetical">A-Z</option>
                   </select>
@@ -977,9 +977,9 @@ const [hasMore, setHasMore] = useState<boolean>(true)
                     focus:outline-none focus:border-orange-500"
                 >
                   <option value="newest">Newest Releases</option>
-                  {showNewSeriesFilter && (
+                  {/* {showNewSeriesFilter && (
                     <option value="season">Latest this Season</option>
-                    )}
+                    )} */}
                   <option value="popular">Most Popular</option>
                   <option value="alphabetical">A-Z</option>
                 </select>
