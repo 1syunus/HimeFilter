@@ -28,9 +28,6 @@ export async function GET(request: Request) {
             jikanEndpoint = `${JIKAN_API_URL}/top/anime`
             queryParams.append("filter", filter)
             // default to tv if no type
-            // if (!type) {
-            //     queryParams.append("type", "tv")
-            // }
             queryParams.append("type", type || "tv")
         } else if (genre || type || status || startDate || endDate) {
             // request contains specific params but no "top" filter
@@ -54,10 +51,6 @@ export async function GET(request: Request) {
             // queryParams.append("filter", "bypopularity")
         }
 
-        console.log(`DEBUG: jikanEndpoint base before query string: ${jikanEndpoint}`)
-
-
-        
         const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
         console.log(`fetching browse data from ${jikanUrl}`)
 
