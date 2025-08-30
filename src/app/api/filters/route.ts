@@ -76,7 +76,7 @@ export async function GET(request: Request) {
         const availableSubtitleLanguages: string[] = []
 
         const timeframeOptions: FilterOption[] = [
-            {label: "Premiered this Season", value: "this-season"}
+            {label: "New this Season", value: "this-season"}
         ]
 
         return NextResponse.json({
