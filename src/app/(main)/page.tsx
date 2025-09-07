@@ -679,7 +679,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
               </div>
 
               {/* desktop sort */}
-              <div className="relative">
+              {/* <div className="relative">
                 <select
                   value={sortBy}
                   onChange={handleSortChange}
@@ -692,20 +692,22 @@ const [hasMore, setHasMore] = useState<boolean>(true)
                   pr-8
                   ">
                     <option value="newest">Newest Releases</option>
-                    {/* {showNewSeriesFilter && (
+                    {showNewSeriesFilter && (
                       <option value="season">Latest this Season</option>
-                      )} */}
+                      )}
                     <option value="popular">Most Popular</option>
                     <option value="alphabetical">A-Z</option>
                   </select>
-                  <ChevronDown className="
-                  absolute
-                  right-2 top-1/2
-                  transform -translate-y-1/2
-                  text-gray-400
-                  w-4 h-4
-                  pointer-events-none" />
-              </div>
+                  <ChevronDown
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none"
+                  />
+              </div> */}
+              <SortMenu
+                sortBy={sortBy}
+                onSortChange={handleSortChange}
+                options={sortOptions}
+                variant="desktop"
+              />
 
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
