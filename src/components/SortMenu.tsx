@@ -4,11 +4,11 @@ import { SortOption } from "../types"
 
 export interface SortOptionType {
   label: string
-  value: SortOption
+  value: string
 }
 
 interface SortMenuProps {
-  sortBy: SortOption
+  sortBy: string
   onSortChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   options: SortOptionType[]
   variant?: "mobile" | "desktop"
@@ -18,7 +18,7 @@ export const SortMenu: React.FC<SortMenuProps> = ({
   sortBy,
   onSortChange,
   options,
-  variant = "mobile",
+  variant = "desktop",
 }) => {
   // mobile variant
   if (variant === "mobile") {
@@ -44,7 +44,7 @@ export const SortMenu: React.FC<SortMenuProps> = ({
       <select
         value={sortBy}
         onChange={onSortChange}
-        className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-orange-500 appearance-none pr-8"
+        className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-orange-500 appearance-none pr-8 cursor-pointer"
       >
         {options.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
