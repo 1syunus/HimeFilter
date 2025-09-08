@@ -2,7 +2,8 @@
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { AnimeData, SortOption, ActiveFilters, FilterOptionsResponse, FilterSectionProps, FilterOptions, FilterOption } from "@/types/index"
-import {FilterMenu} from "@/components/FilterMenu"
+import { useDebounce } from "src/hooks/useDebounce"
+import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
 import { sortOptions } from "@/lib/constants/sortOptions"
 import { useDebounce } from "../../components/hooks/useDebounce"
@@ -870,224 +871,53 @@ const [hasMore, setHasMore] = useState<boolean>(true)
           {/* mobile filter drawer */}
           {isMobileMenuOpen && (
             <div className="lg:hidden fixed inset-0 z-50 mobile-menu">
-              <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
-              </div>
-              <div className="absolute left-0 top-0 h-full w-70 bg-gray-900 transform transition-transform duration-300 overflow-y-auto">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <button
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2 text-gray-400 hover:text-white transition-colors"
-                    >
-                    <X className="w-5 h-5" />
-                  </button>
-                  <h2 className="text-lg font-semibold text-white pl-10">Filters</h2>
-                  <Filter className="w-5 h-5 text-orange-500" />
-                </div>
-              
-              <button
-                onClick={clearAllFilters}
-                className="w-full
-                mb-6
-                text-sm text-gray-400 hover:text-orange-400 transition-colors text-left
-                ">
-                  Clear All Filters
-              </button>
-
-              <div className="space-y-6">
-                <FilterSection
-                  title="Content Type"
-                  options={filterOptions.contentType}
-                  category="contentType"
-                  activeFilters={activeFilters}
-                  onFilterChange={handleFilterChange}
-                />
-
-                <div className="border-t border-gray-700 pt-6">
-                  <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Language</h3>
-                  <FilterSection
-                    title="Audio"
-                    options={filterOptions.audioLanguage}
-                    category="audioLanguages"
+              <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+              <div className="absolute left-0 top-0 h-full w-70 bg-gray-900 opacity-85 transform transition-transform duration-300 overflow-y-auto">
+                <div className="p-6">
+                  {/* new FilterMenu componenent */}
+                  <FilterDrawerContent
+                    variant="mobile"
                     activeFilters={activeFilters}
+                    filterOptions={filterOptions}
+                    yearInput={yearInput}
+                    showNewSeriesFilter={showNewSeriesFilter}
                     onFilterChange={handleFilterChange}
+                    onClearFilters={clearAllFilters}
+                    onYearChange={setYearInput}
+                    onClose={() => setIsMobileMenuOpen(false)}
                   />
-                  <FilterSection
-                    title="Subtitles"
-                    options={filterOptions.subtitleLanguage}
-                    category="subtitleLanguages"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
+                  {/* new mobile sort */}
+                  <SortMenu
+                    sortBy={sortBy}
+                    onSortChange={handleSortChange}
+                    options={sortOptions}
+                    variant="mobile"
                   />
                 </div>
-
-                <FilterSection
-                    title="Status"
-                    options={filterOptions.status}
-                    category="status"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                />
-                {showNewSeriesFilter && (
-                  <FilterSection
-                    title="New Series"
-                    options={filterOptions.timeframes}
-                    category="season"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                  />
-                )}
-                <FilterSection
-                    title="Genres"
-                    options={filterOptions.genres}
-                    category="genres"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                />
-
-                <div>
-                    <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Year</h3>
-                    <input
-                      type="number"
-                      placeholder="e.g., 2024"
-                      value={yearInput}
-                      onChange={(e) => setYearInput(e.target.value)}
-                      className="
-                        w-full
-                        px-3 py-2
-                        bg-gray-800
-                        border border-gray-700 rounded-lg
-                        text-white placeholder-gray-400
-                        focus:outline-none focus:border-orange-500
-                        appearance-none
-                        [&::-webkit-inner-spin-button]:appearance-none
-                        [&::-webkit-outer-spin-button]:appearance-none
-                        "
-                    />
-                </div>
-              </div>
-
-              {/* mobile sort */}
-              <div className="mt-8 border-t border-gray-700 pt-6">
-                <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Sort By</h3>
-                <select
-                  value={sortBy}
-                  onChange={handleSortChange}
-                  className="
-                    w-full
-                    bg-gray-800
-                    border border-gray-700 rounded-lg
-                    px-3 py-2
-                    text-white
-                    focus:outline-none focus:border-orange-500"
-                >
-                  <option value="newest">Newest Releases</option>
-                  {/* {showNewSeriesFilter && (
-                    <option value="season">Latest this Season</option>
-                    )} */}
-                  <option value="popular">Most Popular</option>
-                  <option value="alphabetical">A-Z</option>
-                </select>
               </div>
             </div>
-          </div>
-        </div>
-        )}
-
-        {/* desktop filter sidebar */}
-        <div className={`hidden lg:block bg-gray-900 border-l border-gray-800 transition-all duration-300 order-2 ${
-          isFilterOpen ? "w-80" : "w-0 overflow-hidden"
-        }`}>
-          {isFilterOpen && (
-            <div className="p-6 h-full overflow-y-auto">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-2">
-                  <Filter className="w-5 h-5 text-orange-500" />
-                  <h2 className="text-lg font-semibold text-white">Filters</h2>
-                </div>
-                <button
-                  onClick={clearAllFilters}
-                  className="text-sm text-gray-400 hover:text-orange-400 transition-colors"
-                >
-                  Clear All
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                <FilterSection
-                  title="Content Type"
-                  options={filterOptions.contentType}
-                  category="contentType"
-                  activeFilters={activeFilters}
-                  onFilterChange={handleFilterChange}
-                />
-
-                <div className="border-t border-gray-700 pt-6">
-                  <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Language Options</h3>
-                  <FilterSection
-                    title="Audio Language"
-                    options={filterOptions.audioLanguage}
-                    category="audioLanguages"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                  />
-                  <FilterSection
-                    title="Subtitle Language"
-                    options={filterOptions.subtitleLanguage}
-                    category="subtitleLanguages"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                  />
-                </div>
-
-                <FilterSection
-                    title="Status"
-                    options={filterOptions.status}
-                    category="status"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                />
-                {showNewSeriesFilter && (
-                  <FilterSection
-                    title="New Series"
-                    options={filterOptions.timeframes}
-                    category="season"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                  />
-                )}
-                <FilterSection
-                    title="Genres"
-                    options={filterOptions.genres}
-                    category="genres"
-                    activeFilters={activeFilters}
-                    onFilterChange={handleFilterChange}
-                />
-
-                <div>
-                  <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Release Year</h3>
-                    <input
-                      type="number"
-                      placeholder="e.g., 2024"
-                      value={yearInput}
-                      onChange={(e) => setYearInput(e.target.value)}
-                      className="
-                        w-full
-                        px-3 py-2
-                        bg-gray-800
-                        border border-gray-700 rounded-lg
-                        text-white placeholder-gray-400
-                        focus:outline-none focus:border-orange-500
-                        appearance-none
-                        [&::-webkit-inner-spin-button]:appearance-none
-                        [&::-webkit-outer-spin-button]:appearance-none
-                        "
-                      />
-                  </div>
-                </div>
-              </div>
           )}
-        </div>
+
+          {/* desktop filter sidebar */}
+          <div className={`hidden lg:block bg-gray-900 border-l border-gray-800 transition-all duration-300 order-2
+            ${isFilterOpen ? "w-80" : "w-0 overflow-hidden"}`
+          }>
+            {isFilterOpen && (
+              <div className="p-6 h-full overflow-y-auto">
+                {/* new FilterMenu component */}
+                <FilterDrawerContent
+                  variant="desktop"
+                  activeFilters={activeFilters}
+                  filterOptions={filterOptions}
+                  onFilterChange={handleFilterChange}
+                  onClearFilters={clearAllFilters}
+                  onYearChange={setYearInput}
+                  yearInput={yearInput}
+                  showNewSeriesFilter={showNewSeriesFilter}
+                />
+              </div>
+            )}
+          </div>
 
         {/* main content */}
         <div className="flex-1 p-4 sm:p-6 order-1">
