@@ -13,16 +13,22 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({anime}) => {
             href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(anime.title)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="block"
+            className="group block"
         >
             <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
-                <div className="w-full aspect-[2/3] bg-gray-700">
+                <div className="w-full aspect-[2/3] bg-gray-700 relative">
                     <Image
                         src={anime.image}
                         alt={anime.title}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                        sizes="
+                            (max-width: 640px) 50vw,
+                            (max-width: 768px) 33vw,
+                            (max-width: 1024px) 25vw,
+                            (max-width: 1280px) 20vw,
+                            16vw
+                        "
                     />
                 </div>
                 <div className="
