@@ -9,6 +9,7 @@ import { HeroSection } from "@/components/HeroSection"
 import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
 import { AnimeCard } from "@/components/AnimeCard"
+import { BottomMobileNav } from "@/components/BottomMobileNav"
 import { sortOptions } from "@/lib/constants/sortOptions"
 import Image from "next/image"
 import { normalize } from "path"
@@ -796,35 +797,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
         </div>
 
         {/* bottom mobile navigation */}
-        <div className="
-          lg:hidden
-          fixed
-          bottom-0 left-0 right-0
-          bg-gray-900
-          border-t border-gray-800
-          px-4 py-3 z-40
-          ">
-            <div className="flex justify-around items-center">
-              <button className="flex flex-col items-center space-y-1 text-orange-500">
-                <div className="w-6 h-6 bg-orange-500 rounded"></div>
-                <span className="text-xs">Browse</span>
-              </button>
-              <button className="flex flex-col items-center space-y-1 text-gray-400">
-                <div className="w-6 h-6 bg-gray-600 rounded"></div>
-                <span className="text-xs">My List</span>
-              </button>
-              <button className="flex flex-col items-center space-y-1 text-gray-400">
-                <div className="w-6 h-6 bg-gray-600 rounded"></div>
-                <span className="text-xs">New</span>
-              </button>
-              <button className="flex flex-col items-center space-y-1 text-gray-400">
-                <div className="w-6 h-6 bg-gray-600 rounded"></div>
-                <span className="text-xs">Profile</span>
-              </button>
-            </div>
-        </div>
-        {/* bottom padding mobile */}
-        <div className="lg:hidden h-20"></div>
+        <BottomMobileNav />
       </div>
     )
   }
