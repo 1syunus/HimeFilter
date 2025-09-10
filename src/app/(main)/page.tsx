@@ -3,7 +3,8 @@ import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { AnimeData, SortOption, ActiveFilters, FilterOptionsResponse, FilterSectionProps, FilterOptions, FilterOption } from "@/types/index"
 import { useDebounce } from "src/hooks/useDebounce"
-import { Header } from "@/components/Header"
+import { MobileHeader } from "@/components/MobileHeader"
+import { DesktopHeader } from "@/components/DesktopHeader"
 import { HeroSection } from "@/components/HeroSection"
 import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
@@ -570,149 +571,23 @@ const [hasMore, setHasMore] = useState<boolean>(true)
   return (
     <div className="min-h-screen bg-black text-white">
       {/* mobile header */}
-      <div className="
-      lg:hidden
-      bg-black bg-opacity-90 backdrop-blur-md
-      border-b border-gray-800
-      px-4 py-3
-      sticky top-0 z-50
-      ">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-white hover:text-orange-400 transition-colors"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-            <h1 className="text-lg font-bold text-orange-500">Hime<span className="
-            text-white">Filter</span>
-            </h1>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            {/* mobile search toggle */}
-            {!isSearchExpanded ? (
-              <button
-              onClick={() => setIsSearchExpanded(true)}
-              className="p-2 text-white hover:text-orange-400 transition-colors"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="search..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="
-                      w-48
-                      pl-3 pr-8 py-2
-                      bg-gray-800
-                      border border-gray-700 rounded-lg
-                      text-white placeholder-gray-400
-                      focus:outline-none focus:border-orange-500 text-sm
-                    "
-                    autoFocus
-                    />
-                    <button
-                    onClick={() => {
-                      setIsSearchExpanded(false)
-                      setSearchQuery("")
-                    }}
-                    className="absolute right-2 top-1/2
-                    transform -translate-y-1/2
-                    text-gray-400 hover:text-white"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
+      <MobileHeader
+        onMobileMenuToggle={() => setIsMobileMenuOpen(prev => !prev)}
+        isSearchExpanded={isSearchExpanded}
+        onSearchExpand={setIsSearchExpanded}
+        searchQuery={searchQuery}
+        onSearchChange={(e) => setSearchQuery(e.target.value)}
+        onSearchClear={() => setSearchQuery("")}
+      />
+        
       {/* desktop header */}
-      <header className="
-          hidden
-          lg:block
-          bg-black bg-opacity-90 backdrop-blur-md
-          border-b border-gray-800
-          px-6 py-4
-          sticky top-0 z-50
-        ">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center space-x-6">
-              <h1 className="text-2xl font-bold text-orange-500">Hime<span className="
-                text-white">Filter</span>
-              </h1>
-                <nav className="flex space-x-6">
-                  <a href="#" className="text-white hover:text-orange-400 transition-colors">Browse</a>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">My List</a>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">New & Popular</a>
-                </nav>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              {/* desktop search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2
-                  transform -translate-y-1/2
-                  text-gray-400
-                  w-4 h-4
-                  " />
-                  <input
-                  type="text"
-                  placeholder="Search anime..."
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  className="
-                    w-80
-                    pl-10 pr-4 py-2
-                    bg-gray-800
-                    border border-gray-700 rounded-lg
-                    text-white placeholder-gray-400
-                    focus:outline-none focus:border-orange-500 transition-colors
-                  "
-                />
-              </div>
-
-              {/* desktop sort */}
-              {/* <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={handleSortChange}
-                  className="
-                  bg-gray-800
-                  border border-gray-700 rounded-lg
-                  px-4 py-2
-                  text-white
-                  focus:outline-none focus:border-orange-500 appearance-none
-                  pr-8
-                  ">
-                    <option value="newest">Newest Releases</option>
-                    {showNewSeriesFilter && (
-                      <option value="season">Latest this Season</option>
-                      )}
-                    <option value="popular">Most Popular</option>
-                    <option value="alphabetical">A-Z</option>
-                  </select>
-                  <ChevronDown
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none"
-                  />
-              </div> */}
-              <SortMenu
-                sortBy={sortBy}
-                onSortChange={handleSortChange}
-                options={sortOptions}
-                variant="desktop"
-              />
-
-              <button
-                onClick={() => setIsFilterOpen(prev => !prev)}
+      <DesktopHeader
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
+        sortOptions={sortOptions}
+        onFilterToggle={() => setIsFilterOpen(prev => !prev)}
       />
 
       {/* hero section */}
