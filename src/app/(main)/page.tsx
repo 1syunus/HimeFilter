@@ -712,37 +712,22 @@ const [hasMore, setHasMore] = useState<boolean>(true)
               />
 
               <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="
-                flex items-center
-                space-x-2
-                bg-gray-800 hover:bg-gray-700
-                px-4 py-2
-                rounded-lg
-                transition-colors
-                ">
-                  <Filter className="w-4 h-4" />
-                  <span>Filters</span>
-                </button>
-            </div>
-          </div>
-        </header>
+                onClick={() => setIsFilterOpen(prev => !prev)}
+      />
 
-        {/* Netflix-style hero */}
-        {featuredAnime && (
-          <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
-            <HeroSection
-              featuredAnime={featuredAnime}
-              videoLoaded={videoLoaded}
-              heroMuted={heroMuted}
-              toggleHeroAudio={toggleHeroAudio}
-              toggleHeroPlayPause={toggleHeroPlayPause}
-              handleVideoLoad={handleVideoLoad}
-              handleVideoError={handleVideoError}
-              videoError={videoError}
-            />
-          </section>
-        )}
+      {/* hero section */}
+      {featuredAnime && ( 
+        <HeroSection
+          featuredAnime={featuredAnime}
+          videoLoaded={videoLoaded}
+          heroMuted={heroMuted}
+          toggleHeroAudio={toggleHeroAudio}
+          toggleHeroPlayPause={toggleHeroPlayPause}
+          handleVideoLoad={handleVideoLoad}
+          handleVideoError={handleVideoError}
+          videoError={videoError}
+        />
+      )}
 
         <div className="flex relative">
           {/* mobile filter drawer */}

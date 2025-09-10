@@ -24,7 +24,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     videoError,
 }) => {
     return (
-        <>
+        <section className="relative h-[50v] sm:h-[60v] lg:h[80v] overflow-hidden">
             {/* click overlay for play/pause */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div 
@@ -151,6 +151,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
             )}
-        </>
+        </section>
     )
 }
