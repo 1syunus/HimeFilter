@@ -8,6 +8,7 @@ import { DesktopHeader } from "@/components/DesktopHeader"
 import { HeroSection } from "@/components/HeroSection"
 import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
+import { AnimeCard } from "@/components/AnimeCard"
 import { sortOptions } from "@/lib/constants/sortOptions"
 import Image from "next/image"
 import { normalize } from "path"
@@ -724,11 +725,11 @@ const [hasMore, setHasMore] = useState<boolean>(true)
                 <p className="text-gray-400 text-sm">Discover your next favorite series</p>
               </div>
 
-              {/* results grid - mobile */}
+              {/* results grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                 {animeList.map((anime: AnimeData) => (
                   <div key={anime.id} className="group cursor-pointer">
-                    <AnimeCard key={anime.id} anime={anime} />
+                    <AnimeCard anime={anime} />
                   </div>
                 ))}
               </div>
