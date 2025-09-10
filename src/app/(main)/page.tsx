@@ -6,6 +6,7 @@ import { useDebounce } from "src/hooks/useDebounce"
 import { MobileHeader } from "@/components/MobileHeader"
 import { DesktopHeader } from "@/components/DesktopHeader"
 import { HeroSection } from "@/components/HeroSection"
+import { ContinueWatchingSection } from "@/components/ContinueWatchingSection"
 import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
 import { AnimeCard } from "@/components/AnimeCard"
@@ -719,12 +720,15 @@ const [hasMore, setHasMore] = useState<boolean>(true)
               <p className="ml-2">Please make sure your backend server is running and accessible.</p>
             </div>
           ) : (
-            <>
-              {/* section title */}
-              <div className="mb-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Browse Titles</h2>
-                <p className="text-gray-400 text-sm">Discover your next favorite series</p>
-              </div>
+                <>
+                  {/* continue watching */}
+                  <ContinueWatchingSection animeList={continueWatchingList} />
+
+                  {/* section title */}
+                  <div className="mb-6">
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Browse Titles</h2>
+                    <p className="text-gray-400 text-sm">Discover your next favorite series</p>
+                  </div>
 
               {/* results grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
