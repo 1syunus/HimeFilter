@@ -266,6 +266,10 @@ const App: React.FC = () => {
 
         {/* main content */}
         <div className="flex-1 p-4 sm:p-6 order-1">
+          
+        {/* continue watching */}
+        {!hasActiveQuery() && (<ContinueWatchingSection animeList={continueWatchingList} />)}
+        
           {/* active filters display */}
           {hasActiveQuery() && (
             <ActiveFiltersBar
