@@ -8,6 +8,7 @@ import { MobileHeader } from "@/components/MobileHeader"
 import { DesktopHeader } from "@/components/DesktopHeader"
 import { HeroSection } from "@/components/HeroSection"
 import { ContinueWatchingSection } from "@/components/ContinueWatchingSection"
+import { ActiveFiltersBar } from "@/components/ActiveFiltersBar"
 import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
 import { AnimeCard } from "@/components/AnimeCard"
@@ -266,49 +267,13 @@ const App: React.FC = () => {
         <div className="flex-1 p-4 sm:p-6 order-1">
           {/* active filters display */}
           {hasActiveQuery() && (
-            <div className="mb-6 flex flex-wrap gap-2">
-              {searchQuery && (
-                <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                  Search: &quot;{searchQuery}&quot;
-                  <X className="w-4 h-4 ml-2 cursor-pointer" onClick={() => setSearchQuery("")} />
-                </div>
-              )}
-              {Object.entries(activeFilters).map(([category, values]) => 
-                Array.isArray(values) ? values.map((value) => {
-                  let displayLabel = value
-                  if (category === "genres") {
-                    const match = apiFilterOptions.availableGenres.find(g => g.value === value)
-                    if (match) displayLabel = match.label
-                  }
-                  
-                return (
-
-                  <div key={`${category}-${value}`}
-                    className="
-                      bg-gray-700
-                      text-white
-                      px-3 py-1 
-                      rounded-full 
-                      text-sm
-                      flex items-center
-                      ">
-                    {displayLabel}
-                    <X
-                      className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
-                      onClick={() => removeActiveFilter(category as keyof ActiveFilters, value)}
-                    />
-                  </div>
-                )}) : values && (
-                  <div key={category} className="bg-gray-700 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                    {category} : {typeof values === "string" ? values : values.name}
-                    <X
-                      className="w-4 h-4 ml-2 cursor-pointer hover:text-orange-400"
-                      onClick={() => removeActiveFilter(category as keyof ActiveFilters, values)}
-                    />
-                  </div>
-                )
-              )}
-            </div>
+            <ActiveFiltersBar
+              activeFilters={activeFilters}
+              apiFilterOptions={apiFilterOptions}
+              searchQuery={searchQuery}
+              onRemoveFilter={removeActiveFilter}
+              onClearSearch={() => setSearchQuery("")}
+            />
           )}
 
           {/* conditional rendering */}
