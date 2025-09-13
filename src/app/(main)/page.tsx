@@ -217,7 +217,7 @@ const App: React.FC = () => {
               <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
               <div className="absolute left-0 top-0 h-full w-70 bg-gray-900 opacity-85 transform transition-transform duration-300 overflow-y-auto">
                 <div className="p-6">
-                  {/* new FilterMenu componenent */}
+                  {/* new filter drawer componenent */}
                   <FilterDrawerContent
                     variant="mobile"
                     activeFilters={activeFilters}
@@ -247,7 +247,7 @@ const App: React.FC = () => {
           }>
             {isFilterOpen && (
               <div className="p-6 h-full overflow-y-auto">
-                {/* new FilterMenu component */}
+                {/* new filter drawer component */}
                 <FilterDrawerContent
                   variant="desktop"
                   activeFilters={activeFilters}
