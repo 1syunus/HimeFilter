@@ -9,6 +9,7 @@ import { DesktopHeader } from "@/components/DesktopHeader"
 import { HeroSection } from "@/components/HeroSection"
 import { ContinueWatchingSection } from "@/components/ContinueWatchingSection"
 import { ActiveFiltersBar } from "@/components/ActiveFiltersBar"
+import { BrowseResultsSection } from "@/components/BrowseResultsSection"
 import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
 import { AnimeCard } from "@/components/AnimeCard"
@@ -288,37 +289,14 @@ const App: React.FC = () => {
               <p className="ml-2">Please make sure your backend server is running and accessible.</p>
             </div>
           ) : (
-                <>
-                  {/* continue watching */}
-                  {!hasActiveQuery() && (<ContinueWatchingSection animeList={continueWatchingList} />)}
-
-                  {/* section title */}
-                  <div className="mb-6">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Browse Titles</h2>
-                    <p className="text-gray-400 text-sm">Discover your next favorite series</p>
-                  </div>
-
-                  {/* results grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
-                    {animeList.map((anime: AnimeData) => (
-                      <div key={anime.id} className="group cursor-pointer">
-                        <AnimeCard anime={anime} />
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* load more btn */}
-                  {animeList.length > 0 && !loading && hasMore && (
-                    <div className="mt-8 sm:mt-12 text-center">
-                      <button 
-                        onClick={handleLoadMore}
-                        className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
-                      >
-                        Load More Anime
-                      </button>
-                    </div>
-                  )}
-                </>
+                <BrowseResultsSection
+                  animeList={animeList}
+                  loading={loading}
+                  hasMore={hasMore}
+                  onLoadMore={handleLoadMore}
+                  title="Browse Titles"
+                  subtitle="Discover your next favorite series"
+                />
             )} 
           </div>
         </div>
