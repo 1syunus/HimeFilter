@@ -325,7 +325,7 @@ const App: React.FC = () => {
           ) : (
                 <>
                   {/* continue watching */}
-                  <ContinueWatchingSection animeList={continueWatchingList} />
+                  {!hasActiveQuery() && (<ContinueWatchingSection animeList={continueWatchingList} />)}
 
                   {/* section title */}
                   <div className="mb-6">
