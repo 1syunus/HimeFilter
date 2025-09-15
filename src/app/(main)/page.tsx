@@ -264,50 +264,51 @@ const App: React.FC = () => {
             )}
           </div>
 
-        {/* main content */}
-        <div className="flex-1 p-4 sm:p-6 order-1">
+          {/* main content */}
+          <div className="flex-1 p-4 sm:p-6 order-1">
           
-        {/* continue watching */}
-        {!hasActiveQuery() && (<ContinueWatchingSection animeList={continueWatchingList} />)}
-        
-          {/* active filters display */}
-          {hasActiveQuery() && (
-            <ActiveFiltersBar
-              activeFilters={activeFilters}
-              apiFilterOptions={apiFilterOptions}
-              searchQuery={searchQuery}
-              onRemoveFilter={removeActiveFilter}
-              onClearSearch={() => setSearchQuery("")}
-            />
-          )}
+            {/* active filters display */}
+            {hasActiveQuery() && (
+              <ActiveFiltersBar
+                activeFilters={activeFilters}
+                apiFilterOptions={apiFilterOptions}
+                searchQuery={searchQuery}
+                onRemoveFilter={removeActiveFilter}
+                onClearSearch={() => setSearchQuery("")}
+              />
+            )}
 
-          {/* conditional rendering */}
-          {loading ? (
-            <div className="flex justify-center items-center h-48">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
-              <p className="ml-4 text-lg">Loading anime and filters...</p>
-            </div>
-          ) : error ? (
-            <div className="flex justify-center items-center h-48 text-red-500">
-              <p className="text-lg">Error: {error}</p>
-              <p className="ml-2">Please make sure your backend server is running and accessible.</p>
-            </div>
-          ) : (
-                <BrowseResultsSection
-                  animeList={animeList}
-                  loading={loading}
-                  hasMore={hasMore}
-                  onLoadMore={handleLoadMore}
-                  title="Browse Titles"
-                  subtitle="Discover your next favorite series"
-                />
-            )} 
+            {/* conditional rendering */}
+            {loading && !animeList.length ? (
+              <div className="flex justify-center items-center h-48">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
+                <p className="ml-4 text-lg">Loading anime and filters...</p>
+              </div>
+            ) : error ? (
+              <div className="flex justify-center items-center h-48 text-red-500">
+                <p className="text-lg">Error: {error}</p>
+                <p className="ml-2">Please make sure your backend server is running and accessible.</p>
+              </div>
+            ) : hasActiveQuery() ? (
+                  <BrowseResultsSection
+                    animeList={animeList}
+                    loading={loading}
+                    hasMore={hasMore}
+                    onLoadMore={handleLoadMore}
+                    title="Browse Titles"
+                    subtitle="Discover your next favorite series"
+                  />
+              ) : (
+                    // continue watching section
+                    <ContinueWatchingSection animeList={continueWatchingList} />
+                )
+              } 
           </div>
         </div>
 
-        {/* bottom mobile navigation */}
-        <BottomMobileNav />
-      </div>
-    )
-  }
+      {/* bottom mobile navigation */}
+      <BottomMobileNav />
+    </div>
+  )
+}
 export default App
