@@ -17,6 +17,8 @@ import { BottomMobileNav } from "@/components/BottomMobileNav"
 import { sortOptions } from "@/lib/constants/sortOptions"
 import Image from "next/image"
 import { normalize } from "path"
+import clsx from "clsx"
+import { clear } from "console"
 
 const App: React.FC = () => {
   const {
