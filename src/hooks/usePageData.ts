@@ -44,7 +44,7 @@ export const usePageData = () => {
                 throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
             }
             if(!filtersResponse.ok) {
-                throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
+                throw new Error(`Failed to fetch filter options ${browseResponse.statusText}`)
             }
 
             const browseData: AnimeData[] = await browseResponse.json()
