@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimeData, FilterOptionsResponse } from "../types";
 
 export const usePageData = () => {
+    const didRunOnce = useRef(false)
+
     // store hero
     const [featuredAnime, setFeaturedAnime] = useState<AnimeData | null>(null)
 
@@ -26,6 +28,9 @@ export const usePageData = () => {
 
     // fetch initial data
     useEffect(() => {
+        if (didRunOnce.current) return
+        didRunOnce.current = true
+
         const controller = new AbortController()
         const signal = controller.signal
 
@@ -65,10 +70,10 @@ export const usePageData = () => {
                 console.error("Failed to fetch initial data:", err)
             } finally {
                 setInitialLoading(false)
+                // setIsReady(true)
             }
         }
             fetchInitialData()
-            
             return () => controller.abort()
     }, [])
 
