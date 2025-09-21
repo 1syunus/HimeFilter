@@ -16,7 +16,7 @@ const App: React.FC = () => {
   const {
     featuredAnime, continueWatchingList, apiFilterOptions, animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
     activeFilters, sortBy, searchQuery, yearInput, handleFilterChange, clearAllFilters, handleSortChange,
-    handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, page, hasMore, handleLoadMore, setPage,
+    handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, page, hasMore, handleLoadMore, setPage, handleGoHome,
   } = useBrowsePage()
 
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
@@ -59,6 +59,7 @@ const App: React.FC = () => {
         searchQuery={searchQuery}
         onSearchChange={(e) => setSearchQuery(e.target.value)}
         onSearchClear={() => setSearchQuery("")}
+        handleGoHome={handleGoHome}
       />
         
       {/* desktop header */}
@@ -69,6 +70,7 @@ const App: React.FC = () => {
         onSortChange={handleSortChange}
         sortOptions={sortOptions}
         onFilterToggle={() => setIsFilterOpen(prev => !prev)}
+        handleGoHome={handleGoHome}
       />
 
       {/* hero section */}
