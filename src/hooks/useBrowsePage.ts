@@ -1,13 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useAnimeFilters } from "./useAnimeFilters";
 import { useAnimePagination } from "./useAnimePagination";
 import { usePageData } from "./usePageData";
 import { useAnimeFetch } from "./useAnimeFetch";
 
 export const useBrowsePage = () => {
-    // state to set view mode
-    const [viewMode, setViewMode] = useState<"default" | "browse">("default")
-
     const filters = useAnimeFilters()
     const pagination = useAnimePagination()
     const pageData = usePageData()
@@ -31,11 +28,6 @@ export const useBrowsePage = () => {
     })
 
     // handlers
-    // handler for view switch btn
-    const handleBrowseAll = useCallback(() => {
-        setViewMode("browse")
-    }, [])
-
     // handler to return home
     const handleGoHome = useCallback(() => {
         filters.clearAllFilters()
@@ -43,13 +35,6 @@ export const useBrowsePage = () => {
     }, [filters, pagination])
 
     // side effects
-    // switch to browse view on query
-    useEffect(() => {
-        if (hasActiveQuery()) {
-            setViewMode("browse")
-        }
-    }, [hasActiveQuery])
-
     // reset pagination on filter change
     useEffect(() => {
         if (pagination.page > 1) {
@@ -57,10 +42,9 @@ export const useBrowsePage = () => {
         }
     }, [filters.activeFilters, filters.sortBy, filters.debouncedQuery, pagination.setPage])
 
-
     return {
         // state
-        viewMode, hasActiveQuery,
+        hasActiveQuery,
 
         // static data
         featuredAnime: pageData.featuredAnime,
@@ -80,6 +64,6 @@ export const useBrowsePage = () => {
         showNewSeriesFilter: filters.showNewSeriesFilter,
 
         // handlers
-        handleBrowseAll, handleGoHome,
+        handleGoHome,
     }
 }

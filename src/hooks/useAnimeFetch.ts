@@ -9,7 +9,6 @@ interface UseAnimeFetchProps {
     setHasMore: (hasMore: boolean) => void
     showNewSeriesFilter: boolean
     hasActiveQuery: boolean
-    // isPageDataReady: boolean
 }
 
 // dating helpers
