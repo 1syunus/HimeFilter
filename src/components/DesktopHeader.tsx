@@ -10,6 +10,7 @@ export interface DesktopHeaderProps {
     onSortChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
     sortOptions: SortOptionType[]
     onFilterToggle: () => void
+    handleGoHome: () => void
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
@@ -19,13 +20,15 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
     onSortChange,
     sortOptions,
     onFilterToggle,
+    handleGoHome,
 }) => {
     return (
 
       <header className="hidden lg:block bg-black bg-opacity-90 backdrop-blur-md border-b border-gray-800 px-6 py-4 sticky top-0 z-50">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center space-x-6">
-                    <h1 className="text-2xl font-bold text-orange-500">
+                    <h1 onClick={handleGoHome}
+                        className="text-2xl font-bold text-orange-500">
                         Hime<span className="text-white">Filter</span>
                     </h1>
                     <nav className="flex space-x-6">

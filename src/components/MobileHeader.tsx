@@ -8,6 +8,7 @@ export interface MobileHeaderProps {
     searchQuery: string
     onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     onSearchClear: () => void
+    handleGoHome: () => void
 }
 
 export const MobileHeader: React.FC<MobileHeaderProps> = ({
@@ -16,7 +17,8 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
     onSearchExpand,
     searchQuery,
     onSearchChange,
-    onSearchClear
+    onSearchClear,
+    handleGoHome
 }) => {
     return (
         <header className="lg:hidden bg-black bg-opacity-90 backdrop-blur-md border-b border-gray-800 px-4 py-3 sticky top-0 z-50">
@@ -28,7 +30,8 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                     >
                         <Menu className="w-6 h-6" />
                     </button>
-                    <h1 className="text-lg font-bold text-orange-500">
+                    <h1 onClick={handleGoHome}
+                        className="text-lg font-bold text-orange-500">
                         Hime<span className="text-white">Filter</span>
                     </h1>
                     </div>

@@ -34,11 +34,10 @@ export const useBrowsePage = () => {
         setViewMode("browse")
     }, [])
 
-    // handler for return to home
+    // handler to return home
     const handleGoHome = useCallback(() => {
         filters.clearAllFilters()
         pagination.setPage(1)
-        setViewMode("default")
     }, [filters, pagination])
 
     // side effects
