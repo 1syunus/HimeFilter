@@ -40,26 +40,26 @@ export const usePageData = () => {
         
             try {
             // fetch filter options
-            const [browseResponse, filtersResponse] = await Promise.all([
-                fetch("/api/browse", {signal}),
+            const [topAnimeResponse, filtersResponse] = await Promise.all([
+                fetch("/api/topAnime", {signal}),
                 fetch("/api/filters", {signal})
             ])
 
-            if(!browseResponse.ok) {
-                throw new Error(`Failed to fetch browse data ${browseResponse.statusText}`)
+            if(!topAnimeResponse.ok) {
+                throw new Error(`Failed to fetch top anime data ${topAnimeResponse.statusText}`)
             }
             if(!filtersResponse.ok) {
                 throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
             }
 
-            const browseData: AnimeData[] = await browseResponse.json()
+            const topAnimeData: AnimeData[] = await topAnimeResponse.json()
             const filtersData: FilterOptionsResponse = await filtersResponse.json()
 
             setApiFilterOptions(filtersData)
             // featured: 1st item
-            if (browseData && browseData.length > 0) {
-                setFeaturedAnime(browseData[0])
-                setContinueWatchingList(browseData.slice(0, 3))
+            if (topAnimeData && topAnimeData.length > 0) {
+                setFeaturedAnime(topAnimeData[0])
+                setContinueWatchingList(topAnimeData.slice(0, 3))
             }
             } catch (err: unknown) {
                 if (err instanceof Error && err.name !== "AbortError") {
