@@ -46,10 +46,10 @@ export const usePageData = () => {
             ])
 
             if(!browseResponse.ok) {
-                throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
+                throw new Error(`Failed to fetch browse data ${browseResponse.statusText}`)
             }
             if(!filtersResponse.ok) {
-                throw new Error(`Failed to fetch filter options ${browseResponse.statusText}`)
+                throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
             }
 
             const browseData: AnimeData[] = await browseResponse.json()
@@ -64,9 +64,7 @@ export const usePageData = () => {
             } catch (err: unknown) {
                 if (err instanceof Error && err.name !== "AbortError") {
                     setError(err.message)
-                } else {
-                    setError("An unknown error occurred while fetching data.")
-                }
+                } 
                 console.error("Failed to fetch initial data:", err)
             } finally {
                 setInitialLoading(false)
