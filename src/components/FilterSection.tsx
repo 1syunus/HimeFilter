@@ -1,5 +1,5 @@
 import React from "react"
-import { ActiveFilters, FilterOption, FilterSectionProps } from "../types"
+import { FilterSectionProps } from "../types"
 
 export const FilterSection: React.FC<FilterSectionProps> = ({
     title, options, category, activeFilters, onFilterChange,
