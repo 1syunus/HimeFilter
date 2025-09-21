@@ -18,7 +18,8 @@ export const useBrowsePage = () => {
             Object.values(filters.activeFilters).some(v => Array.isArray(v) ? v.length > 0 : !!v)
     }, [filters.debouncedQuery, filters.activeFilters])
 
-    // data fetch
+    const activeQuery = hasActiveQuery()
+
     const gridData = useAnimeFetch({
         activeFilters: filters.activeFilters,
         sortBy: filters.sortBy,
@@ -26,6 +27,7 @@ export const useBrowsePage = () => {
         page: pagination.page,
         setHasMore: pagination.setHasMore,
         showNewSeriesFilter: filters.showNewSeriesFilter,
+        hasActiveQuery: activeQuery,
     })
 
     // handlers

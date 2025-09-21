@@ -8,6 +8,8 @@ interface UseAnimeFetchProps {
     page: number
     setHasMore: (hasMore: boolean) => void
     showNewSeriesFilter: boolean
+    hasActiveQuery: boolean
+    // isPageDataReady: boolean
 }
 
 // dating helpers
@@ -37,7 +39,7 @@ const getCurrentSeason = () => {
 }
 
 export const useAnimeFetch = ({
-    activeFilters, sortBy, debouncedQuery, page, setHasMore, showNewSeriesFilter}: UseAnimeFetchProps) => {
+    activeFilters, sortBy, debouncedQuery, page, setHasMore, showNewSeriesFilter, hasActiveQuery}: UseAnimeFetchProps) => {
         const [animeList, setAnimeList] = useState<AnimeData[]>([])
         const [loading, setLoading] = useState<boolean>(true)
         const [error, setError] = useState<string | null>(null)
@@ -106,14 +108,11 @@ export const useAnimeFetch = ({
                 const params = buildQueryParams()
 
                 // no fetch on page load
-                if (page === 1 && !debouncedQuery && !Object.values(activeFilters).some(v => 
-                    Array.isArray(v) ? v.length > 0: v
-                  )) 
-                {
+                if (page === 1 && !hasActiveQuery) {
                     setAnimeList([])
                     setLoading(false)
                     return
-                }
+                  }
 
                 try {
                     const response = await fetch(`/api/anime?${params.toString()}`, { signal })
@@ -134,7 +133,7 @@ export const useAnimeFetch = ({
             fetchData()
 
             return () => controller.abort()
-          }, [activeFilters, sortBy, debouncedQuery, page, buildQueryParams, setHasMore])
+          }, [sortBy, hasActiveQuery, page, buildQueryParams, setHasMore])
           
           return {animeList, loading, error, showNewSeriesFilter, setAnimeList}
     }
