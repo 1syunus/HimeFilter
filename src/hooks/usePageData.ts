@@ -26,8 +26,6 @@ export const usePageData = () => {
     // error state
     const [error, setError] = useState<string | null>(null)
 
-    // const [isReady, setIsReady] = useState(false)
-
     // fetch initial data
     useEffect(() => {
         if (didRunOnce.current) return
