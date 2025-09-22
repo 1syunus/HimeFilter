@@ -40,14 +40,14 @@ const FilterBlock: React.FC<FilterDrawerContentProps> = ({
                 {variant === "mobile" ? "Language" : "Language Options"}
             </h3>
             <FilterSection
-                title="Audio"
+                title={variant === "mobile" ? "Audio" : "Audio Language"}
                 options={filterOptions.audioLanguage as any}
                 category="audioLanguages"
                 activeFilters={activeFilters}
                 onFilterChange={onFilterChange}
             />
             <FilterSection
-                title="Subtitles"
+                title={variant === "mobile" ? "Subtitles" : "Subtitle Language"}
                 options={filterOptions.subtitleLanguage as any}
                 category="subtitleLanguages"
                 activeFilters={activeFilters}
