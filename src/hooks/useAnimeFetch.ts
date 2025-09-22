@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
 import { AnimeData, ActiveFilters, SortOption } from "../types";
+import { getCurrentSeason } from "@/lib/dateUtils";
 
 interface UseAnimeFetchProps {
     activeFilters: ActiveFilters
@@ -9,32 +10,6 @@ interface UseAnimeFetchProps {
     setHasMore: (hasMore: boolean) => void
     showNewSeriesFilter: boolean
     hasActiveQuery: boolean
-}
-
-// dating helpers
-// const currentYear = new Date().getFullYear().toString()
-// const showNewSeriesFilter = !activeFilters.year || activeFilters.year === currentYear
-
-const getCurrentSeason = () => {
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = now.getMonth()
-  let seasonStartDate: string, seasonEndDate: string
-
-  if (month >= 0 && month <=2) {
-    seasonStartDate = `${year}-01-01`
-    seasonEndDate = `${year}-03-31`
-  } else if (month >= 3 && month <=5) {
-    seasonStartDate = `${year}-04-01`
-    seasonEndDate = `${year}-06-30`
-  } else if (month >= 6 && month <=8) {
-    seasonStartDate = `${year}-07-01`
-    seasonEndDate = `${year}-09-30`
-  } else {
-    seasonStartDate = `${year}-10-01`
-    seasonEndDate = `${year}-12-31`
-  }
-  return {seasonStartDate, seasonEndDate}
 }
 
 export const useAnimeFetch = ({
