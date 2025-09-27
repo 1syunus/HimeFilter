@@ -2,12 +2,14 @@ import { useCallback, useEffect } from "react";
 import { useAnimeFilters } from "./useAnimeFilters";
 import { useAnimePagination } from "./useAnimePagination";
 import { usePageData } from "./usePageData";
+import { useLazyCarousels } from "./useLazyCarousels";
 import { useAnimeFetch } from "./useAnimeFetch";
 
 export const useBrowsePage = () => {
     const filters = useAnimeFilters()
     const pagination = useAnimePagination()
     const pageData = usePageData()
+    const lazyCarousels = useLazyCarousels()
 
     // derived state to choose default list or filtered list
     const hasActiveQuery = useCallback((): boolean => {
@@ -53,6 +55,9 @@ export const useBrowsePage = () => {
 
         // filter/sort state + handlers
         ...filters,
+
+        // carousel state
+        ...lazyCarousels,
 
         // pagination state + handlers
         ...pagination,
