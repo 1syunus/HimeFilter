@@ -7,12 +7,13 @@ import { useDebounce } from "./useDebounce";
 const { year, season } = getPrevSeason();
 
 const lazyCarouselEndpoints = {
+  now: "/api/anime/seasons",
   fanFavorites: "/api/anime/carousels?order_by=members",
-  movies: "/api/anime/carousels?type=movie&order_by=score",
-  lastSeason: `/api/anime/carousels?year=${year}&season=${season}`,
+  movies: "/api/anime/carousels?type=movie",
+  lastSeason: `/api/anime/seasons?year=${year}&season=${season}`,
   shounen: "/api/anime/carousels?genres=27&start_date=2023-01-01",
   sliceOfLife: "/api/anime/carousels?genres=36&start_date=2022-01-01",
-  classics: "/api/anime/carousels?start_date=1990-01-01&end_date=2005-12-31&order_by=score",
+  classics: "/api/anime/carousels?start_date=1990-01-01&end_date=2005-12-31",
 };
 
 type CarouselName = keyof typeof lazyCarouselEndpoints;
@@ -68,6 +69,7 @@ export const useLazyCarousels = () => {
   };
 
   // refs for each carousel
+  const nowRef = useDebouncedInView("now");
   const fanFavRef = useDebouncedInView("fanFavorites");
   const moviesRef = useDebouncedInView("movies");
   const lastSeasonRef = useDebouncedInView("lastSeason");
@@ -77,6 +79,7 @@ export const useLazyCarousels = () => {
 
   return {
     // data
+    now: carouselData.now,
     fanFavorites: carouselData.fanFavorites,
     movies: carouselData.movies,
     lastSeason: carouselData.lastSeason,
@@ -89,6 +92,7 @@ export const useLazyCarousels = () => {
     errorStates,
 
     // refs
+    nowRef,
     fanFavRef,
     moviesRef,
     lastSeasonRef,

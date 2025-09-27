@@ -20,8 +20,8 @@ import { sortOptions } from "@/lib/constants/sortOptions"
 const App: React.FC = () => {
   const {
     featuredAnime, continueWatchingList,
-    topSeries, fanFavorites, lastSeason, movies, shounen, sliceOfLife, classics, loadingStates,
-    fanFavRef, lastSeasonRef, moviesRef, shounenRef, sliceOfLifeRef, classicsRef,
+    topSeries, now, fanFavorites, lastSeason, movies, shounen, sliceOfLife, classics, loadingStates,
+    nowRef, fanFavRef, lastSeasonRef, moviesRef, shounenRef, sliceOfLifeRef, classicsRef,
     apiFilterOptions,
     animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
     activeFilters, sortBy, searchQuery, yearInput,
@@ -183,7 +183,9 @@ const App: React.FC = () => {
 
                       <div className="space-y-8">
                         <AnimeCarousel title="Top Series" items={topSeries} />
-                        {/* <AnimeCarousel title="New This Season" items={currentlyAiring} /> */}
+                        <div ref={nowRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="Latest this Season" items={now} loading={loadingStates.now} />
+                        </div>
                         <div ref={fanFavRef} className="w-full min-h-[350px]">
                           <AnimeCarousel title="Fan Favorites" items={fanFavorites} loading={loadingStates.fanFavorites} />
                         </div>
