@@ -1,46 +1,9 @@
 import { NextResponse } from "next/server";
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+import { delay, isReleased, hasEpisodes, hasScore, hasDurationOver5Minutes } from "@/lib/animeUtils";
 import { AnimeData } from "@/types/index";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { encode } from "punycode";
-
-// helper to introduce delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-// helper function for filtering future/0-ep titles
-const isReleased = (anime: {aired: {from: string | null}}): boolean => {
-    if (!anime.aired?.from) {
-        return false
-    }
-    const startDate = new Date(anime.aired.from)
-    return !isNaN(startDate.getTime()) && startDate <= new Date()
-}
-
-// helper to check valid episode count
-const hasEpisodes = (anime: {episodes: number | null}): boolean => {
-    return anime.episodes === null || anime.episodes > 0
-}
-
-// score helper
-const hasScore = (anime: {score: number | null}): boolean => {
-    return anime.score !== null && anime.score > 0
-}
-
-// duration helper
-const hasDurationOver5Minutes = (anime: {duration: string | null}): boolean => {
-    if (!anime.duration) return false
-
-    const durationRegex = /(?:(\d+)\s*hr)?\s*(?:(\d+)\s*min)?/i
-    const match = anime.duration?.match(durationRegex)
-
-    if (!match) return false
-
-    const hours = match[1] ? parseInt(match[1]) : 0
-    const minutes = match[2] ? parseInt(match[2]) : 0
-    const totalMinutes = hours * 60 + minutes
-
-    return totalMinutes >= 5
-}
 
 export async function GET(request: Request) {
     try {
