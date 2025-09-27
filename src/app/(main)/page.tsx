@@ -19,8 +19,13 @@ import { sortOptions } from "@/lib/constants/sortOptions"
 
 const App: React.FC = () => {
   const {
-    featuredAnime, continueWatchingList, apiFilterOptions, animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
-    activeFilters, sortBy, searchQuery, yearInput, handleFilterChange, clearAllFilters, handleSortChange,
+    featuredAnime, continueWatchingList,
+    topSeries, fanFavorites, lastSeason, movies, shounen, sliceOfLife, classics, loadingStates,
+    fanFavRef, lastSeasonRef, moviesRef, shounenRef, sliceOfLifeRef, classicsRef,
+    apiFilterOptions,
+    animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
+    activeFilters, sortBy, searchQuery, yearInput,
+    handleFilterChange, clearAllFilters, handleSortChange,
     handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, page, hasMore, handleLoadMore, setPage, handleGoHome,
   } = useBrowsePage()
 
@@ -171,9 +176,40 @@ const App: React.FC = () => {
                     title="Browse Titles"
                     subtitle="Discover your next favorite series"
                   />
-              ) : (
-                    // continue watching section
-                    <ContinueWatchingSection animeList={continueWatchingList} />
+              ) : ( <div className="container mx-auto px-4 py-6">
+                      <div className="space-y-12">
+                      {/* continue watching section */}
+                      <ContinueWatchingSection animeList={continueWatchingList} />
+
+                      <div className="space-y-8">
+                        <AnimeCarousel title="Top Series" items={topSeries} />
+                        {/* <AnimeCarousel title="New This Season" items={currentlyAiring} /> */}
+                        <div ref={fanFavRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="Fan Favorites" items={fanFavorites} loading={loadingStates.fanFavorites} />
+                        </div>
+
+                        <div ref={moviesRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="Movies" items={movies} loading={loadingStates.movies} />
+                        </div>
+
+                        <div ref={lastSeasonRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="Last Time On..." items={lastSeason} loading={loadingStates.lastSeason} />
+                        </div>
+                        
+                        <div ref={shounenRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="Shounen" items={shounen} loading={loadingStates.shounen}/>
+                        </div>
+                        
+                        <div ref={sliceOfLifeRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="Slice of Life" items={sliceOfLife} loading={loadingStates.sliceOfLife} />
+                        </div>
+
+                        <div ref={classicsRef} className="w-full min-h-[350px]">
+                          <AnimeCarousel title="The Classics" items={classics} loading={loadingStates.classics} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )
               } 
           </div>
