@@ -51,6 +51,7 @@ export const useBrowsePage = () => {
         // static data
         featuredAnime: pageData.featuredAnime,
         continueWatchingList: pageData.continueWatchingList,
+        topSeries: pageData.topSeries,
         apiFilterOptions: pageData.apiFilterOptions,
 
         // filter/sort state + handlers

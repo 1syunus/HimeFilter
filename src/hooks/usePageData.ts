@@ -10,6 +10,9 @@ export const usePageData = () => {
     // store continue watching
     const [continueWatchingList, setContinueWatchingList] = useState<AnimeData[]>([])
 
+    // store top carousel
+    const [topSeries, setTopSeries] = useState<AnimeData[]>([])
+
     // store filter options
     const [apiFilterOptions, setApiFilterOptions] = useState<FilterOptionsResponse>({
         availableAudioLanguages: [],
@@ -40,27 +43,31 @@ export const usePageData = () => {
         
             try {
             // fetch filter options
-            const [topAnimeResponse, filtersResponse] = await Promise.all([
-                fetch("/api/anime/top", {signal}),
-                fetch("/api/filters", {signal})
+            const [topRes, filtersRes, ] = await Promise.all([
+                fetch("/api/anime/top?limit=10", {signal}),
+                fetch("/api/filters", {signal}),
             ])
 
-            if(!topAnimeResponse.ok) {
-                throw new Error(`Failed to fetch top anime data ${topAnimeResponse.statusText}`)
-            }
-            if(!filtersResponse.ok) {
-                throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
+            if(!topRes.ok) {
+                throw new Error(`Failed to fetch top anime data ${topRes.statusText}`)
             }
 
-            const topAnimeData: AnimeData[] = await topAnimeResponse.json()
-            const filtersData: FilterOptionsResponse = await filtersResponse.json()
+            if(!filtersRes.ok) {
+                throw new Error(`Failed to fetch filter options ${filtersRes.statusText}`)
+            }
+
+            const topData: AnimeData[] = await topRes.json()
+
+            const filtersData: FilterOptionsResponse = await filtersRes.json()
 
             setApiFilterOptions(filtersData)
             // featured: 1st item
-            if (topAnimeData && topAnimeData.length > 0) {
-                setFeaturedAnime(topAnimeData[0])
-                setContinueWatchingList(topAnimeData.slice(0, 3))
+            if (topData && topData.length > 0) {
+                setFeaturedAnime(topData[0])
+                setContinueWatchingList(topData.slice(0, 3))
+                setTopSeries(topData)
             }
+   
             } catch (err: unknown) {
                 if (err instanceof Error && err.name !== "AbortError") {
                     setError(err.message)
@@ -68,13 +75,18 @@ export const usePageData = () => {
                 console.error("Failed to fetch initial data:", err)
             } finally {
                 setInitialLoading(false)
-                // setIsReady(true)
             }
         }
             fetchInitialData()
             return () => controller.abort()
     }, [])
 
-    return {featuredAnime, continueWatchingList, apiFilterOptions, initialLoading, error}
+    return {
+        featuredAnime,
+        continueWatchingList,
+        topSeries,
+        apiFilterOptions,
+        initialLoading, error
+    }
     
 }
