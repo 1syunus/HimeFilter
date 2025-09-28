@@ -181,11 +181,13 @@ const App: React.FC = () => {
                       {/* continue watching section */}
                       <ContinueWatchingSection animeList={continueWatchingList} />
 
-                      <div className="space-y-8">
+                      <div>
                         <AnimeCarousel title="Top Series" items={topSeries} />
+
                         <div ref={nowRef} className="w-full min-h-[350px]">
                           <AnimeCarousel title="Latest this Season" items={now} loading={loadingStates.now} />
                         </div>
+
                         <div ref={fanFavRef} className="w-full min-h-[350px]">
                           <AnimeCarousel title="Fan Favorites" items={fanFavorites} loading={loadingStates.fanFavorites} />
                         </div>

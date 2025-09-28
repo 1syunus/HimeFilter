@@ -42,7 +42,7 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
 
     if (loading) {
         return (
-            <div className="mb-12">
+            <div className="mb-8">
                 <div className="h-8 bg-gray-800 rounded w-1/3 mb-6 animate-pulse"></div>
                 <div className="flex space-x-4">
                     {[...Array(6)].map((_, i) => (
@@ -60,7 +60,7 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
     }
 
     return (
-        <div className="mb-12 group/carousel relative">
+        <div className="mb-8 group/carousel relative">
             {/* before had  max-w-full overflow-hidden above */}
             {/* title */}
             <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
