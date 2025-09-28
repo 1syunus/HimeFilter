@@ -31,7 +31,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
                         <Menu className="w-6 h-6" />
                     </button>
                     <h1 onClick={handleGoHome}
-                        className="text-lg font-bold text-orange-500">
+                        className="text-lg font-bold text-orange-500 cursor-pointer">
                         Hime<span className="text-white">Filter</span>
                     </h1>
                     </div>

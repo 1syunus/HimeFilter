@@ -28,7 +28,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
             <div className="flex items-center justify-between max-w-7xl mx-auto">
                 <div className="flex items-center space-x-6">
                     <h1 onClick={handleGoHome}
-                        className="text-2xl font-bold text-orange-500">
+                        className="text-2xl font-bold text-orange-500 cursor-pointer">
                         Hime<span className="text-white">Filter</span>
                     </h1>
                     <nav className="flex space-x-6">
