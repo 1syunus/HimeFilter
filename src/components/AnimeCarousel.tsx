@@ -85,7 +85,7 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
                 <button
                     onClick={() => canScrollLeft && scroll("left")}
                     className={`
-                        absolute left-0 top-1/3 -translate-y-1/2 z-20 
+                        absolute -left-6 top-1/3 -translate-y-1/2 z-20 
                         w-16 h-16
                         bg-gradient-to-r from-orange-400 to-transparent hover:from-orange-500
                         text-white rounded-full
