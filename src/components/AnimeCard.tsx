@@ -57,19 +57,22 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({anime}) => {
                 </div>
             </div>
 
+            {/* title */}
             <div className="mt-2 sm:mt-3 space-y-1">
                 <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-2 text-sm sm:text-base leading-tight">
                     {anime.title}
                 </h3>
+
+                {/* meta row */}
                 <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
-                <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
-                <span>•</span>
-                <span>{anime.year}</span>
-                <span>•</span>
-                <span className="flex items-center">
-                    <Globe className="w-3 h-3 mr-1" />
-                    {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
-                </span>
+                    <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
+                    <span>•</span>
+                    <span>{anime.year}</span>
+                    <span>•</span>
+                    <span className="flex items-center">
+                        <Globe className="w-3 h-3 mr-1" />
+                        {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
+                    </span>
                 </div>
                 <div className="flex flex-wrap gap-1">
                     {anime.genres.slice(0, 2).map((genre) => (
