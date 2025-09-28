@@ -44,12 +44,21 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
         return (
             <div className="mb-8">
                 <div className="h-8 bg-gray-800 rounded w-1/3 mb-6 animate-pulse"></div>
-                <div className="flex space-x-4">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="flex-shrink-0 w-48 sm:w-56">
-                            <div className="w-full aspect-[2/3] bg-gray-800 rounded-lg animate-pulse"></div>
-                        </div>
-                    ))}
+                {/* scrollable container skeleton */}
+                <div
+                    className="flex flex-shrink-0 space-x-5 overflow-x-auto scrollbar-hide pb-4 px-4 sm:px-0 min-w-0 w-full"
+                    style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    }}
+                >
+                    <div className="flex space-x-4 flex-shrink-0 w-48 sm:w-56">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="flex-shrink-0 w-48 sm:w-56">
+                                <div className="w-full aspect-[2/3] bg-gray-800 rounded-lg animate-pulse"></div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         )
