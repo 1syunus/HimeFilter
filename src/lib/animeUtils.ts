@@ -1,11 +1,11 @@
 import { AnimeData } from "../types"
-import { transformJikanAnime } from "./jikan"
+import { RawJikanAnime, transformJikanAnime } from "./jikan"
  
 // helper to introduce delay
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 // helper function for filtering future/0-ep titles
-export const isReleased = (anime: {aired: {from: string | null}}): boolean => {
+export const isReleased = (anime: RawJikanAnime): boolean => {
     if (!anime.aired?.from) {
         return false
     }
@@ -39,7 +39,7 @@ export const hasDurationOver5Minutes = (anime: {duration: string | null}): boole
     return totalMinutes >= 5
 }
 
-export const filterAnimeList = (animeList: any[]): AnimeData[] => {
+export const filterAnimeList = (animeList: RawJikanAnime[]): AnimeData[] => {
     return animeList
         .filter(isReleased)
         .filter(hasEpisodes)
