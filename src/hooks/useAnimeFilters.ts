@@ -23,6 +23,14 @@ export const useAnimeFilters = () => {
       }))
     }, [debouncedYear])
 
+    // clear filters on search
+    useEffect(() => {
+      if (debouncedQuery) {
+        setActiveFilters(initialFilters)
+        setYearInput("")
+      }
+    }, [debouncedQuery])
+
     // derived state
       // dating helpers
     const currentYear = new Date().getFullYear().toString()
