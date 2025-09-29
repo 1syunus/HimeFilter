@@ -32,9 +32,9 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
                         Hime<span className="text-white">Filter</span>
                     </h1>
                     <nav className="flex space-x-6">
-                        <a href="#" className="text-white hover:text-orange-400">Browse</a>
-                        <a href="#" className="text-gray-400 hover:text-white">My List</a>
-                        <a href="#" className="text-gray-400 hover:text-white">New & Popular</a>
+                        <span className="text-white hover:text-orange-400">Browse</span>
+                        <span className="text-gray-400 hover:text-white">My List</span>
+                        <span className="text-gray-400 hover:text-white">New & Popular</span>
                     </nav>
                 </div>
 
