@@ -4,7 +4,6 @@ import { useAnimePagination } from "./useAnimePagination";
 import { usePageData } from "./usePageData";
 import { useLazyCarousels } from "./useLazyCarousels";
 import { useAnimeFetch } from "./useAnimeFetch";
-import { loadGetInitialProps } from "next/dist/shared/lib/utils";
 
 export const useBrowsePage = () => {
     const filters = useAnimeFilters()

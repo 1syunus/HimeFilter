@@ -74,6 +74,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({anime}) => {
                         {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
                     </span>
                 </div>
+
                 <div className="flex flex-wrap gap-1">
                     {anime.genres.slice(0, 2).map((genre) => (
                         <span key={genre.id} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
