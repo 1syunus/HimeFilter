@@ -42,7 +42,7 @@ export const useBrowsePage = () => {
         if (pagination.page > 1) {
             pagination.setPage(1)
         }
-    }, [filters.activeFilters, filters.sortBy, filters.debouncedQuery, pagination.setPage])
+    }, [filters.activeFilters, filters.sortBy, filters.debouncedQuery, pagination.page, pagination.setPage])
 
     return {
         // state

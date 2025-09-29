@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
-import { query } from "express-validator";
 
 export async function GET(request: Request) {
     try {
@@ -17,7 +16,7 @@ export async function GET(request: Request) {
 
         // base jikan urls: for topAnime or filtered lists use /anime; for fanfavorites use /top/anime
         let jikanEndpoint: string = `${JIKAN_API_URL}/top/anime`
-        let queryParams = new URLSearchParams()
+        const queryParams = new URLSearchParams()
 
         // pagination parameters
         queryParams.append("page", page)

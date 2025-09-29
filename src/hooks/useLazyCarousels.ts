@@ -45,9 +45,10 @@ export const useLazyCarousels = () => {
 
       console.log(`[fetch] ${name} returned`, data)
       setCarouselData(prev => ({ ...prev, [name]: data }))
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`[fetch] error for ${name}`, err)
-      setErrorStates(prev => ({ ...prev, [name]: err.message ?? String(err) }))
+      const message = err instanceof Error ? err.message : String(err)
+      setErrorStates(prev => ({ ...prev, [name]: message}))
     } finally {
       setLoadingStates(prev => ({ ...prev, [name]: false }))
     }

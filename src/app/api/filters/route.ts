@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+import { JIKAN_API_URL } from "@/lib/jikan";
 import { FilterOption } from "@/types/index";
 
 // genres blocklist
@@ -39,7 +38,6 @@ const genreBlocklist = [
     "Villainess"
 ]
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(request: Request) {
     try {
         const genresResponse = await fetch(`${JIKAN_API_URL}/genres/anime`)
@@ -57,9 +55,7 @@ export async function GET(request: Request) {
                 .filter((genre: FilterOption) => !genreBlocklist.includes(genre.label))
             : []
         availableGenres.sort((a, b) => a.label.localeCompare(b.label))
-        // const availableGenres = genresData.data ? genresData.data.map((g: any) => ({id: g.mal_id, name: g.name})) : []
-        
-        // const contentTypes = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
+
         const contentTypesRaw = ["TV", "Movie", "OVA", "Special", "ONA", "Music"]
         const contentTypes: FilterOption[] = contentTypesRaw.map(type => ({
             value: type.toLowerCase(),

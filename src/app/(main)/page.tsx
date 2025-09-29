@@ -22,7 +22,7 @@ const App: React.FC = () => {
     animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
     activeFilters, sortBy, searchQuery, yearInput,
     handleFilterChange, clearAllFilters, handleSortChange,
-    handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, page, hasMore, handleLoadMore, setPage, handleGoHome,
+    handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, hasMore, handleLoadMore, handleGoHome,
   } = useBrowsePage()
 
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)

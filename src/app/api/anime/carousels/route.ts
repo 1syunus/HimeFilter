@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { JIKAN_API_URL } from "@/lib/jikan";
 import { filterAnimeList } from "@/lib/animeUtils";
-import { query } from "express-validator";
 
 export async function GET(request: Request) {
     try {

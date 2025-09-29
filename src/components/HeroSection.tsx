@@ -9,7 +9,7 @@ export interface HeroSectionProps {
 export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
     // hero states
     const [heroMuted, setHeroMuted] = useState<boolean>(true)
-    const [ytPlayer, setYtPlayer] = useState<any>(null)
+    const [ytPlayer, setYtPlayer] = useState<YT.Player | null>(null)
     const [isPlaying, setIsPlaying] = useState<boolean>(true)
     const [videoError, setVideoError] = useState<boolean>(false)
     const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
@@ -61,14 +61,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
       const onYouTubeIframeAPIReady = () => {
         const player = new window.YT.Player("hero-video", {
           events: {
-            onReady: (event:any) => {
+            onReady: (event: YT.PlayerEvent) => {
               console.log("player ready")
               setYtPlayer(event.target)
               console.log("onReady: ytPlayer is", event.target)
 
               setHeroMuted(true)
             },
-            onStateChange: (event: any) => {
+            onStateChange: (event: YT.OnStateChangeEvent) => {
               if (event.data === window.YT.PlayerState.PLAYING) {
                 setIsPlaying(true)
               } else if (event.data === window.YT.PlayerState.PAUSED) {

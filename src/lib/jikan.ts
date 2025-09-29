@@ -48,12 +48,6 @@ interface RawJikanAnime {
     duration: string
 }
 
-// note: @param jikanAnime - raw anime object
-// @returns - transformed object
-
-
-// TODO: define proper interfaces
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
     const title = jikanAnime.title_english || jikanAnime.title || "N/A"
     const description = jikanAnime.synopsis || "no description available"
