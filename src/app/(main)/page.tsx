@@ -143,7 +143,7 @@ const App: React.FC = () => {
           </div>
 
           {/* main content */}
-          <div className="flex-1 p-4 sm:p-6 order-1">
+          <div className="flex-1 p-4 sm:p-6 order-1 min-w-0">
           
             {/* active filters display */}
             {hasActiveQuery() && (
@@ -176,7 +176,7 @@ const App: React.FC = () => {
                     title="Browse Titles"
                     subtitle="Discover your next favorite series"
                   />
-              ) : ( <div className="container mx-auto px-4 py-6">
+              ) : ( <div className="mx-auto px-4 py-6 max-w-7xl">
                       <div className="space-y-12">
                       {/* continue watching section */}
                       <ContinueWatchingSection animeList={continueWatchingList} />

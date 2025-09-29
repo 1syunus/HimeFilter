@@ -114,19 +114,18 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
             {/* scrollable container */}
                 <div
                     ref={scrollRef}
-                    className="flex space-x-5 overflow-x-auto scrollbar-hide pb-4 -mx-4 sm:mx-0 px-4 sm:px-0"
+                    className="flex flex-shrink-0 space-x-5 overflow-x-auto scrollbar-hide pb-4 sm:px-0 min-w-0 w-full"
                     style={{
                         scrollbarWidth: "none",
                         msOverflowStyle: "none",
                         scrollSnapType: "x mandatory",
-                        width: "calc(110% - 120px)",
-                        // marginLeft: "1.5em"
+                        width: "calc(100% - 3rem)",
                     }}
                 >
                     {items.map((anime) => (
                         <div
                             key={`carousel-${title}-${anime.id}`}
-                            className="flex-shrink-0 w-48 sm:w-56"
+                            className="flex-shrink-0 w-48 sm:w-48 lg:w-52 xl:w-56"
                             style={{scrollSnapAlign: "start"}}
                         >
                             <AnimeCard anime={anime} />
