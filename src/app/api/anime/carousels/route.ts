@@ -8,7 +8,7 @@ export async function GET(request: Request) {
         const {searchParams} = new URL(request.url)
         
         const page = searchParams.get("page") || "1"
-        const limit = searchParams.get("limit") || "24"
+        const limit = searchParams.get("limit") || "40"
         const genre = searchParams.get("genres")
         const type = searchParams.get("type")
         const status = searchParams.get("status")
@@ -32,6 +32,7 @@ export async function GET(request: Request) {
             if (endDate) queryParams.append("end_date", endDate);
             if (orderBy) queryParams.append("order_by", orderBy)
             queryParams.set("sfw", "true")
+            queryParams.set("limit", "24")
 
             if (!queryParams.has("sort")) {
                 queryParams.append("sort", "desc")
@@ -51,7 +52,7 @@ export async function GET(request: Request) {
 
         const cleanData = filterAnimeList(data.data || [])
 
-        return NextResponse.json(cleanData.slice(0, 12))
+        return NextResponse.json(cleanData)
     } catch (error: unknown) {
         console.error("Error in /api/carousels route:", error)
         let errorMessage = "Unknown error"
