@@ -13,7 +13,7 @@ interface RawJikanAired {
     }
     string: string
 }
-interface RawJikanAnime {
+export interface RawJikanAnime {
     mal_id: number
     title: string
     title_english: string

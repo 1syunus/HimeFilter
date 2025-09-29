@@ -35,7 +35,7 @@ export async function GET(request: Request) {
         }
 
         const seenIds = new Set<number>()
-        let validResults: RawJikanAnime[] = []
+        const validResults: RawJikanAnime[] = []
         let jikanPage = 1
         const MAX_JIKAN_PAGES_TO_CHECK = 15
 
