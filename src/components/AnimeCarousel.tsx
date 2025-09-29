@@ -28,13 +28,27 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
         if (scrollElement && items?.length > 0) {
             checkScrollButtons()
             scrollElement.addEventListener("scroll", checkScrollButtons, {passive: true})
-            return () => scrollElement.removeEventListener("scroll", checkScrollButtons)
+            // event listener for resize
+            const handleResize = () => {
+                setTimeout(checkScrollButtons, 100)
+            }
+            window.addEventListener("resize", handleResize)
+
+            return () => {
+                scrollElement.removeEventListener("scroll", checkScrollButtons)
+                window.removeEventListener("resize", handleResize)
+            }
         }
     }, [items])
 
     const scroll = (direction: "left" | "right") => {
         if (scrollRef.current) {
-            const scrollAmount = scrollRef.current.clientWidth * 0.8
+            const isMobile = window.innerWidth < 640
+            const scrollAmount =
+                isMobile
+                ? scrollRef.current.clientWidth * 0.7
+                : scrollRef.current.clientWidth * 0.8
+            // const scrollAmount = scrollRef.current.clientWidth * 0.8
             const scrollValue = direction === "left" ? -scrollAmount : scrollAmount
             scrollRef.current.scrollBy({left: scrollValue, behavior: "smooth"})
         }
@@ -120,6 +134,7 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
                         msOverflowStyle: "none",
                         scrollSnapType: "x mandatory",
                         width: "calc(100% - 3rem)",
+                        WebkitOverflowScrolling: "touch",
                     }}
                 >
                     {items.map((anime) => (
