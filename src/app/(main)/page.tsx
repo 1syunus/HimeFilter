@@ -119,8 +119,8 @@ const App: React.FC = () => {
 
           {/* desktop filter sidebar */}
           <div className={`hidden lg:block bg-gray-900 border-l border-gray-800 transition-all duration-300 order-2
-            ${isFilterOpen ? "w-80" : "w-0 overflow-hidden"}`
-          }>
+            ${isFilterOpen ? "w-80" : "w-0 overflow-hidden"}`}
+          >
             {isFilterOpen && (
               <div className="p-6 h-full overflow-y-auto">
                 {/* new filter drawer component */}
