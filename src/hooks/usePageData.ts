@@ -44,7 +44,7 @@ export const usePageData = () => {
             try {
             // fetch filter options
             const [topRes, filtersRes, ] = await Promise.all([
-                fetch("/api/anime/top?limit=10", {signal}),
+                fetch("/api/anime/top?limit=24", {signal}),
                 fetch("/api/filters", {signal}),
             ])
 
