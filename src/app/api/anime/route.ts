@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+import { JIKAN_API_URL, RawJikanAnime, transformJikanAnime } from "@/lib/jikan";
 import { delay, isReleased, hasEpisodes, hasScore, hasDurationOver5Minutes } from "@/lib/animeUtils";
 
 export async function GET(request: Request) {
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
         }
 
         const seenIds = new Set<number>()
-        const validResults: any[] = []
+        let validResults: RawJikanAnime[] = []
         let jikanPage = 1
         const MAX_JIKAN_PAGES_TO_CHECK = 15
 

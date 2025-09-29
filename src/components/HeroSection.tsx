@@ -59,7 +59,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
       }, 500)
 
       const onYouTubeIframeAPIReady = () => {
-        const player = new window.YT.Player("hero-video", {
+        new window.YT.Player("hero-video", {
           events: {
             onReady: (event: YT.PlayerEvent) => {
               console.log("player ready")

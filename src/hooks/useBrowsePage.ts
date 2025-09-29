@@ -11,6 +11,8 @@ export const useBrowsePage = () => {
     const pageData = usePageData()
     const lazyCarousels = useLazyCarousels()
 
+    const { page, setPage } = pagination
+
     // derived state to choose default list or filtered list
     const hasActiveQuery = useCallback((): boolean => {
         return !!filters.debouncedQuery ||
@@ -39,10 +41,10 @@ export const useBrowsePage = () => {
     // side effects
     // reset pagination on filter change
     useEffect(() => {
-        if (pagination.page > 1) {
-            pagination.setPage(1)
+        if (page > 1) {
+            setPage(1)
         }
-    }, [filters.activeFilters, filters.sortBy, filters.debouncedQuery, pagination.page, pagination.setPage])
+    }, [filters.activeFilters, filters.sortBy, filters.debouncedQuery, page, setPage])
 
     return {
         // state

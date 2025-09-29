@@ -38,7 +38,7 @@ const genreBlocklist = [
     "Villainess"
 ]
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         const genresResponse = await fetch(`${JIKAN_API_URL}/genres/anime`)
         if (!genresResponse.ok) {
@@ -46,7 +46,6 @@ export async function GET(request: Request) {
             throw new Error(`Jikan API genres error: ${genresResponse.status} - ${errorData.message || genresResponse.statusText}`)            
         }
         const genresData = await genresResponse.json()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const availableGenres: FilterOption[] = genresData.data
             ? genresData.data.map((g: {mal_id: number; name: string}) => ({
                 value: g.mal_id.toString(),
