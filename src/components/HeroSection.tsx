@@ -177,7 +177,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
             )}
 
             {/* vid info */}
-            <div className="relative z-30 h-full flex items-center px-4 sm:px-6 lg:px-12 pointer-events-none">
+            <div className="relative z-30 h-full flex flex-col justify-end px-4 sm:px-6 lg:px-12 pointer-events-none">
                 <div className="max-w-2xl space-y-4 sm:space-y-6">
                     <div className="flex items-center space-x-2 text-sm text-gray-300">
                         <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold">
@@ -193,11 +193,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                         </div>
                     </div>
 
-                    <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight">
+                    <h1 className="text-2xl sm:text-4xl lg:text-6xl font-bold leading-tight">
                         {featuredAnime.title}
                     </h1>
 
-                    <p className="text-sm sm:text-base lg:text-lg text-gray-300 leading-relaxed max-w-xl">
+                    <p className="text-xs sm:text-base lg:text-lg text-gray-200 leading-relaxed max-w-xl line-clamp-3 sm:line-clamp-none">
                         {featuredAnime.description}
                     </p>
 
@@ -209,30 +209,46 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                         ))}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2 pointer-events-auto">
-                        <button className="
-                            flex items-center justify-center space-x-2
-                            bg-white text-black
-                            px-6 py-3
-                            rounded-lg
-                            font-semibold
-                            hover:bg-gray-200 transition colors"
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2 items-center sm:items-end pointer-events-auto">
+                        <a
+                            href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(featuredAnime.title)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center space-x-2
+                                w-[90%] sm:w-auto
+                                bg-white text-black
+                                px-6 py-3
+                                rounded-lg
+                                font-semibold
+                                opacity-70 sm:opacity-100
+                                hover:bg-gray-200 transition colors
+                                cursor-pointer
+                            "
                         >
                             <Play className="w-5 h-5 fill-current" />
-                            <span>Watch Now</span>
-                        </button>
+                            Watch Now
+                        </a>
 
                         <button className="
                             flex items-center justify-center space-x-2 
-                            bg-gray-600/80 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+                            w-[90%] sm:w-auto
+                            bg-gray-600/80 text-white
+                            px-4 sm:px-6 py-3 rounded-lg font-semibold
+                            opacity-70 sm:opacity-100
+                            hover:bg-gray-600 transition-colors
+                            "
                         >
                             <Info className="w-5 h-5" />
                             <span>More Info</span>
                         </button>
 
                         <button className="
-                            flex items-center justify-center space-x-2 
-                            bg-gray-800/80 text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                            hidden sm:flex items-center justify-center space-x-2
+                            w-[90%] sm:w-auto
+                            bg-gray-800/80 text-white px-4 py-3 rounded-lg
+                            opacity-70 sm:opacity-100
+                            hover:bg-gray-700 transition-colors
+                            "
                         >
                             <Plus className="w-5 h-5" />
                         </button>
