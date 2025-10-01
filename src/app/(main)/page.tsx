@@ -53,7 +53,7 @@ const App: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isMobileMenuOpen])
-
+console.debug("Passing handleLoadMore to BrowseResultsSection", { handleLoadMore })
 // main return
   return (
     <div className="min-h-screen bg-black text-white">
