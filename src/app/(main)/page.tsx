@@ -153,20 +153,20 @@ const App: React.FC = () => {
             )}
 
             {/* conditional rendering */}
-            {loading && !animeList.length ? (
+            {(initialLoading || gridLoading) && !animeList.length ? (
               <div className="flex justify-center items-center h-48">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
                 <p className="ml-4 text-lg">Loading anime and filters...</p>
               </div>
-            ) : error ? (
+            ) : initialError ? (
               <div className="flex justify-center items-center h-48 text-red-500">
-                <p className="text-lg">Error: {error}</p>
+                <p className="text-lg">Error: {initialError}</p>
                 <p className="ml-2">Please make sure your backend server is running and accessible.</p>
               </div>
             ) : hasActiveQuery() ? (
                   <BrowseResultsSection
                     animeList={animeList}
-                    loading={loading}
+                    gridLoading={gridLoading}
                     hasMore={hasMore}
                     onLoadMore={handleLoadMore}
                     title="Browse Titles"
