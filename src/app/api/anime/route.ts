@@ -38,6 +38,7 @@ export async function GET(request: Request) {
         const validResults: RawJikanAnime[] = []
         let jikanPage = 1
         const MAX_JIKAN_PAGES_TO_CHECK = 15
+        let lastJikanPagination: { has_next_page: boolean } | null = null
 
         // loop check until enough results found
         while (validResults.length < (CLIENT_PAGE_LIMIT * clientPage) && jikanPage <= MAX_JIKAN_PAGES_TO_CHECK) {
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
 
             const data = await jikanResponse.json()
             const rawAnimeList = data.data || []
+            lastJikanPagination = data.pagination
             let newValidResults = rawAnimeList
 
             if (isDateFiltered) {
@@ -86,7 +88,10 @@ export async function GET(request: Request) {
 
         const transformedData = pageData.map(transformJikanAnime)
      
-        return NextResponse.json(transformedData)
+        return NextResponse.json({
+  data: transformedData,
+  hasNextPage: lastJikanPagination?.has_next_page ?? false,
+})
 
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)

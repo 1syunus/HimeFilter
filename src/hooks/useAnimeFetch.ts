@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { AnimeData, ActiveFilters, SortOption } from "../types";
 import { getCurrentSeason } from "@/lib/dateUtils";
 
@@ -97,13 +97,14 @@ export const useAnimeFetch = ({
               const response = await fetch(`/api/anime?${queryString}`, { signal })
               if (!response.ok) throw new Error(`API error: ${response.statusText}`)
                   
-              const data: AnimeData[] = await response.json()
+              const result = await response.json()
+              const data: AnimeData[] = result.data
 
               setAnimeList(prev => {
                 const newList = isLoadMore ? [...prev, ...data] : data
                 return newList
               })
-              setHasMore(data.length > 0)
+              setHasMore(result.hasNextPage)
             } catch (err: unknown) {
                 if (err instanceof Error && err.name !== "AbortError") {
                     setError(err.message)

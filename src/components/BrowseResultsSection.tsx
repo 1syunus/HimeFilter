@@ -35,15 +35,26 @@ export const BrowseResultsSection: React.FC<BrowseResultsSectionProps> = ({
                 ))}
             </div>
             
-            {/* load more btn */}
-            {animeList.length > 0 && !loading && hasMore && (
+            {/* load more btn/skeleton */}
+            {animeList.length > 0 && (
                 <div className="mt-8 sm:mt-12 text-center">
-                    <button 
-                        onClick={onLoadMore}
-                        className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
-                    >
-                        Load More Anime
-                    </button>
+                    {gridLoading ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="w-full aspect-[2/3] bg-gray-800 rounded-lg animate-pulse"></div>
+                            ))}
+                        </div>
+                    ) : hasMore ? (
+                        <button 
+                            onClick={onLoadMore}
+                            disabled={gridLoading}
+                            className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
+                        >
+                            Load More Anime
+                        </button>
+                    ) : (
+                        <></>
+                    )}
                 </div>
             )}
         </>
