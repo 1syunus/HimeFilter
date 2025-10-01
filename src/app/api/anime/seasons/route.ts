@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { JIKAN_API_URL } from "@/lib/jikan";
-import { filterAnimeList } from "@/lib/animeUtils";
+import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
+import { filterAnimeList, hasEpisodes } from "@/lib/animeUtils";
 
 export async function GET(request: Request) {
     try {
@@ -23,9 +23,12 @@ export async function GET(request: Request) {
 
         const data = await response.json()
 
-        const cleanData = filterAnimeList(data.data || [])
+        const rawAnimeList = data.data || []
+        const cleanData = (year && season)
+            ? filterAnimeList(rawAnimeList)
+            : rawAnimeList.filter(hasEpisodes).map(transformJikanAnime)
 
-        return NextResponse.json(cleanData.slice(0, 12))
+        return NextResponse.json(cleanData)
     } catch (error: unknown) {
         console.error("Error in /api/carousels route:", error)
         let errorMessage = "Unknown error"
