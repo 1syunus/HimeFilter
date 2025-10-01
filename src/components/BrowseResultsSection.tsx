@@ -4,7 +4,7 @@ import { AnimeCard } from "./AnimeCard";
 
 interface BrowseResultsSectionProps {
     animeList: AnimeData[]
-    loading: boolean
+    gridLoading: boolean
     hasMore: boolean
     onLoadMore: () => void
     title: string
@@ -12,9 +12,9 @@ interface BrowseResultsSectionProps {
 }
 
 export const BrowseResultsSection: React.FC<BrowseResultsSectionProps> = ({
-    animeList, loading, hasMore, onLoadMore, title, subtitle
+    animeList, gridLoading, hasMore, onLoadMore, title, subtitle
 }) => {
-    if (animeList.length === 0 && !loading) {
+    if (animeList.length === 0 && !gridLoading) {
         return <div className="text-center p-8 text-gray-400">No results found.</div>
     }
 

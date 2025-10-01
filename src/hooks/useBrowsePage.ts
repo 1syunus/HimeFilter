@@ -44,6 +44,8 @@ export const useBrowsePage = () => {
         continueWatchingList: pageData.continueWatchingList,
         topSeries: pageData.topSeries,
         apiFilterOptions: pageData.apiFilterOptions,
+        initialLoading: pageData.initialLoading,
+        initialError: pageData.error,
 
         // filter/sort state + handlers
         ...filters,
@@ -56,8 +58,8 @@ export const useBrowsePage = () => {
 
         // grid state
         animeList: gridData.animeList,
-        loading: pageData.initialLoading || gridData.loading,
-        error: pageData.error || gridData.error,
+        gridLoading: gridData.loading,
+        gridError: gridData.error,
         showNewSeriesFilter: filters.showNewSeriesFilter,
 
         // derived

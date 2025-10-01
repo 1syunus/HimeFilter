@@ -19,7 +19,7 @@ const App: React.FC = () => {
     topSeries, now, fanFavorites, lastSeason, movies, shounen, sliceOfLife, classics, loadingStates,
     nowRef, fanFavRef, lastSeasonRef, moviesRef, shounenRef, sliceOfLifeRef, classicsRef,
     apiFilterOptions,
-    animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
+    animeList, initialLoading, initialError, gridLoading, hasActiveQuery, showNewSeriesFilter,
     activeFilters, sortBy, searchQuery, yearInput,
     handleFilterChange, clearAllFilters, handleSortChange,
     handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, hasMore, handleLoadMore, handleGoHome,
