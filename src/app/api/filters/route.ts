@@ -10,6 +10,7 @@ const genreBlocklist = [
     "Girls Love",
     "Ecchi",
     "Erotica",
+    "Harem",
     "Hentai",
     "Adult Cast",
     "Anthropomorphic",
