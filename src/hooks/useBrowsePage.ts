@@ -6,12 +6,10 @@ import { useLazyCarousels } from "./useLazyCarousels";
 import { useAnimeFetch } from "./useAnimeFetch";
 
 export const useBrowsePage = () => {
-    const filters = useAnimeFilters()
-    const pagination = useAnimePagination()
+    const {page, setPage, hasMore, setHasMore, handleLoadMore} = useAnimePagination()
+    const filters = useAnimeFilters(setPage, setHasMore)
     const pageData = usePageData()
     const lazyCarousels = useLazyCarousels()
-
-    const { page, setPage } = pagination
 
     // derived state to choose default list or filtered list
     const hasActiveQuery = useCallback((): boolean => {
@@ -25,32 +23,23 @@ export const useBrowsePage = () => {
         activeFilters: filters.activeFilters,
         sortBy: filters.sortBy,
         debouncedQuery: filters.debouncedQuery,
-        page: pagination.page,
-        setHasMore: pagination.setHasMore,
+        page,
+        setHasMore,
         showNewSeriesFilter: filters.showNewSeriesFilter,
         hasActiveQuery: activeQuery,
+        isLoadMore: page > 1,
     })
 
     // handlers
     // handler to return home
     const handleGoHome = useCallback(() => {
         filters.clearAllFilters()
-        pagination.setPage(1)
-    }, [filters, pagination])
-
-    // side effects
-    // reset pagination on filter change
-    useEffect(() => {
-        if (page > 1) {
-            setPage(1)
-        }
-    }, [filters.activeFilters, filters.sortBy, filters.debouncedQuery, page, setPage])
+        setPage(1)
+        setHasMore(true)
+    }, [filters, setPage, setHasMore])
 
     return {
-        // state
-        hasActiveQuery,
-
-        // static data
+        // homepage
         featuredAnime: pageData.featuredAnime,
         continueWatchingList: pageData.continueWatchingList,
         topSeries: pageData.topSeries,
@@ -63,13 +52,16 @@ export const useBrowsePage = () => {
         ...lazyCarousels,
 
         // pagination state + handlers
-        ...pagination,
+        page, hasMore, handleLoadMore,
 
         // grid state
         animeList: gridData.animeList,
         loading: pageData.initialLoading || gridData.loading,
         error: pageData.error || gridData.error,
         showNewSeriesFilter: filters.showNewSeriesFilter,
+
+        // derived
+        hasActiveQuery,
 
         // handlers
         handleGoHome,

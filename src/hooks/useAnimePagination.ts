@@ -1,22 +1,38 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from "react"
 
 export const useAnimePagination = () => {
-    // pagination state
-    const [page, setPageState] = useState<number>(1)
-    const [hasMore, setHasMoreState] = useState<boolean>(true)
+  // pagination state
+  const [pageState, setPageState] = useState<number>(1)
+  const [hasMoreState, setHasMoreState] = useState<boolean>(true)
 
-     // pagination
-    const setPage = useCallback((newPage: number) => {
-        setPageState(newPage)
-    }, [])
+  // pagination
+  const setPage = useCallback((updater: number | ((prev: number) => number)) => {
+    if (typeof updater === "function") {
+      setPageState(prev => {
+        const newPage = (updater as (prev: number) => number)(prev)
+        return newPage
+      })
+    } else {
+      setPageState(updater)
+    }
+  }, [])
 
-    const setHasMore = useCallback((val: boolean) => {
-        setHasMoreState(val)
-    }, [])
+  const setHasMore = useCallback((val: boolean) => {
+    setHasMoreState(val)
+  }, [])
 
-    const handleLoadMore = useCallback(() => {
-        setPageState(prevPage => prevPage + 1)
-    }, [])
+  const handleLoadMore = useCallback(() => {
+    setPage(prevPage => {
+      const nextPage = prevPage + 1
+      return nextPage
+    })
+  }, [setPage])
 
-    return { page, setPage, hasMore, setHasMore, handleLoadMore }
+  return {
+    page: pageState,
+    hasMore: hasMoreState,
+    setPage,
+    setHasMore,
+    handleLoadMore,
+  }
 }

@@ -6,7 +6,10 @@ const initialFilters: ActiveFilters = {
     contentType: [], audioLanguages: [], subtitleLanguages: [], status: [], year: "", genres: [], season: ""
 }
 
-export const useAnimeFilters = () => {
+export const useAnimeFilters = (
+  setPage: (p: number) => void,
+  setHasMore: (v: boolean) => void
+) => {
     const [activeFilters, setActiveFilters] = useState<ActiveFilters>(initialFilters)
     const [searchQuery, setSearchQuery] = useState<string>("")
     const [yearInput, setYearInput] = useState<string>("")
@@ -28,11 +31,13 @@ export const useAnimeFilters = () => {
       if (debouncedQuery) {
         setActiveFilters(initialFilters)
         setYearInput("")
+        setPage(1)
+        setHasMore(true)
       }
-    }, [debouncedQuery])
+    }, [debouncedQuery, setPage, setHasMore])
 
     // derived state
-      // dating helpers
+    // dating helpers
     const currentYear = new Date().getFullYear().toString()
     const showNewSeriesFilter = !activeFilters.year || activeFilters.year === currentYear
 
@@ -58,7 +63,9 @@ export const useAnimeFilters = () => {
           }
         }
       })
-    }, [])
+      setPage(1)
+      setHasMore(true)
+    }, [setPage, setHasMore])
 
     // individual active filter remover 
     const removeActiveFilter = useCallback((category: keyof ActiveFilters, value?: string): void => {
@@ -78,12 +85,16 @@ export const useAnimeFilters = () => {
       setSearchQuery("")
       setYearInput("")
       setSortBy("newest")
-    }, [])
+      setPage(1)
+      setHasMore(true)
+    }, [setPage, setHasMore])
 
     // sorting handler
     const handleSortChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>): void => {
       setSortBy(e.target.value as SortOption)
-    }, [])
+      setPage(1)
+      setHasMore(true)
+    }, [setPage, setHasMore])
 
     // search handler
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
