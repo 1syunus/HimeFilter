@@ -114,7 +114,7 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
                 <button
                     onClick={() => canScrollRight && scroll("right")}
                     className={`
-                        absolute right-0 top-1/3 -translate-y-1/2 z-20
+                        absolute -right-6 top-1/3 -translate-y-1/2 z-20
                         w-16 h-16
                         bg-gradient-to-l from-orange-400 to-transparent hover:from-orange-500
                         text-white rounded-full transition-all duration-300 hidden
@@ -128,19 +128,19 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
             {/* scrollable container */}
                 <div
                     ref={scrollRef}
-                    className="flex flex-shrink-0 space-x-5 overflow-x-auto scrollbar-hide pb-4 sm:px-0 min-w-0 w-full"
+                    className="flex flex-shrink-0 space-x-5 overflow-x-auto scrollbar-hide pb-4 sm:px-0 min-w-0 w-full sm:w-[calc(100% - 3rem)]"
                     style={{
                         scrollbarWidth: "none",
                         msOverflowStyle: "none",
                         scrollSnapType: "x mandatory",
-                        width: "calc(100% - 3rem)",
                         WebkitOverflowScrolling: "touch",
                     }}
                 >
-                    {items.map((anime) => (
+                    {items.map((anime, index) => (
                         <div
                             key={`carousel-${title}-${anime.id}`}
-                            className="flex-shrink-0 w-48 sm:w-48 lg:w-52 xl:w-56"
+                            className={`flex-shrink-0 min-w-0 w-32 sm:w-48 lg:w-52 xl:w-56
+                                ${index === 0 ? "ml-0 sm:ml-0" : ""}`}
                             style={{scrollSnapAlign: "start"}}
                         >
                             <AnimeCard anime={anime} />
