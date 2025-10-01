@@ -64,7 +64,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
 
     const position = getModalPosition()
 
-    return (
+    const modalContent = (
         <>
             {/* backdrop */}
             <div
@@ -218,5 +218,11 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
                 </div>
             </div>
         </>
+    )
+
+    // render at root via portal
+    return ReactDOM.createPortal(
+        modalContent,
+        document.getElementById("modal-root") as HTMLElement
     )
 }
