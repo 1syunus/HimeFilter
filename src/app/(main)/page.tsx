@@ -178,10 +178,10 @@ const App: React.FC = () => {
                       <ContinueWatchingSection animeList={continueWatchingList} />
 
                       <div>
-                        <AnimeCarousel title="Top Series" items={topSeries} />
+                        <AnimeCarousel title="Top Rated Series" items={topSeries} />
 
                         <div ref={nowRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Latest this Season" items={now} loading={loadingStates.now} />
+                          <AnimeCarousel title="Don't miss this Season" items={now} loading={loadingStates.now} />
                         </div>
 
                         <div ref={fanFavRef} className="w-full min-h-[350px]">
@@ -189,7 +189,7 @@ const App: React.FC = () => {
                         </div>
 
                         <div ref={moviesRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Movies" items={movies} loading={loadingStates.movies} />
+                          <AnimeCarousel title="Movies We Love" items={movies} loading={loadingStates.movies} />
                         </div>
 
                         <div ref={lastSeasonRef} className="w-full min-h-[350px]">
