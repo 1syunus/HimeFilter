@@ -82,6 +82,11 @@ export const useAnimeFetch = ({
               return
             }
 
+            if (page === 1) {
+              setAnimeList([])
+              setLoading(true)
+            }
+
             setLoading(true)
             setError(null)
 
