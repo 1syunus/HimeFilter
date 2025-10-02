@@ -30,8 +30,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
     }
 
     const openMAL = () => {
-        const query = encodeURIComponent(anime.title)
-        window.open(`https://myanimelist.net/anime.php?q=${query}`, '_blank')
+        window.open(`https://myanimelist.net/anime/${anime.id}`, '_blank')
     }
 
     // calc modal posit

@@ -15,6 +15,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
         elementId: "hero-video",
     })
 
+    const openMAL = () => {
+        if (!featuredAnime.id) return
+        window.open(`https://myanimelist.net/anime/${featuredAnime.id}`, '_blank')
+    }
 
     return (
 
@@ -117,13 +121,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                             Watch Now
                         </a>
 
-                        <button className="
-                            flex items-center justify-center space-x-2 
-                            w-[90%] sm:w-auto
-                            bg-gray-600/80 text-white
-                            px-4 sm:px-6 py-3 rounded-lg font-semibold
-                            opacity-70 sm:opacity-100
-                            hover:bg-gray-600 transition-colors
+                        <button 
+                            onClick={openMAL}
+                            className="
+                                flex items-center justify-center space-x-2 
+                                w-[90%] sm:w-auto
+                                bg-gray-600/80 text-white
+                                px-4 sm:px-6 py-3 rounded-lg font-semibold
+                                opacity-70 sm:opacity-100
+                                hover:bg-gray-600 transition-colors
+                                cursor-pointer
                             "
                         >
                             <Info className="w-5 h-5" />
