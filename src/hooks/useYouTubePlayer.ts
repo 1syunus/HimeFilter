@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import { loadYouTubeIframeAPI } from "@/lib/loadYtIframeApi";
 
 export interface UseYouTubePlayerOptions {
     hasVideo: boolean
     timeoutMs?: number
+    elementId?: string
 }
 
-export function useYouTubePlayer({hasVideo, timeoutMs = 5000}: UseYouTubePlayerOptions) {
+export function useYouTubePlayer({hasVideo, timeoutMs = 5000, elementId = "hero-video"}: UseYouTubePlayerOptions) {
     // vid states
     const [ytPlayer, setYtPlayer] = useState<YT.Player | null>(null)
     const [isMuted, setIsMuted] = useState<boolean>(true)
@@ -37,16 +39,13 @@ export function useYouTubePlayer({hasVideo, timeoutMs = 5000}: UseYouTubePlayerO
     }, [hasVideo, videoLoaded, timeoutMs])
 
     // load handler
-    const handleVideoLoad = () => {
+    const handleVideoLoad = async () => {
       // clear timeout on successful load
       if (videoLoadTimeoutRef.current) clearTimeout(videoLoadTimeoutRef.current)
 
-      setTimeout(() => {
-        setVideoLoaded(true)
-      }, 500)
-
-      const onYouTubeIframeAPIReady = () => {
-        new window.YT.Player("hero-video", {
+      try {
+        await loadYouTubeIframeAPI()
+        new window.YT.Player(elementId, {
           events: {
             onReady: (event: YT.PlayerEvent) => {
                 console.log("player ready")
@@ -64,14 +63,16 @@ export function useYouTubePlayer({hasVideo, timeoutMs = 5000}: UseYouTubePlayerO
             }
           },
         })
+      } catch (error) {
+        console.error("YT API error", error)
+            setVideoError(true)
+            setVideoLoaded(true)
       }
-
-      if (window.YT && window.YT.Player) {
-        onYouTubeIframeAPIReady()
-      } else {
-        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady
-      }
+      setTimeout(() => {
+            setVideoLoaded(true)
+        }, 500)
     }
+    
     // error handler
     const handleVideoError = () => {
         console.error("iframe failed to load or encountered an error.")

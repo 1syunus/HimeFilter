@@ -12,6 +12,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
         isMuted, videoError, videoLoaded, handleVideoLoad, handleVideoError, toggleMute, togglePlayPause,
     } = useYouTubePlayer({
         hasVideo: Boolean(featuredAnime.trailerUrl),
+        elementId: "hero-video",
     })
 
 
