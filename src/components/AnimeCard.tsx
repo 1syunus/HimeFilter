@@ -5,7 +5,7 @@ import {Play, Star, Globe} from "lucide-react"
 
 interface AnimeCardProps {
     anime: AnimeData
-    onMouseEnter: (rect: DOMRect) => void //might need animeData
+    onMouseEnter: (rect: DOMRect) => void //if need smartening pass animeData
     onMouseLeave: () => void
 }
 
@@ -15,7 +15,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({anime, onMouseEnter, onMous
     const handleEnter = () => {
         if (cardRef.current) {
             onMouseEnter(cardRef.current.getBoundingClientRect())
-        } // if parent needs anime, add gaurd to if:  ...&& onMouseEnter) {const rect = cardRef...; onMouseEnter(anime, rect)}
+        } // if smartening, add gaurd to if:  ...&& onMouseEnter) {const rect = cardRef...; onMouseEnter(anime, rect)}
     }
     
     return (
