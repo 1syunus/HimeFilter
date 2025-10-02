@@ -1,19 +1,32 @@
-import React from "react"
+import React, {useRef} from "react"
 import Image from "next/image"
 import { AnimeData } from "../types"
 import {Play, Star, Globe} from "lucide-react"
 
 interface AnimeCardProps {
     anime: AnimeData
+    onMouseEnter: (rect: DOMRect) => void //might need animeData
+    onMouseLeave: () => void
 }
 
-export const AnimeCard: React.FC<AnimeCardProps> = ({anime}) => {
+export const AnimeCard: React.FC<AnimeCardProps> = ({anime, onMouseEnter, onMouseLeave}) => {
+    const cardRef = useRef<HTMLAnchorElement>(null)
+
+    const handleEnter = () => {
+        if (cardRef.current) {
+            onMouseEnter(cardRef.current.getBoundingClientRect())
+        } // if parent needs anime, add gaurd to if:  ...&& onMouseEnter) {const rect = cardRef...; onMouseEnter(anime, rect)}
+    }
+    
     return (
         <a
+            ref={cardRef}
             href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(anime.title)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="group block"
+            onMouseEnter={handleEnter}
+            onMouseLeave={onMouseLeave}
         >
             <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
                 <div className="w-full aspect-[2/3] bg-gray-700 relative">
