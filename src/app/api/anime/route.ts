@@ -89,9 +89,9 @@ export async function GET(request: Request) {
         const transformedData = pageData.map(transformJikanAnime)
      
         return NextResponse.json({
-  data: transformedData,
-  hasNextPage: lastJikanPagination?.has_next_page ?? false,
-})
+            data: transformedData,
+            hasNextPage: lastJikanPagination?.has_next_page ?? false,
+        })
 
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)
