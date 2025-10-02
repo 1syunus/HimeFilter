@@ -1,5 +1,6 @@
-import React, {useEffect, useState, useRef} from "react"
+import React from "react"
 import { AnimeData } from "../types"
+import { useYouTubePlayer } from "src/hooks/useYouTubePlayer"
 import {Star, Play, Info, Plus, VolumeX, Volume2} from "lucide-react"
 
 export interface HeroSectionProps {
@@ -7,126 +8,12 @@ export interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
-    // hero states
-    const [heroMuted, setHeroMuted] = useState<boolean>(true)
-    const [ytPlayer, setYtPlayer] = useState<YT.Player | null>(null)
-    const [isPlaying, setIsPlaying] = useState<boolean>(true)
-    const [videoError, setVideoError] = useState<boolean>(false)
-    const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
-    const videoLoadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const {
+        isMuted, videoError, videoLoaded, handleVideoLoad, handleVideoError, toggleMute, togglePlayPause,
+    } = useYouTubePlayer({
+        hasVideo: Boolean(featuredAnime.trailerUrl),
+    })
 
-    // useEffect for Hero timeout
-    useEffect(() => {
-        if (videoLoadTimeoutRef.current) {
-            clearTimeout(videoLoadTimeoutRef.current)
-        }
-
-        if (featuredAnime?.trailerUrl && !videoLoaded){
-        videoLoadTimeoutRef.current = setTimeout(() => {
-            console.warn("Hero video timed out loading. Falling back to anime image.")
-            setVideoError(true)
-            setVideoLoaded(true)
-        }, 5000)
-        }
-
-        // cleanup function
-        return () => {
-        if (videoLoadTimeoutRef.current) {
-            clearTimeout(videoLoadTimeoutRef.current)
-        }
-        }
-    }, [featuredAnime, videoLoaded])
-
-    // video handlers
-    const handleVideoError = () => {
-        console.error("Hero iframe failed to load or encountered an error.")
-        setVideoError(true)
-        // stop try loading
-        setVideoLoaded(true)
-        // not playing
-        if (videoLoadTimeoutRef.current) {
-        clearTimeout(videoLoadTimeoutRef.current)
-        }
-    }
-
-    const handleVideoLoad = () => {
-      // clear timeout on successful load
-      if (videoLoadTimeoutRef.current) {
-        clearTimeout(videoLoadTimeoutRef.current)
-      }
-      setTimeout(() => {
-        setVideoLoaded(true)
-      }, 500)
-
-      const onYouTubeIframeAPIReady = () => {
-        new window.YT.Player("hero-video", {
-          events: {
-            onReady: (event: YT.PlayerEvent) => {
-              console.log("player ready")
-              setYtPlayer(event.target)
-              console.log("onReady: ytPlayer is", event.target)
-
-              setHeroMuted(true)
-            },
-            onStateChange: (event: YT.OnStateChangeEvent) => {
-              if (event.data === window.YT.PlayerState.PLAYING) {
-                setIsPlaying(true)
-              } else if (event.data === window.YT.PlayerState.PAUSED) {
-                setIsPlaying(false)
-              }
-            }
-          },
-        })
-      }
-
-      if (window.YT && window.YT.Player) {
-        onYouTubeIframeAPIReady()
-      } else {
-        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady
-      }
-    }
-
-    const toggleHeroPlayPause = () => {
-        console.log("Toggle play/pause called, ytPlayer:", ytPlayer)
-        if (!ytPlayer) {
-            console.log("Player not ready")
-            return
-        }
-
-        try {
-            if (isPlaying) {
-            ytPlayer.pauseVideo()
-            console.log("Pause vid")
-            } else {
-            ytPlayer.playVideo()
-            console.log("Play vid")
-            }
-        } catch (error) {
-            console.error("Error toggling: ", error)
-        }
-    }
-
-    // audio handler
-    const toggleHeroAudio = () => {
-        console.log("ytPlayer:", ytPlayer)
-        console.log("isMuted?:", ytPlayer?.isMuted?.())
-        console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
-
-        if (!ytPlayer) {
-        console.log("yTplayer not ready for mute/unmute")
-        setHeroMuted(prev => !prev)
-        return
-        }
-        if (heroMuted) {
-            ytPlayer.unMute()
-            setHeroMuted(false)
-            console.log("Unmute vid")
-        } else {
-            ytPlayer.mute()
-            setHeroMuted(true)
-            console.log("Unmute vid")
-        }
-    }
 
     return (
 
@@ -134,7 +21,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
             {/* click overlay for play/pause */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div 
-                onClick={toggleHeroPlayPause}
+                onClick={togglePlayPause}
                 className="absolute inset-0 cursor-pointer pointer-events-auto"
               />
             </div>
@@ -259,7 +146,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
             {/* audio controls */}
             {featuredAnime.trailerUrl && (
                 <button
-                    onClick={toggleHeroAudio}
+                    onClick={toggleMute}
                     className="absolute
                         top-4 sm:top-auto sm:bottom-4 right-4 z-30
                         bg-gray-800/80 hover:bg-gray-700
@@ -270,7 +157,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                         pointer-events-auto
                     "
                 >
-                    {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
+                    {isMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
             )}
         </section>
