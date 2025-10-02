@@ -1,6 +1,7 @@
-import {useEffect, useRef, useState} from "react"
+import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 import { AnimeData } from "../types"
+import { useYouTubePlayer } from "src/hooks/useYouTubePlayer"
 import {X, Star, Globe, ExternalLink, Info} from "lucide-react"
 
 interface AnimeCardModalProps {
@@ -10,19 +11,13 @@ interface AnimeCardModalProps {
 }
 
 export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, cardRect}) => {
-    const [videoError, setVideoError] = useState(false)
-    const [isMuted, setIsMuted] = useState(true)
-    const videoRef = useRef<HTMLVideoElement>(null)
+    const {
+        isMuted, videoError, handleVideoError, handleVideoLoad, toggleMute, togglePlayPause,
+    } = useYouTubePlayer({
+        hasVideo: Boolean(anime.trailerUrl),
+        elementId: "modal-video",
+    })
     
-    // autoplay video
-    useEffect(() => {
-        if (videoRef.current && !videoError) {
-        videoRef.current.play().catch(() => {
-            console.log("Auto-play prevented")
-        })
-        }
-    }, [videoError])
-
     // platform search functions
     const searchOnPlatform = (platform: string) => {
         const query = encodeURIComponent(anime.title)
@@ -44,9 +39,14 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
         const modalWidth = 400
         const modalHeight = 500
 
-        // attempt center above card
-        let left = cardRect.left + (cardRect.width / 2) - (modalWidth / 2)
-        let top = cardRect.top - modalHeight - 20
+        // // attempt center above card
+        // let left = cardRect.left + (cardRect.width / 2) - (modalWidth / 2)
+        // let top = cardRect.top - modalHeight - 20 + window.scrollY
+
+        // attempt to center on card
+        let left = cardRect.left + window.scrollX
+        let top = cardRect.top + window.scrollY - 75
+        left = cardRect.left + (cardRect.width / 2) - (modalWidth / 2) + window.scrollX
 
         // ajust for offscreen horizontal
         if (left < 20) left = 20
@@ -62,7 +62,12 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
         return {left, top}
     }
 
-    const position = getModalPosition()
+    const [position, setPosition] = useState(() => getModalPosition())
+
+    useEffect(() => {
+    setPosition(getModalPosition())
+    }, [])
+
 
     const modalContent = (
         <>
@@ -74,7 +79,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
 
             {/* modal */}
             <div
-                className="fixed z-50 bg-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden"
+                className="absolute z-50 bg-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden"
                 style={{
                     left: `${position.left}px`,
                     top: `${position.top}px`,
@@ -85,7 +90,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
                 {/* close btn */}
                 <button
                     onClick={onClose}
-                    className="absolute top-3 right-3 z-10 bg-black/70 hover:bg-black/90 text-white p-2 rounded-full transition-colors"
+                    className="absolute top-3 right-3 z-50 bg-black/70 hover:bg-black/90 text-white p-2 rounded-full transition-colors"
                 >
                     <X className="w-4 h-4" />
                 </button>
@@ -94,21 +99,28 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
                 <div className="relative w-full h-56 bg-gray-800 overflow-hidden">
                     {anime.trailerUrl && !videoError ? (
                         <>
-                            <video
-                                ref={videoRef}
+                            <iframe
+                                key={anime.trailerUrl}
+                                id="modal-video"
                                 className="w-full h-full object-cover"
-                                loop
-                                muted={isMuted}
-                                playsInline
-                                onError={() => setVideoError(true)}
+                                src={`${anime.trailerUrl.split('?')[0]}?autoplay=1&mute=1&enablejsapi=1&controls=0&loop=1&playlist=${anime.trailerUrl.split('/').pop()?.split('?')[0]}&modestbranding=1&rel=0&iv_load_policy=3`}
+                                allow="autoplay; encrypted-media"
+                                allowFullScreen
+                                onLoad={handleVideoLoad}
+                                onError={handleVideoError}
                             >
-                                <source src={anime.trailerUrl} type="video/mp4" />
-                            </video>
+                            </iframe>
+
+                            {/* click overlay for play/pause */}
+                            <div className="absolute inset-0 z-30 cursor-pointer pointer-events-auto" onClick={togglePlayPause} />
 
                             {/* mute toggle */}
                             <button
-                                onClick={() => setIsMuted(!isMuted)}
-                                className="absolute bottom-3 right-3 bg-black/70 hover:bg-black/90 text-white p-2 rounded-full transition-colors"
+                                onClick={toggleMute}
+                                className="absolute bottom-3 right-3 z-50
+                                    bg-black/70 hover:bg-black/90
+                                    text-white p-2 rounded-full transition-colors
+                                    cursor-pointer pointer-events-auto"
                             >
                                 {isMuted ? (
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +139,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
                             src={anime.image} 
                             alt={anime.title}
                             className="w-full h-full object-cover"
-                            />
+                        />
                     )}
                     {/* gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
