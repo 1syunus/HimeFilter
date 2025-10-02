@@ -1,5 +1,6 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
+import { AnimeData } from "@/types/index"
 import { useBrowsePage } from "src/hooks/useBrowsePage"
 import { MobileHeader } from "@/components/MobileHeader"
 import { DesktopHeader } from "@/components/DesktopHeader"
@@ -12,6 +13,8 @@ import { FilterDrawerContent } from "@/components/FilterDrawerContent"
 import { SortMenu } from "@/components/SortMenu"
 import { BottomMobileNav } from "@/components/BottomMobileNav"
 import { sortOptions } from "@/lib/constants/sortOptions"
+import { ModalData } from "@/types/modal"
+import { AnimeCardModal } from "@/components/AnimeCardModal"
 
 const App: React.FC = () => {
   const {
@@ -25,9 +28,12 @@ const App: React.FC = () => {
     handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, hasMore, handleLoadMore, handleGoHome,
   } = useBrowsePage()
 
+  const [modalData, setModalData] = useState<ModalData | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
   const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
+
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const filterOptions = {
     contentType: apiFilterOptions.contentTypes,
@@ -53,7 +59,24 @@ const App: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isMobileMenuOpen])
-console.debug("Passing handleLoadMore to BrowseResultsSection", { handleLoadMore })
+
+  // modal handlers
+  const handleCardEnter = (anime: AnimeData, rect: DOMRect) => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+
+    hoverTimeoutRef.current = setTimeout(() => {
+      setModalData({anime, rect})
+    }, 1200)
+  }
+
+  const handleCardLeave = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+  }
+
+  const handleCloseModal = () => {
+    setModalData(null)
+  }
+  
 // main return
   return (
     <div className="min-h-screen bg-black text-white">
@@ -169,6 +192,8 @@ console.debug("Passing handleLoadMore to BrowseResultsSection", { handleLoadMore
                     gridLoading={gridLoading}
                     hasMore={hasMore}
                     onLoadMore={handleLoadMore}
+                    onCardEnter={handleCardEnter}
+                    onCardLeave={handleCardLeave}
                     title="Browse Titles"
                     subtitle="Discover your next favorite series"
                   />
@@ -178,34 +203,81 @@ console.debug("Passing handleLoadMore to BrowseResultsSection", { handleLoadMore
                       <ContinueWatchingSection animeList={continueWatchingList} />
 
                       <div>
-                        <AnimeCarousel title="Top Rated Series" items={topSeries} />
+                        <AnimeCarousel
+                          title="Top Rated Series"
+                          items={topSeries}
+                          onCardEnter={handleCardEnter}
+                          onCardLeave={handleCardLeave}
+                           />
 
                         <div ref={nowRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Don't miss this Season" items={now} loading={loadingStates.now} />
+                          <AnimeCarousel
+                              title="Don't miss this Season"
+                              items={now}
+                              loading={loadingStates.now}
+                              onCardEnter={handleCardEnter}
+                              onCardLeave={handleCardLeave}
+                            />
                         </div>
 
                         <div ref={fanFavRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Fan Favorites" items={fanFavorites} loading={loadingStates.fanFavorites} />
+                          <AnimeCarousel
+                            title="Fan Favorites"
+                            items={fanFavorites}
+                            loading={loadingStates.fanFavorites}
+                            onCardEnter={handleCardEnter}
+                            onCardLeave={handleCardLeave}
+                          />
                         </div>
 
                         <div ref={moviesRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Movies We Love" items={movies} loading={loadingStates.movies} />
+                          <AnimeCarousel
+                            title="Movies We Love"
+                            items={movies}
+                            loading={loadingStates.movies}
+                            onCardEnter={handleCardEnter}
+                            onCardLeave={handleCardLeave}
+                          />
                         </div>
 
                         <div ref={lastSeasonRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Last Time On..." items={lastSeason} loading={loadingStates.lastSeason} />
+                          <AnimeCarousel
+                            title="Last Time On..."
+                            items={lastSeason}
+                            loading={loadingStates.lastSeason}
+                            onCardEnter={handleCardEnter}
+                            onCardLeave={handleCardLeave}
+                          />
                         </div>
                         
                         <div ref={shounenRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Shounen" items={shounen} loading={loadingStates.shounen}/>
+                          <AnimeCarousel
+                            title="Shounen"
+                            items={shounen}
+                            loading={loadingStates.shounen}
+                            onCardEnter={handleCardEnter}
+                            onCardLeave={handleCardLeave}
+                          />
                         </div>
                         
                         <div ref={sliceOfLifeRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="Slice of Life" items={sliceOfLife} loading={loadingStates.sliceOfLife} />
+                          <AnimeCarousel
+                            title="Slice of Life"
+                            items={sliceOfLife}
+                            loading={loadingStates.sliceOfLife}
+                            onCardEnter={handleCardEnter}
+                            onCardLeave={handleCardLeave}
+                            />
                         </div>
 
                         <div ref={classicsRef} className="w-full min-h-[350px]">
-                          <AnimeCarousel title="The Classics" items={classics} loading={loadingStates.classics} />
+                          <AnimeCarousel
+                            title="The Classics"
+                            items={classics}
+                            loading={loadingStates.classics}
+                            onCardEnter={handleCardEnter}
+                            onCardLeave={handleCardLeave}
+                          />
                         </div>
                       </div>
                     </div>
@@ -217,6 +289,10 @@ console.debug("Passing handleLoadMore to BrowseResultsSection", { handleLoadMore
 
       {/* bottom mobile navigation */}
       <BottomMobileNav />
+      {/* top level modal render */}
+      {modalData && (
+        <AnimeCardModal anime={modalData.anime} cardRect={modalData.rect} onClose={handleCloseModal} />
+      )}
     </div>
   )
 }

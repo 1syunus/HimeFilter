@@ -7,9 +7,11 @@ interface CarouselProps {
     title: string
     items: AnimeData[]
     loading?: boolean
+    onCardEnter: (anime: AnimeData, rect: DOMRect) => void
+    onCardLeave: () => void
 }
 
-export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = false}) => {
+export const AnimeCarousel: React.FC<CarouselProps> = ({onCardEnter, onCardLeave, title, items, loading = false}) => {
     const scrollRef = useRef<HTMLDivElement>(null)
     const [canScrollLeft, setCanScrollLeft] = useState(false)
     const [canScrollRight, setCanScrollRight] = useState(true)
@@ -143,7 +145,7 @@ export const AnimeCarousel: React.FC<CarouselProps> = ({title, items, loading = 
                                 ${index === 0 ? "ml-0 sm:ml-0" : ""}`}
                             style={{scrollSnapAlign: "start"}}
                         >
-                            <AnimeCard anime={anime} />
+                            <AnimeCard anime={anime} onMouseEnter={(rect) => onCardEnter?.(anime, rect)} onMouseLeave={onCardLeave} />
                         </div>
                     ))}
                 </div>

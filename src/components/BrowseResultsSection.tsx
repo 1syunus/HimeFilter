@@ -9,10 +9,12 @@ interface BrowseResultsSectionProps {
     onLoadMore: () => void
     title: string
     subtitle: string
+    onCardEnter: (anime: AnimeData, rect: DOMRect) => void //may have to add rect: DOMRect
+    onCardLeave: () => void
 }
 
 export const BrowseResultsSection: React.FC<BrowseResultsSectionProps> = ({
-    animeList, gridLoading, hasMore, onLoadMore, title, subtitle
+    animeList, gridLoading, hasMore, onLoadMore, title, subtitle, onCardEnter, onCardLeave,
 }) => {
     if (animeList.length === 0 && !gridLoading) {
         return <div className="text-center p-8 text-gray-400">No results found.</div>
@@ -30,7 +32,7 @@ export const BrowseResultsSection: React.FC<BrowseResultsSectionProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                 {animeList.map((anime: AnimeData) => (
                     <div key={anime.id} className="group cursor-pointer">
-                        <AnimeCard anime={anime} />
+                        <AnimeCard anime={anime} onMouseEnter={(rect) => onCardEnter?.(anime, rect)} onMouseLeave={onCardLeave}/>
                     </div>
                 ))}
             </div>
