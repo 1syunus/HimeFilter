@@ -36,7 +36,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
     // calc modal posit
     const getModalPosition = () => {
         const modalWidth = 400
-        const modalHeight = 500
+        // const modalHeight = 500
 
         // // attempt center above card
         // let left = cardRect.left + (cardRect.width / 2) - (modalWidth / 2)
@@ -44,7 +44,7 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
 
         // attempt to center on card
         let left = cardRect.left + window.scrollX
-        let top = cardRect.top + window.scrollY - 75
+        let top = cardRect.top + window.scrollY - 100
         left = cardRect.left + (cardRect.width / 2) - (modalWidth / 2) + window.scrollX
 
         // ajust for offscreen horizontal
@@ -64,9 +64,8 @@ export const AnimeCardModal: React.FC<AnimeCardModalProps> = ({anime, onClose, c
     const [position, setPosition] = useState(() => getModalPosition())
 
     useEffect(() => {
-    setPosition(getModalPosition())
+        setPosition(getModalPosition())
     }, [])
-
 
     const modalContent = (
         <>
