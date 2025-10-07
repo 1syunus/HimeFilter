@@ -2,6 +2,36 @@
 import React, {useState, useEffect, useRef, useCallback, act} from "react"
 import {Search, Filter, X, ChevronDown, Star, Globe, Play, Pause, Menu, Info, Plus, Volume2, VolumeX} from "lucide-react"
 import { AnimeData, SortOption, ActiveFilters, FilterOptionsResponse, FilterSectionProps, FilterOptions, FilterOption } from "@/types/index"
+<<<<<<< HEAD
+import { useDebounce } from "src/hooks/useDebounce"
+import { useBrowsePage } from "src/hooks/useBrowsePage"
+import { MobileHeader } from "@/components/MobileHeader"
+import { DesktopHeader } from "@/components/DesktopHeader"
+import { HeroSection } from "@/components/HeroSection"
+import { ContinueWatchingSection } from "@/components/ContinueWatchingSection"
+import { ActiveFiltersBar } from "@/components/ActiveFiltersBar"
+import { BrowseResultsSection } from "@/components/BrowseResultsSection"
+import { FilterDrawerContent } from "@/components/FilterDrawerContent"
+import { SortMenu } from "@/components/SortMenu"
+import { AnimeCard } from "@/components/AnimeCard"
+import { BottomMobileNav } from "@/components/BottomMobileNav"
+import { sortOptions } from "@/lib/constants/sortOptions"
+import Image from "next/image"
+import { normalize } from "path"
+import clsx from "clsx"
+import { clear } from "console"
+
+const App: React.FC = () => {
+  const {
+    featuredAnime, continueWatchingList, apiFilterOptions, animeList, loading, error, hasActiveQuery, showNewSeriesFilter,
+    activeFilters, sortBy, searchQuery, yearInput, handleFilterChange, clearAllFilters, handleSortChange,
+    handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, page, hasMore, handleLoadMore, setPage,
+  } = useBrowsePage()
+
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
+  const [isSearchExpanded, setIsSearchExpanded] = useState<boolean>(false)
+=======
 import { useDebounce } from "../components/hooks/useDebounce"
 import Image from "next/image"
 import { normalize } from "path"
@@ -55,6 +85,7 @@ const App: React.FC = () => {
 const [page, setPage] = useState<number>(1)
 const [hasMore, setHasMore] = useState<boolean>(true)
 
+>>>>>>> origin/main-new
 
   const filterOptions = {
     contentType: apiFilterOptions.contentTypes,
@@ -65,6 +96,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     timeframes: apiFilterOptions.timeframeOptions
   }
 
+<<<<<<< HEAD
+=======
   const hasActiveFilter = useCallback((): boolean => {
     return Object.values(activeFilters).some(arr =>
       Array.isArray(arr) ? arr.length > 0 : arr !== ""
@@ -321,6 +354,7 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     
   }, [activeFilters, debouncedQuery, page, sortBy, fetchBrowseData, hasActiveFilter, fetchFilteredAndSearchedAnime])
 
+>>>>>>> origin/main-new
   // mobile menu close functionality
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -337,6 +371,8 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isMobileMenuOpen])
 
+<<<<<<< HEAD
+=======
   // useEffect for Hero timeout
   useEffect(() => {
     if (videoLoadTimeoutRef.current) {
@@ -561,10 +597,38 @@ const [hasMore, setHasMore] = useState<boolean>(true)
     }
   }
 
+>>>>>>> origin/main-new
 // main return
   return (
     <div className="min-h-screen bg-black text-white">
       {/* mobile header */}
+<<<<<<< HEAD
+      <MobileHeader
+        onMobileMenuToggle={() => setIsMobileMenuOpen(prev => !prev)}
+        isSearchExpanded={isSearchExpanded}
+        onSearchExpand={setIsSearchExpanded}
+        searchQuery={searchQuery}
+        onSearchChange={(e) => setSearchQuery(e.target.value)}
+        onSearchClear={() => setSearchQuery("")}
+      />
+        
+      {/* desktop header */}
+      <DesktopHeader
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
+        sortOptions={sortOptions}
+        onFilterToggle={() => setIsFilterOpen(prev => !prev)}
+      />
+
+      {/* hero section */}
+      {featuredAnime && ( 
+        <HeroSection
+          featuredAnime={featuredAnime}
+        />
+      )}
+=======
       <div className="
       lg:hidden
       bg-black bg-opacity-90 backdrop-blur-md
@@ -860,11 +924,109 @@ const [hasMore, setHasMore] = useState<boolean>(true)
           )}             
         </section>
         )}
+>>>>>>> origin/main-new
 
         <div className="flex relative">
           {/* mobile filter drawer */}
           {isMobileMenuOpen && (
             <div className="lg:hidden fixed inset-0 z-50 mobile-menu">
+<<<<<<< HEAD
+              <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+              <div className="absolute left-0 top-0 h-full w-70 bg-gray-900 opacity-85 transform transition-transform duration-300 overflow-y-auto">
+                <div className="p-6">
+                  {/* new filter drawer componenent */}
+                  <FilterDrawerContent
+                    variant="mobile"
+                    activeFilters={activeFilters}
+                    filterOptions={filterOptions}
+                    yearInput={yearInput}
+                    showNewSeriesFilter={showNewSeriesFilter}
+                    onFilterChange={handleFilterChange}
+                    onClearFilters={clearAllFilters}
+                    onYearChange={setYearInput}
+                    onClose={() => setIsMobileMenuOpen(false)}
+                  />
+                  {/* new mobile sort */}
+                  <SortMenu
+                    sortBy={sortBy}
+                    onSortChange={handleSortChange}
+                    options={sortOptions}
+                    variant="mobile"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* desktop filter sidebar */}
+          <div className={`hidden lg:block bg-gray-900 border-l border-gray-800 transition-all duration-300 order-2
+            ${isFilterOpen ? "w-80" : "w-0 overflow-hidden"}`
+          }>
+            {isFilterOpen && (
+              <div className="p-6 h-full overflow-y-auto">
+                {/* new filter drawer component */}
+                <FilterDrawerContent
+                  variant="desktop"
+                  activeFilters={activeFilters}
+                  filterOptions={filterOptions}
+                  onFilterChange={handleFilterChange}
+                  onClearFilters={clearAllFilters}
+                  onYearChange={setYearInput}
+                  yearInput={yearInput}
+                  showNewSeriesFilter={showNewSeriesFilter}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* main content */}
+          <div className="flex-1 p-4 sm:p-6 order-1">
+          
+            {/* active filters display */}
+            {hasActiveQuery() && (
+              <ActiveFiltersBar
+                activeFilters={activeFilters}
+                apiFilterOptions={apiFilterOptions}
+                searchQuery={searchQuery}
+                onRemoveFilter={removeActiveFilter}
+                onClearSearch={() => setSearchQuery("")}
+              />
+            )}
+
+            {/* conditional rendering */}
+            {loading && !animeList.length ? (
+              <div className="flex justify-center items-center h-48">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
+                <p className="ml-4 text-lg">Loading anime and filters...</p>
+              </div>
+            ) : error ? (
+              <div className="flex justify-center items-center h-48 text-red-500">
+                <p className="text-lg">Error: {error}</p>
+                <p className="ml-2">Please make sure your backend server is running and accessible.</p>
+              </div>
+            ) : hasActiveQuery() ? (
+                  <BrowseResultsSection
+                    animeList={animeList}
+                    loading={loading}
+                    hasMore={hasMore}
+                    onLoadMore={handleLoadMore}
+                    title="Browse Titles"
+                    subtitle="Discover your next favorite series"
+                  />
+              ) : (
+                    // continue watching section
+                    <ContinueWatchingSection animeList={continueWatchingList} />
+                )
+              } 
+          </div>
+        </div>
+
+      {/* bottom mobile navigation */}
+      <BottomMobileNav />
+    </div>
+  )
+}
+=======
               <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
               </div>
               <div className="absolute left-0 top-0 h-full w-70 bg-gray-900 transform transition-transform duration-300 overflow-y-auto">
@@ -1319,4 +1481,5 @@ const [hasMore, setHasMore] = useState<boolean>(true)
       </div>
     )
   }
+>>>>>>> origin/main-new
 export default App
