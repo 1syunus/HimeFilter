@@ -1,5 +1,6 @@
-import React, {useEffect, useState, useRef} from "react"
+import React from "react"
 import { AnimeData } from "../types"
+import { useYouTubePlayer } from "src/hooks/useYouTubePlayer"
 import {Star, Play, Info, Plus, VolumeX, Volume2} from "lucide-react"
 
 export interface HeroSectionProps {
@@ -7,125 +8,16 @@ export interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
-    // hero states
-    const [heroMuted, setHeroMuted] = useState<boolean>(true)
-    const [ytPlayer, setYtPlayer] = useState<any>(null)
-    const [isPlaying, setIsPlaying] = useState<boolean>(true)
-    const [videoError, setVideoError] = useState<boolean>(false)
-    const [videoLoaded, setVideoLoaded] = useState<boolean>(false)
-    const videoLoadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const {
+        isMuted, videoError, videoLoaded, handleVideoLoad, handleVideoError, toggleMute, togglePlayPause,
+    } = useYouTubePlayer({
+        hasVideo: Boolean(featuredAnime.trailerUrl),
+        elementId: "hero-video",
+    })
 
-    // useEffect for Hero timeout
-    useEffect(() => {
-        if (videoLoadTimeoutRef.current) {
-            clearTimeout(videoLoadTimeoutRef.current)
-        }
-
-        if (featuredAnime?.trailerUrl && !videoLoaded){
-        videoLoadTimeoutRef.current = setTimeout(() => {
-            console.warn("Hero video timed out loading. Falling back to anime image.")
-            setVideoError(true)
-            setVideoLoaded(true)
-        }, 5000)
-        }
-
-        // cleanup function
-        return () => {
-        if (videoLoadTimeoutRef.current) {
-            clearTimeout(videoLoadTimeoutRef.current)
-        }
-        }
-    }, [featuredAnime, videoLoaded])
-
-    // video handlers
-    const handleVideoError = () => {
-        console.error("Hero iframe failed to load or encountered an error.")
-        setVideoError(true)
-        // stop try loading
-        setVideoLoaded(true)
-        // not playing
-        if (videoLoadTimeoutRef.current) {
-        clearTimeout(videoLoadTimeoutRef.current)
-        }
-    }
-
-    const handleVideoLoad = () => {
-      // clear timeout on successful load
-      if (videoLoadTimeoutRef.current) {
-        clearTimeout(videoLoadTimeoutRef.current)
-      }
-      setTimeout(() => {
-        setVideoLoaded(true)
-      }, 500)
-
-      const onYouTubeIframeAPIReady = () => {
-        const player = new window.YT.Player("hero-video", {
-          events: {
-            onReady: (event:any) => {
-              console.log("player ready")
-              setYtPlayer(event.target)
-              console.log("onReady: ytPlayer is", event.target)
-
-              setHeroMuted(true)
-            },
-            onStateChange: (event: any) => {
-              if (event.data === window.YT.PlayerState.PLAYING) {
-                setIsPlaying(true)
-              } else if (event.data === window.YT.PlayerState.PAUSED) {
-                setIsPlaying(false)
-              }
-            }
-          },
-        })
-      }
-
-      if (window.YT && window.YT.Player) {
-        onYouTubeIframeAPIReady()
-      } else {
-        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady
-      }
-    }
-
-    const toggleHeroPlayPause = () => {
-        console.log("Toggle play/pause called, ytPlayer:", ytPlayer)
-        if (!ytPlayer) {
-            console.log("Player not ready")
-            return
-        }
-
-        try {
-            if (isPlaying) {
-            ytPlayer.pauseVideo()
-            console.log("Pause vid")
-            } else {
-            ytPlayer.playVideo()
-            console.log("Play vid")
-            }
-        } catch (error) {
-            console.error("Error toggling: ", error)
-        }
-    }
-
-    // audio handler
-    const toggleHeroAudio = () => {
-        console.log("ytPlayer:", ytPlayer)
-        console.log("isMuted?:", ytPlayer?.isMuted?.())
-        console.log("getPlayerState:", ytPlayer?.getPlayerState?.())
-
-        if (!ytPlayer) {
-        console.log("yTplayer not ready for mute/unmute")
-        setHeroMuted(prev => !prev)
-        return
-        }
-        if (heroMuted) {
-            ytPlayer.unMute()
-            setHeroMuted(false)
-            console.log("Unmute vid")
-        } else {
-            ytPlayer.mute()
-            setHeroMuted(true)
-            console.log("Unmute vid")
-        }
+    const openMAL = () => {
+        if (!featuredAnime.id) return
+        window.open(`https://myanimelist.net/anime/${featuredAnime.id}`, '_blank')
     }
 
     return (
@@ -134,7 +26,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
             {/* click overlay for play/pause */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div 
-                onClick={toggleHeroPlayPause}
+                onClick={togglePlayPause}
                 className="absolute inset-0 cursor-pointer pointer-events-auto"
               />
             </div>
@@ -177,7 +69,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
             )}
 
             {/* vid info */}
-            <div className="relative z-30 h-full flex items-center px-4 sm:px-6 lg:px-12 pointer-events-none">
+            <div className="relative z-30 h-full flex flex-col justify-end px-4 sm:px-6 lg:px-12 pointer-events-none">
                 <div className="max-w-2xl space-y-4 sm:space-y-6">
                     <div className="flex items-center space-x-2 text-sm text-gray-300">
                         <span className="bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold">
@@ -193,11 +85,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                         </div>
                     </div>
 
-                    <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight">
+                    <h1 className="text-2xl sm:text-4xl lg:text-6xl font-bold leading-tight">
                         {featuredAnime.title}
                     </h1>
 
-                    <p className="text-sm sm:text-base lg:text-lg text-gray-300 leading-relaxed max-w-xl">
+                    <p className="text-xs sm:text-base lg:text-lg text-gray-200 leading-relaxed max-w-xl line-clamp-3 sm:line-clamp-none">
                         {featuredAnime.description}
                     </p>
 
@@ -209,30 +101,49 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                         ))}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 pt-2 pointer-events-auto">
-                        <button className="
-                            flex items-center justify-center space-x-2
-                            bg-white text-black
-                            px-6 py-3
-                            rounded-lg
-                            font-semibold
-                            hover:bg-gray-200 transition colors"
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2 items-center sm:items-end pointer-events-auto">
+                        <a
+                            href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(featuredAnime.title)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center space-x-2
+                                w-[90%] sm:w-auto
+                                bg-white text-black
+                                px-6 py-3
+                                rounded-lg
+                                font-semibold
+                                opacity-70 sm:opacity-100
+                                hover:bg-gray-200 transition colors
+                                cursor-pointer
+                            "
                         >
                             <Play className="w-5 h-5 fill-current" />
-                            <span>Watch Now</span>
-                        </button>
+                            Watch Now
+                        </a>
 
-                        <button className="
-                            flex items-center justify-center space-x-2 
-                            bg-gray-600/80 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+                        <button 
+                            onClick={openMAL}
+                            className="
+                                flex items-center justify-center space-x-2 
+                                w-[90%] sm:w-auto
+                                bg-gray-600/80 text-white
+                                px-4 sm:px-6 py-3 rounded-lg font-semibold
+                                opacity-70 sm:opacity-100
+                                hover:bg-gray-600 transition-colors
+                                cursor-pointer
+                            "
                         >
                             <Info className="w-5 h-5" />
                             <span>More Info</span>
                         </button>
 
                         <button className="
-                            flex items-center justify-center space-x-2 
-                            bg-gray-800/80 text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                            hidden sm:flex items-center justify-center space-x-2
+                            w-[90%] sm:w-auto
+                            bg-gray-800/80 text-white px-4 py-3 rounded-lg
+                            opacity-70 sm:opacity-100
+                            hover:bg-gray-700 transition-colors
+                            "
                         >
                             <Plus className="w-5 h-5" />
                         </button>
@@ -243,7 +154,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
             {/* audio controls */}
             {featuredAnime.trailerUrl && (
                 <button
-                    onClick={toggleHeroAudio}
+                    onClick={toggleMute}
                     className="absolute
                         top-4 sm:top-auto sm:bottom-4 right-4 z-30
                         bg-gray-800/80 hover:bg-gray-700
@@ -254,7 +165,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({featuredAnime}) => {
                         pointer-events-auto
                     "
                 >
-                    {heroMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
+                    {isMuted ? <VolumeX className="w-4 h-4 sm:w-5 sm:h-5" /> : <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
             )}
         </section>

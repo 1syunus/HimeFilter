@@ -1,12 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimeData, FilterOptionsResponse } from "../types";
 
 export const usePageData = () => {
+    const didRunOnce = useRef(false)
+
     // store hero
     const [featuredAnime, setFeaturedAnime] = useState<AnimeData | null>(null)
 
     // store continue watching
     const [continueWatchingList, setContinueWatchingList] = useState<AnimeData[]>([])
+
+    // store top carousel
+    const [topSeries, setTopSeries] = useState<AnimeData[]>([])
 
     // store filter options
     const [apiFilterOptions, setApiFilterOptions] = useState<FilterOptionsResponse>({
@@ -26,6 +31,9 @@ export const usePageData = () => {
 
     // fetch initial data
     useEffect(() => {
+        if (didRunOnce.current) return
+        didRunOnce.current = true
+
         const controller = new AbortController()
         const signal = controller.signal
 
@@ -35,43 +43,50 @@ export const usePageData = () => {
         
             try {
             // fetch filter options
-            const [browseResponse, filtersResponse] = await Promise.all([
-                fetch("/api/browse", {signal}),
-                fetch("/api/filters", {signal})
+            const [topRes, filtersRes, ] = await Promise.all([
+                fetch("/api/anime/top?limit=24", {signal}),
+                fetch("/api/filters", {signal}),
             ])
 
-            if(!browseResponse.ok) {
-                throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
-            }
-            if(!filtersResponse.ok) {
-                throw new Error(`Failed to fetch filter options ${filtersResponse.statusText}`)
+            if(!topRes.ok) {
+                throw new Error(`Failed to fetch top anime data ${topRes.statusText}`)
             }
 
-            const browseData: AnimeData[] = await browseResponse.json()
-            const filtersData: FilterOptionsResponse = await filtersResponse.json()
+            if(!filtersRes.ok) {
+                throw new Error(`Failed to fetch filter options ${filtersRes.statusText}`)
+            }
+
+            const topData: AnimeData[] = await topRes.json()
+
+            const filtersData: FilterOptionsResponse = await filtersRes.json()
 
             setApiFilterOptions(filtersData)
             // featured: 1st item
-            if (browseData && browseData.length > 0) {
-                setFeaturedAnime(browseData[0])
-                setContinueWatchingList(browseData.slice(0, 3))
+            if (topData && topData.length > 0) {
+                setFeaturedAnime(topData[0])
+                setContinueWatchingList(topData.slice(0, 3))
+                setTopSeries(topData)
             }
+   
             } catch (err: unknown) {
                 if (err instanceof Error && err.name !== "AbortError") {
                     setError(err.message)
-                } else {
-                    setError("An unknown error occurred while fetching data.")
-                }
+                } 
                 console.error("Failed to fetch initial data:", err)
             } finally {
                 setInitialLoading(false)
             }
         }
             fetchInitialData()
-            
             return () => controller.abort()
     }, [])
 
-    return {featuredAnime, continueWatchingList, apiFilterOptions, initialLoading, error}
+    return {
+        featuredAnime,
+        continueWatchingList,
+        topSeries,
+        apiFilterOptions,
+        initialLoading, error
+    }
     
 }

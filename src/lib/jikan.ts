@@ -13,7 +13,7 @@ interface RawJikanAired {
     }
     string: string
 }
-interface RawJikanAnime {
+export interface RawJikanAnime {
     mal_id: number
     title: string
     title_english: string
@@ -48,12 +48,6 @@ interface RawJikanAnime {
     duration: string
 }
 
-// note: @param jikanAnime - raw anime object
-// @returns - transformed object
-
-
-// TODO: define proper interfaces
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
     const title = jikanAnime.title_english || jikanAnime.title || "N/A"
     const description = jikanAnime.synopsis || "no description available"
@@ -66,14 +60,14 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
         ? jikanAnime.genres.map((g: {mal_id: number; name: string}) => ({
             id: g.mal_id, name: g.name,})) : []
     const duration = jikanAnime.duration || "N/A"
-    const imageUrl = jikanAnime.images?.webp?.image_url || jikanAnime.images?.jpg?.image_url || "https://dummyimage.com/480x720/555/fff&text=No+Image"
-    const largeImage = jikanAnime.images.webp?.large_image_url || jikanAnime.images.jpg?.large_image_url || imageUrl
-    const heroImage =
-                    jikanAnime.trailer?.images?.maximum_image_url ||
-                    jikanAnime.trailer?.images?.large_image_url ||
-                    jikanAnime.images?.webp?.large_image_url || 
-                    jikanAnime.images?.jpg?.large_image_url || 
-                    imageUrl
+    const imageUrl = 
+        jikanAnime.images.webp?.large_image_url ||
+        jikanAnime.images.jpg?.large_image_url ||
+        jikanAnime.images?.webp?.image_url ||
+        jikanAnime.images?.jpg?.image_url ||
+        "https://dummyimage.com/480x720/555/fff&text=No+Image"
+    const largeImage = imageUrl
+    const heroImage = jikanAnime.trailer?.images?.maximum_image_url || largeImage
     let trailerUrl = jikanAnime.trailer?.embed_url || ""
     if (trailerUrl) {
         const urlObj = new URL(trailerUrl)
@@ -114,7 +108,7 @@ export function transformJikanAnime(jikanAnime: RawJikanAnime): AnimeData {
         duration,
         image: imageUrl,
         largeImage: largeImage,
-        heroImage,
+        heroImage: heroImage,
         trailerUrl,
     }
 }

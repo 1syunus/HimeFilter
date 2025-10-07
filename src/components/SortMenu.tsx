@@ -1,6 +1,5 @@
 import React from "react"
 import { ChevronDown } from "lucide-react"
-import { SortOption } from "../types"
 
 export interface SortOptionType {
   label: string

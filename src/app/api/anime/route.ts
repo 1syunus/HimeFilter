@@ -1,46 +1,6 @@
 import { NextResponse } from "next/server";
-import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
-import { AnimeData } from "@/types/index";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { encode } from "punycode";
-
-// helper to introduce delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-// helper function for filtering future/0-ep titles
-const isReleased = (anime: {aired: {from: string | null}}): boolean => {
-    if (!anime.aired?.from) {
-        return false
-    }
-    const startDate = new Date(anime.aired.from)
-    return !isNaN(startDate.getTime()) && startDate <= new Date()
-}
-
-// helper to check valid episode count
-const hasEpisodes = (anime: {episodes: number | null}): boolean => {
-    return anime.episodes === null || anime.episodes > 0
-}
-
-// score helper
-const hasScore = (anime: {score: number | null}): boolean => {
-    return anime.score !== null && anime.score > 0
-}
-
-// duration helper
-const hasDurationOver5Minutes = (anime: {duration: string | null}): boolean => {
-    if (!anime.duration) return false
-
-    const durationRegex = /(?:(\d+)\s*hr)?\s*(?:(\d+)\s*min)?/i
-    const match = anime.duration?.match(durationRegex)
-
-    if (!match) return false
-
-    const hours = match[1] ? parseInt(match[1]) : 0
-    const minutes = match[2] ? parseInt(match[2]) : 0
-    const totalMinutes = hours * 60 + minutes
-
-    return totalMinutes >= 5
-}
+import { JIKAN_API_URL, RawJikanAnime, transformJikanAnime } from "@/lib/jikan";
+import { delay, isReleased, hasEpisodes, hasScore, hasDurationOver5Minutes } from "@/lib/animeUtils";
 
 export async function GET(request: Request) {
     try {
@@ -75,9 +35,10 @@ export async function GET(request: Request) {
         }
 
         const seenIds = new Set<number>()
-        let validResults: any[] = []
+        const validResults: RawJikanAnime[] = []
         let jikanPage = 1
         const MAX_JIKAN_PAGES_TO_CHECK = 15
+        let lastJikanPagination: { has_next_page: boolean } | null = null
 
         // loop check until enough results found
         while (validResults.length < (CLIENT_PAGE_LIMIT * clientPage) && jikanPage <= MAX_JIKAN_PAGES_TO_CHECK) {
@@ -90,6 +51,7 @@ export async function GET(request: Request) {
 
             const data = await jikanResponse.json()
             const rawAnimeList = data.data || []
+            lastJikanPagination = data.pagination
             let newValidResults = rawAnimeList
 
             if (isDateFiltered) {
@@ -126,7 +88,10 @@ export async function GET(request: Request) {
 
         const transformedData = pageData.map(transformJikanAnime)
      
-        return NextResponse.json(transformedData)
+        return NextResponse.json({
+            data: transformedData,
+            hasNextPage: lastJikanPagination?.has_next_page ?? false,
+        })
 
     } catch (error: unknown) {
         console.error("Error in /api/anime route:", error)
