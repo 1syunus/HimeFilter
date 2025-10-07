@@ -1,19 +1,32 @@
-import React from "react"
+import React, {useRef} from "react"
 import Image from "next/image"
 import { AnimeData } from "../types"
 import {Play, Star, Globe} from "lucide-react"
 
 interface AnimeCardProps {
     anime: AnimeData
+    onMouseEnter: (rect: DOMRect) => void //if need smartening pass animeData
+    onMouseLeave: () => void
 }
 
-export const AnimeCard: React.FC<AnimeCardProps> = ({anime}) => {
+export const AnimeCard: React.FC<AnimeCardProps> = ({anime, onMouseEnter, onMouseLeave}) => {
+    const cardRef = useRef<HTMLAnchorElement>(null)
+
+    const handleEnter = () => {
+        if (cardRef.current) {
+            onMouseEnter(cardRef.current.getBoundingClientRect())
+        } // if smartening, add gaurd to if:  ...&& onMouseEnter) {const rect = cardRef...; onMouseEnter(anime, rect)}
+    }
+    
     return (
         <a
+            ref={cardRef}
             href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(anime.title)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="group block"
+            onMouseEnter={handleEnter}
+            onMouseLeave={onMouseLeave}
         >
             <div className="relative overflow-hidden rounded-lg bg-gray-800 transition-transform duration-300 group-hover:scale-105">
                 <div className="w-full aspect-[2/3] bg-gray-700 relative">
@@ -57,20 +70,24 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({anime}) => {
                 </div>
             </div>
 
+            {/* title */}
             <div className="mt-2 sm:mt-3 space-y-1">
                 <h3 className="font-semibold text-white group-hover:text-orange-400 transition-colors line-clamp-2 text-sm sm:text-base leading-tight">
                     {anime.title}
                 </h3>
+
+                {/* meta row */}
                 <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-400">
-                <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
-                <span>•</span>
-                <span>{anime.year}</span>
-                <span>•</span>
-                <span className="flex items-center">
-                    <Globe className="w-3 h-3 mr-1" />
-                    {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
-                </span>
+                    <span>{anime.episodes} ep{anime.episodes !== 1 ? "s" : ""}</span>
+                    <span>•</span>
+                    <span>{anime.year}</span>
+                    <span>•</span>
+                    <span className="flex items-center">
+                        <Globe className="w-3 h-3 mr-1" />
+                        {anime.audioLanguages.includes("English") ? "DUB" : "SUB"}
+                    </span>
                 </div>
+
                 <div className="flex flex-wrap gap-1">
                     {anime.genres.slice(0, 2).map((genre) => (
                         <span key={genre.id} className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">

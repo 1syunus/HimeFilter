@@ -2,7 +2,7 @@
 declare global {
   interface Window {
     onYouTubeIframeAPIReady: () => void
-    YT: any
+    YT: typeof YT
   }
 }
 

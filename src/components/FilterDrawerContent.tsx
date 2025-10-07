@@ -2,14 +2,15 @@ import React from "react"
 import {X, Filter} from "lucide-react"
 import { FilterSection } from "./FilterSection"
 import { ActiveFilters, FilterOption } from "../types"
+import { toFilterOptions } from "@/lib/langUtils"
 
 // props from page
 export interface FilterDrawerContentProps {
     activeFilters: ActiveFilters
     filterOptions: {
         contentType: FilterOption[]
-        audioLanguage: string[]
-        subtitleLanguage: string[]
+        audioLanguage:string[]
+        subtitleLanguage:string[]
         status: FilterOption[]
         genres: FilterOption[]
         timeframes: FilterOption[]
@@ -40,15 +41,15 @@ const FilterBlock: React.FC<FilterDrawerContentProps> = ({
                 {variant === "mobile" ? "Language" : "Language Options"}
             </h3>
             <FilterSection
-                title="Audio"
-                options={filterOptions.audioLanguage as any}
+                title={variant === "mobile" ? "Audio" : "Audio Language"}
+                options={toFilterOptions(filterOptions.audioLanguage)}
                 category="audioLanguages"
                 activeFilters={activeFilters}
                 onFilterChange={onFilterChange}
             />
             <FilterSection
-                title="Subtitles"
-                options={filterOptions.subtitleLanguage as any}
+                title={variant === "mobile" ? "Subtitles" : "Subtitle Language"}
+                options={toFilterOptions(filterOptions.subtitleLanguage)}
                 category="subtitleLanguages"
                 activeFilters={activeFilters}
                 onFilterChange={onFilterChange}

@@ -4,17 +4,19 @@ import { AnimeCard } from "./AnimeCard";
 
 interface BrowseResultsSectionProps {
     animeList: AnimeData[]
-    loading: boolean
+    gridLoading: boolean
     hasMore: boolean
     onLoadMore: () => void
     title: string
     subtitle: string
+    onCardEnter: (anime: AnimeData, rect: DOMRect) => void //may have to add rect: DOMRect
+    onCardLeave: () => void
 }
 
 export const BrowseResultsSection: React.FC<BrowseResultsSectionProps> = ({
-    animeList, loading, hasMore, onLoadMore, title, subtitle
+    animeList, gridLoading, hasMore, onLoadMore, title, subtitle, onCardEnter, onCardLeave,
 }) => {
-    if (animeList.length === 0 && !loading) {
+    if (animeList.length === 0 && !gridLoading) {
         return <div className="text-center p-8 text-gray-400">No results found.</div>
     }
 
@@ -30,20 +32,31 @@ export const BrowseResultsSection: React.FC<BrowseResultsSectionProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
                 {animeList.map((anime: AnimeData) => (
                     <div key={anime.id} className="group cursor-pointer">
-                        <AnimeCard anime={anime} />
+                        <AnimeCard anime={anime} onMouseEnter={(rect) => onCardEnter?.(anime, rect)} onMouseLeave={onCardLeave}/>
                     </div>
                 ))}
             </div>
             
-            {/* load more btn */}
-            {animeList.length > 0 && !loading && hasMore && (
+            {/* load more btn/skeleton */}
+            {animeList.length > 0 && (
                 <div className="mt-8 sm:mt-12 text-center">
-                    <button 
-                        onClick={onLoadMore}
-                        className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
-                    >
-                        Load More Anime
-                    </button>
+                    {gridLoading ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="w-full aspect-[2/3] bg-gray-800 rounded-lg animate-pulse"></div>
+                            ))}
+                        </div>
+                    ) : hasMore ? (
+                        <button 
+                            onClick={onLoadMore}
+                            disabled={gridLoading}
+                            className="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-lg transition-colors"
+                        >
+                            Load More Anime
+                        </button>
+                    ) : (
+                        <></>
+                    )}
                 </div>
             )}
         </>

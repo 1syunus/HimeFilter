@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { JIKAN_API_URL, transformJikanAnime } from "@/lib/jikan";
-import { query } from "express-validator";
 
 export async function GET(request: Request) {
     try {
@@ -15,9 +14,9 @@ export async function GET(request: Request) {
         const endDate = searchParams.get("end_date")
         const filter = searchParams.get("filter")
 
-        // base jikan urls: for browse or filtered lists use /anime; for fanfavorites use /top/anime
+        // base jikan urls: for topAnime or filtered lists use /anime; for fanfavorites use /top/anime
         let jikanEndpoint: string = `${JIKAN_API_URL}/top/anime`
-        let queryParams = new URLSearchParams()
+        const queryParams = new URLSearchParams()
 
         // pagination parameters
         queryParams.append("page", page)
@@ -52,7 +51,7 @@ export async function GET(request: Request) {
         }
 
         const jikanUrl = `${jikanEndpoint}?${queryParams.toString()}`
-        console.log(`fetching browse data from ${jikanUrl}`)
+        console.log(`fetching top anime data from ${jikanUrl}`)
 
         const jikanResponse = await fetch(jikanUrl)
         if (!jikanResponse.ok) {
@@ -64,7 +63,7 @@ export async function GET(request: Request) {
         
         return NextResponse.json(transformedData)    
     } catch (error: unknown) {
-        console.error("Error fetching Jikan browse API:", error)
+        console.error("Error fetching Jikan /top/anime API:", error)
         let errorMessage = "Unknown error"
         if (error instanceof Error) {
             errorMessage = error.message
