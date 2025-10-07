@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Crunchyroll API build files
+crunchyroll-js-api/dist/
+crunchyroll-js-api/node_modules/
+crunchyroll-js-api/.env
+crunchyroll-js-api/*.log
