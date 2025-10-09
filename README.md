@@ -7,7 +7,7 @@ HimeFilter began as a "what-if" project to solve common user pain points on the 
 
 This full-stack Next.js application provides a performant, intuitive interface for browsing a massive anime catalog, complete with intelligent backend filtering, lazy-loaded carousels, and hover-based interactive previews.
 
-![HimeFilter Demo GIF](./public/demo.gif)
+![HimeFilter Demo GIF](./public/demo-v1.gif)
 
 ---
 
