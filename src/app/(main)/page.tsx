@@ -15,6 +15,7 @@ import { BottomMobileNav } from "@/components/BottomMobileNav"
 import { sortOptions } from "@/lib/constants/sortOptions"
 import { ModalData } from "@/types/modal"
 import { AnimeCardModal } from "@/components/AnimeCardModal"
+import { useIsExtension } from "@/lib/isExtension"
 
 const App: React.FC = () => {
   const {
@@ -27,6 +28,8 @@ const App: React.FC = () => {
     handleFilterChange, clearAllFilters, handleSortChange,
     handleSearchChange, setYearInput, setSearchQuery, removeActiveFilter, hasMore, handleLoadMore, handleGoHome,
   } = useBrowsePage()
+
+  const extensionMode = useIsExtension()
 
   const [modalData, setModalData] = useState<ModalData | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
@@ -103,7 +106,7 @@ const App: React.FC = () => {
       />
 
       {/* hero section */}
-      {featuredAnime && ( 
+      {!extensionMode && featuredAnime && ( 
         <HeroSection
           featuredAnime={featuredAnime}
         />
@@ -200,7 +203,7 @@ const App: React.FC = () => {
               ) : ( <div className="mx-auto px-4 py-6 max-w-7xl">
                       <div className="space-y-12">
                       {/* continue watching section */}
-                      <ContinueWatchingSection animeList={continueWatchingList} />
+                      {!extensionMode && <ContinueWatchingSection animeList={continueWatchingList} />}
 
                       <div>
                         <AnimeCarousel
@@ -288,7 +291,7 @@ const App: React.FC = () => {
         </div>
 
       {/* bottom mobile navigation */}
-      <BottomMobileNav />
+      {!extensionMode && <BottomMobileNav />}
       {/* top level modal render */}
       {modalData && (
         <AnimeCardModal anime={modalData.anime} cardRect={modalData.rect} onClose={handleCloseModal} />
