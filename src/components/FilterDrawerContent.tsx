@@ -91,9 +91,6 @@ const FilterBlock: React.FC<FilterDrawerContentProps> = ({
                     w-full px-3 py-2
                     bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400
                     focus:outline-none focus:border-orange-500
-                    appearance-none
-                    [&::-webkit-inner-spin-button]:appearance-none
-                    [&::-webkit-outer-spin-button]:appearance-none
                 "
             />
         </div>
