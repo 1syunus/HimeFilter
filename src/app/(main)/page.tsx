@@ -30,7 +30,7 @@ const App: React.FC = () => {
   } = useBrowsePage()
 
   const extensionMode = useIsExtension()
-  
+
   const [modalData, setModalData] = useState<ModalData | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
