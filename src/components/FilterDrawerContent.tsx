@@ -27,7 +27,22 @@ export interface FilterDrawerContentProps {
 // internal component for shared filters
 const FilterBlock: React.FC<FilterDrawerContentProps> = ({
     activeFilters, filterOptions, yearInput, showNewSeriesFilter, onFilterChange, onYearChange, variant
-}) => (
+}) => {
+
+        const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+            const key = e.key
+            if (e.ctrlKey || e.metaKey || 
+                ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)
+            ) {
+                return
+            }
+
+            if (!/\d/.test(key) || (e.shiftKey && key !== ' ')) { 
+                e.preventDefault()
+            }
+        }
+
+    return (
     <div className="space-y-6">
         <FilterSection 
             title="Content Type"
@@ -87,6 +102,7 @@ const FilterBlock: React.FC<FilterDrawerContentProps> = ({
                 placeholder="e.g., 2024"
                 value={yearInput}
                 onChange={(e) => onYearChange(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="
                     w-full px-3 py-2
                     bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400
@@ -95,7 +111,7 @@ const FilterBlock: React.FC<FilterDrawerContentProps> = ({
             />
         </div>
     </div>
-)
+)}
 
 export const FilterDrawerContent: React.FC<FilterDrawerContentProps> = (props) => {
     const {onClose, onClearFilters, variant = "desktop"} = props
