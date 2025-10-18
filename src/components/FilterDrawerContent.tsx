@@ -41,77 +41,77 @@ const FilterBlock: React.FC<FilterDrawerContentProps> = ({
                 e.preventDefault()
             }
         }
-
     return (
-    <div className="space-y-6">
-        <FilterSection 
-            title="Content Type"
-            options={filterOptions.contentType}
-            category="contentType"
-            activeFilters={activeFilters}
-            onFilterChange={onFilterChange}
-        />
-        <div className="border-t border-gray-700 pt-6">
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">
-                {variant === "mobile" ? "Language" : "Language Options"}
-            </h3>
-            <FilterSection
-                title={variant === "mobile" ? "Audio" : "Audio Language"}
-                options={toFilterOptions(filterOptions.audioLanguage)}
-                category="audioLanguages"
+        <div className="space-y-6">
+            <FilterSection 
+                title="Content Type"
+                options={filterOptions.contentType}
+                category="contentType"
                 activeFilters={activeFilters}
                 onFilterChange={onFilterChange}
             />
+            <div className="border-t border-gray-700 pt-6">
+                <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">
+                    {variant === "mobile" ? "Language" : "Language Options"}
+                </h3>
+                <FilterSection
+                    title={variant === "mobile" ? "Audio" : "Audio Language"}
+                    options={toFilterOptions(filterOptions.audioLanguage)}
+                    category="audioLanguages"
+                    activeFilters={activeFilters}
+                    onFilterChange={onFilterChange}
+                />
+                <FilterSection
+                    title={variant === "mobile" ? "Subtitles" : "Subtitle Language"}
+                    options={toFilterOptions(filterOptions.subtitleLanguage)}
+                    category="subtitleLanguages"
+                    activeFilters={activeFilters}
+                    onFilterChange={onFilterChange}
+                />
+            </div>
             <FilterSection
-                title={variant === "mobile" ? "Subtitles" : "Subtitle Language"}
-                options={toFilterOptions(filterOptions.subtitleLanguage)}
-                category="subtitleLanguages"
+                title="Status"
+                options={filterOptions.status}
+                category="status"
                 activeFilters={activeFilters}
                 onFilterChange={onFilterChange}
             />
+            {showNewSeriesFilter && (
+                <FilterSection
+                    title="New Series"
+                    options={filterOptions.timeframes}
+                    category="season"
+                    activeFilters={activeFilters}
+                    onFilterChange={onFilterChange}
+                />
+            )}
+            <FilterSection
+                title="Genres"
+                options={filterOptions.genres}
+                category="genres"
+                activeFilters={activeFilters}
+                onFilterChange={onFilterChange}
+            />
+            <div>
+                <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">
+                    {variant === "mobile" ? "Year" : "Release Year"}
+                </h3>
+                <input
+                    type="number"
+                    placeholder="e.g., 2024"
+                    value={yearInput}
+                    onChange={(e) => onYearChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="
+                        w-full px-3 py-2
+                        bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400
+                        focus:outline-none focus:border-orange-500
+                    "
+                />
+            </div>
         </div>
-        <FilterSection
-            title="Status"
-            options={filterOptions.status}
-            category="status"
-            activeFilters={activeFilters}
-            onFilterChange={onFilterChange}
-        />
-        {showNewSeriesFilter && (
-            <FilterSection
-                title="New Series"
-                options={filterOptions.timeframes}
-                category="season"
-                activeFilters={activeFilters}
-                onFilterChange={onFilterChange}
-            />
-        )}
-        <FilterSection
-            title="Genres"
-            options={filterOptions.genres}
-            category="genres"
-            activeFilters={activeFilters}
-            onFilterChange={onFilterChange}
-        />
-        <div>
-            <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">
-                {variant === "mobile" ? "Year" : "Release Year"}
-            </h3>
-            <input
-                type="number"
-                placeholder="e.g., 2024"
-                value={yearInput}
-                onChange={(e) => onYearChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="
-                    w-full px-3 py-2
-                    bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400
-                    focus:outline-none focus:border-orange-500
-                "
-            />
-        </div>
-    </div>
-)}
+    )
+}
 
 export const FilterDrawerContent: React.FC<FilterDrawerContentProps> = (props) => {
     const {onClose, onClearFilters, variant = "desktop"} = props
