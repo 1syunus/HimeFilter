@@ -2,6 +2,7 @@ import React from "react";
 import {Search, Filter} from "lucide-react"
 import { SortOption } from "../types";
 import { SortMenu, SortOptionType } from "./SortMenu";
+import { useIsExtension } from "@/lib/isExtension";
 
 export interface DesktopHeaderProps {
     searchQuery: string
@@ -22,6 +23,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
     onFilterToggle,
     handleGoHome,
 }) => {
+    const extensionMode = useIsExtension()
     return (
 
       <header className="hidden lg:block bg-black bg-opacity-90 backdrop-blur-md border-b border-gray-800 px-6 py-4 sticky top-0 z-50">
@@ -32,10 +34,24 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
                         Hime<span className="text-white">Filter</span>
                     </h1>
                     <nav className="flex space-x-6">
-                        <span className="text-white hover:text-orange-400">Browse</span>
-                        <span className="text-gray-400 hover:text-white">My List</span>
-                        <span className="text-gray-400 hover:text-white">New & Popular</span>
+                        {!extensionMode && (
+                            <>
+                                <span className="text-white hover:text-orange-400">Browse</span>
+                                <span className="text-gray-400 hover:text-white">My List</span>
+                                <span className="text-gray-400 hover:text-white">New & Popular</span>
+                            </>
+                        )}
                     </nav>
+                    {!extensionMode && (
+                        <a
+                            href="https://chromewebstore.google.com/detail/himefilter-companion/ienhcbjmflninjacgifjndpmcnagcaie"
+                            target="blank"
+                            rel="noopener noreferrer"
+                            className="bg-orange-600 text-white px-3 py-1.5 rounded-md text-sm font-semibold hover:bg-orange-400 opacity-80 hover:opacity-100 transition-all duration-300"
+                        >
+                            Get the extension!
+                        </a>
+                    )}
                 </div>
 
                 {/* desktop header options */}
