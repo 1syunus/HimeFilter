@@ -1,6 +1,7 @@
 import "../globals.css"
 import {Metadata} from "next"
 import Script from "next/script"
+import { Analytics } from "@vercel/analytics/next"
 
 export default function RootLayout({
   children,
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body>
         {children}
         <div id="modal-root"/>
+        <Analytics />
       </body>
     </html>
   );
